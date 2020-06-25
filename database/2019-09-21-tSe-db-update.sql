@@ -1,0 +1,1 @@
+ALTER TABLE `bank_reconcillation` ADD `type_of_deposit` VARCHAR(20) NULL DEFAULT NULL AFTER `amount_deposited_in_bank`;

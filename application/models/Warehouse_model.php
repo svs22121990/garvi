@@ -1,0 +1,115 @@
+﻿<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class Warehouse_model extends CI_Model
+{
+    public $table = 'warehouse_details';
+    var $column_order = array(null,'cat.title','mat.type','ast.sku','ast.asset_name','ast.total_quantity',null,null);
+
+    var $column_search = array('cat.title','mat.type','ast.sku','ast.asset_name','ast.total_quantity');
+    var $order = array('id' => 'desc');
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    private function _get_datatables_query($con)
+    {
+        $eid = $_SESSION[SESSION_NAME]['id'];
+        $this->db->select('
+                p.id,
+                p.dn_number,
+                p.warehouse_date,
+                p.received_from,
+                e.name as employee_name,
+                (select SUM(product_mrp) from warehouse_details where warehouse_id=p.id) as sum_amount,
+                (select SUM(total_quantity) from warehouse_details where warehouse_id=p.id) as sum_quantity,
+                (select SUM(product_mrp * total_quantity) from warehouse_details as a where warehouse_id=p.id) as total_amount,
+            ');
+        $this->db->from("warehouse p");
+        $this->db->join("employees e","e.id = p.received_from","left");
+        $this->db->join("warehouse_details","warehouse_details.warehouse_id = p.id","left");
+//        $this->db->where('warehouse_details.created_by',$_SESSION[SESSION_NAME]['id']);
+        $this->db->where($con);
+        $this->db->distinct();
+        //$this->db->where('a.created_by',);
+
+    }
+
+    function get_datatables($con,$date)
+    {
+        $this->_get_datatables_query($con);
+        //if($_POST['length'] != -1)
+        // $this->db->limit($_POST['length'], $_POST['start']);
+        if($date!=0){
+            $dates = explode("_",$date);
+            $date1 = date("Y-m-d", strtotime($dates[0]));
+            $date2 = date("Y-m-d", strtotime($dates[1]));
+            $this->db->where('p.warehouse_date >=', $date1);
+            $this->db->where('p.warehouse_date <=', $date2);
+        }
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    function count_filtered($con)
+    {
+        $this->_get_datatables_query($con);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    public function count_all($con)
+    {
+        $this->db->select('p.id,p.dn_number,p.warehouse_date,p.received_from,e.name as employee_name');
+        $this->db->from("warehouse p");
+        $this->db->join("employees e","e.id = p.received_from","left");
+        $this->db->where($con);
+        return $this->db->count_all_results();
+    }
+
+
+    public function getAllDetails($id)
+    {
+        $this->db->select('
+            ast.asset_name,
+            ast.id,
+            ast.category_id,
+            ast.product_mrp,
+            ast.total_quantity,
+            ast.quantity,
+            cat.title,
+            ast.hsn,
+            ast.gst_percent,
+            ast.total_amount,
+            ast.purchase_date,
+            ast.lf_no,
+            p.dn_number,
+            p.warehouse_date,
+            p.received_from,
+            e.name as employee_name,'
+        );
+        $this->db->join("categories cat","cat.id = ast.category_id","left");
+        $this->db->join("warehouse p", "p.id = ast.warehouse_id", "left");
+        $this->db->join("employees e","e.id = p.received_from","left");
+        $this->db->where("ast.warehouse_id='".$id."'");
+        return $this->db->get('warehouse_details ast')->result();
+    }
+
+
+    public function getAssetsDetails($assetId)
+    {
+        $this->db->select('abm.*,assets.asset_name,branches.branch_title');
+        $this->db->join("assets","assets.id = abm.asset_id","left");
+        $this->db->join("branches","branches.id = abm.branch_id","left");
+        $this->db->where("abm.asset_id='".$assetId."'");
+        return $this->db->get('asset_branch_mappings abm')->result();
+    }
+
+
+
+
+
+}
