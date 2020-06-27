@@ -58,8 +58,8 @@ $this->load->view('common/left_panel');
                         <?php } ?>
 
 
-                        <li><a href="<?= base_url(); ?>index.php/Products/pdf_summary/<?= $dateinfo; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
-                        <li><a href="<?= base_url(); ?>index.php/Products/export_bill_summary/<?= $dateinfo; ?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>
+                        <li><a href="<?= base_url(); ?>index.php/Warehouse/pdf_summary/<?= $dateinfo; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
+                        <li><a href="<?= base_url(); ?>index.php/Warehouse/export_bill_summary/<?= $dateinfo; ?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>
                         <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
                         <!-- <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
                         <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li> -->

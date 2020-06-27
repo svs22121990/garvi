@@ -32,7 +32,7 @@ $this->load->view('common/left_panel'); ?>
                                     <div class="form-group">
                                         <label class="col-md-11"> DN Number <span style="color: red">*</span> <span  id="dn_number_error" style="color: red"></span></label>
                                         <div class="col-md-11">
-                                            <input type="text" name="dn_number" id="dn_number" class="form-control" placeholder="dn Number">
+                                            <input type="text" name="dn_number" id="dn_number" class="form-control" placeholder="DN Number">
                                         </div>
                                     </div>
                                 </div>
@@ -74,22 +74,31 @@ $this->load->view('common/left_panel'); ?>
                                 <table class="table table-striped table-bordered">
                                     <thead>
                                     <tr>
-                                        <th> Date <span style="color: red">*</span><span style="color: red"></span></th>
-                                        <th> Category  <a href="#myModalCategory" class="pull-right" data-toggle="modal" data-target="" title="Add new Category"></a><span style="color: red">*</span> <span  id="category_id_error" style="color: red"></span></th>
+                                        <th> Purchase Date <span style="color: red">*</span><span style="color: red"></span></th>
                                         <th> Name <span style="color: red">*</span><span style="color: red" id="asset_name_error"></span></th>
+                                        <th> Category  <a href="#myModalCategory" class="pull-right" data-toggle="modal" data-target="" title="Add new Category"></a><span style="color: red">*</span> <span  id="category_id_error" style="color: red"></span></th>
+                                        <th>Product Type <a href="#myModalAssetType" class="pull-right" data-toggle="modal" data-target="" title="Add new Product Type"></a><span style="color: red">*</span> <span  id="asset_type_id_error" style="color: red"></span></th>
+                                        <th> Product Type 2 <span style="color: red">*</span> </th>
+                                        <th>Color<span style="color: red">*</span> </th>
+                                        <th> Size <span style="color: red">*</span> </th>
+                                        <th> Fabric/Material <span style="color: red">*</span> </th>
+                                        <th> Craft<span style="color: red">*</span> </th>
                                         <th> Quantity <span style="color: red">*</span><span style="color: red" id="error_quantity"></span></th>
                                         <th> Cost Price  <span style="color: red">*</span><span style="color: red"id="error_price"></span></th>
                                         <th>Total Amount</th>
                                         <th> GST % <span style="color: red">*</span><span  id="error_gst_percent"></span></th>
                                         <th> HSN <span style="color: red">*</span><span id="error_hsn"></span></th>
                                         <th> Markup <span style="color: red">*</span><span style="color: red" id="lf_no_error"></span></th>
-                                        <th class="text-center"> <a  href="javascript:void(0)" class="btn  btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>
+<!--                                        <th class="text-center"> <a  href="javascript:void(0)" class="btn  btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>-->
                                     </tr>
                                     </thead>
                                     <tbody id="professorTableBody">
                                     <tr class="trRow">
                                         <td>
                                             <input type="text" name="product_purchase_date[]" id="product_purchase_date1" class="form-control datepicker" placeholder="Purchase Date">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="asset_name[]" id="asset_name1" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
                                         </td>
                                         <td>
                                             <select class="form-control" name="category_id[]" id="category_id1" onchange="getGST(this.value,$(this).closest('tr').index());">
@@ -99,10 +108,56 @@ $this->load->view('common/left_panel'); ?>
                                                 <?php } ?>
                                             </select>
                                         </td>
-
                                         <td>
-                                            <input type="text" class="form-control" name="asset_name[]" id="asset_name1" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
+                                            <select class="form-control" name="asset_type_id[]" id="asset_type_id1">
+                                                <option value="">--Select Product Type Name--</option>
+                                                <?php foreach($asset_type_data as $asset_type_dataRow) { ?>
+                                                    <option value="<?php echo $asset_type_dataRow->id?>"><?php echo $asset_type_dataRow->type ?></option>
+                                                <?php } ?>
+                                            </select>
                                         </td>
+                                        <td>
+                                            <select class="form-control" name="asset_type_2_id[]" id="asset_type_2_id1">
+                                                <option value="">--Select Product Type 2 Name--</option>
+                                                <?php foreach($productTypes as $asset_type_dataRow) { ?>
+                                                    <option value="<?=$asset_type_dataRow->id?>"><?=$asset_type_dataRow->label?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control" name="color_id[]" id="color_id">
+                                                <option value="">--Select Product Color--</option>
+                                                <?php foreach($color as $asset_type_dataRow) { ?>
+                                                    <option value="<?=$asset_type_dataRow->id?>"><?=$asset_type_dataRow->title?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control" name="size_id[]" id="size_id">
+                                                <option value="">--Select Product Size--</option>
+                                                <?php foreach($size as $asset_type_dataRow) { ?>
+                                                    <option value="<?=$asset_type_dataRow->id?>"><?=$asset_type_dataRow->title?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control" name="fabric_id[]" id="fabric_id">
+                                                <option value="">--Select Product Fabric--</option>
+                                                <?php foreach($fabric as $asset_type_dataRow) { ?>
+                                                    <option value="<?=$asset_type_dataRow->id?>"><?=$asset_type_dataRow->title?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control" name="craft_id[]" id="craft_id">
+                                                <option value="">--Select Product Craft--</option>
+                                                <?php foreach($craft as $asset_type_dataRow) { ?>
+                                                    <option value="<?=$asset_type_dataRow->id?>"><?=$asset_type_dataRow->title?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+
+
                                         <td>
                                             <input type="text" class="form-control qty" name="quantity[]" id="quantity1" placeholder="Enter Quantity" autocomplete="off">
                                         </td>
@@ -122,23 +177,23 @@ $this->load->view('common/left_panel'); ?>
                                         <td>
                                             <input type="text" class="form-control" name="lf_no[]" id="lf_no1" placeholder="Enter Markup" autocomplete="off">
                                         </td>
-                                        <td class="text-center">
-                                            <input type="hidden" class="sectionA" value="1">
-                                            <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn  btn-sm btn-danger"><i class="fa fa-minus"></i></a>
-                                        </td>
+<!--                                        <td class="text-center">-->
+<!--                                            <input type="hidden" class="sectionA" value="1">-->
+<!--                                            <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn  btn-sm btn-danger"><i class="fa fa-minus"></i></a>-->
+<!--                                        </td>-->
                                     </tr>
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th colspan="6" >&nbsp;<span class="pull-right">Selling Price</span></th>
+                                        <th colspan="9" >&nbsp;<span class="pull-right">Selling Price</span></th>
                                         <th><input type="text" class="form-control" name="gtotal" id="grandTotal" readonly="readonly" value="0"></th>
-                                        <th colspan="2"><span class="pull-right">Total GST Amount</span></th>
+                                        <th colspan="2"><span class="pull-right">GST Amount</span></th>
                                         <th>
                                             <input type="text" class="form-control" id="totalGST" readonly="readonly" value="0">
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th colspan="6" >&nbsp;<span class="pull-right">Total Amount as per SP </span></th>
+                                        <th colspan="11" >&nbsp;<span class="pull-right">Total Amount as per SP </span></th>
                                         <th>
                                             <input type="text" class="form-control" id="finalTotal" readonly="readonly" value="0">
                                         </th>

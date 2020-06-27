@@ -8,7 +8,14 @@ class Warehouse extends CI_Controller
 
         parent::__construct();
         $this->load->model('Warehouse_model');
-
+        $this->load->model('Assets_logs_model');
+        $this->load->model('Asset_details_model');
+        $this->load->model('Asset_Transfer_model');
+        $this->load->model('Asset_Transfer_View_model');
+        $this->load->model('Asset_images_model');
+        $this->load->model('Req_new_assets_list_model');
+        $this->load->model('Assets_request_details_model1');
+        $this->load->library('upload');
         $this->load->library('image_lib');
         $this->image_lib->clear();
         $this->load->helper(array('form', 'url', 'html'));
@@ -200,6 +207,10 @@ class Warehouse extends CI_Controller
                     </ul>";
 
         $category_data = $this->Crud_model->GetData('categories', "", "status='Active'", '', 'title asc');
+        $size = $this->Crud_model->GetData('size', "", "status='Active'", '', 'title asc');
+        $fabric = $this->Crud_model->GetData('fabric', "", "status='Active'", '', 'title asc');
+        $color = $this->Crud_model->GetData('color', "", "status='Active'", '', 'title asc');
+        $craft= $this->Crud_model->GetData('craft', "", "status='Active'", '', 'title asc');
         $Subcategory_data =  $this->Crud_model->GetData('sub_categories', "", "status='Active'", '', 'sub_cat_title asc');
         $asset_type_data = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
         $brand_data = $this->Crud_model->GetData('brands', "", "status='Active'", "", "brand_name");
@@ -218,6 +229,10 @@ class Warehouse extends CI_Controller
             'brand_data' => $brand_data,
             'unit_data' => $unit_data,
             'users' => $users,
+            'size' => $size,
+            'fabric' => $fabric,
+            'color' => $color,
+            'craft' => $craft,
             'productTypes' => $product_types,
             'action' => $action,
         );
@@ -247,6 +262,8 @@ class Warehouse extends CI_Controller
             $data = array(
                 'warehouse_id' => $last_id,
                 'purchase_date' => $purchase_date,
+                'asset_type_id' => $_POST['asset_type_id'][0],
+                'product_type_id' => $_POST['asset_type_2_id'][0],
                 'lf_no' => $_POST['lf_no'][0],
                 'asset_name' => $_POST['asset_name'][0],
                 'quantity' => $_POST['quantity'][0],
@@ -255,6 +272,10 @@ class Warehouse extends CI_Controller
                 'gst_percent' => $_POST['gst_percent'][0],
                 'hsn' => $_POST['hsn'][0],
                 'category_id' =>$_POST['category_id'][0],
+                'size_id' =>$_POST['size_id'][0],
+                'fabric_id' =>$_POST['fabric_id'][0],
+                'craft_id' =>$_POST['craft_id'][0],
+                'color_id' =>$_POST['color_id'][0],
                 'price' =>$_POST['product_mrp'][0],
                 'total_amount' =>$_POST['multitotal'][0],
 //                    'purchase_date' => $product_purchase_date,
@@ -310,12 +331,17 @@ class Warehouse extends CI_Controller
                     </ul>";
         $products = $this->Crud_model->GetData('warehouse', "", "id='" . $id . "'", '', '', '', 'row');
         $category_data = $this->Crud_model->GetData('categories', "", "status='Active'", '', 'title asc');
+        $size = $this->Crud_model->GetData('size', "", "status='Active'", '', 'title asc');
+        $fabric = $this->Crud_model->GetData('fabric', "", "status='Active'", '', 'title asc');
+        $color = $this->Crud_model->GetData('color', "", "status='Active'", '', 'title asc');
+        $craft= $this->Crud_model->GetData('craft', "", "status='Active'", '', 'title asc');
         $asset_type_data = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", '', 'type asc');
+        $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
         $getAssetData = $this->Crud_model->GetData("warehouse_details", "", "warehouse_id='" . $id . "'", "", "", "", "1");
-    //   $users = $this->Crud_model->GetData('employees', "", "id='" . $products->received_from . "'", '', '', '', '1');
+        $users = $this->Crud_model->GetData('employees', "", "status='Active'", '', 'name asc');
 
-        $users=$products->received_from;
-     //    echo"<pre>"; print_r($users);exit();
+     //   $users=$products->received_from;
+        // echo"<pre>"; print_r($users);exit();
 //         print_r($users);exit;
         $action =  site_url("Warehouse/update_action/" . $id);
 
@@ -329,7 +355,13 @@ class Warehouse extends CI_Controller
             'action' => $action,
             'getAssetData' => $getAssetData,
             'users' => $users,
+            'productTypes' => $product_types,
             'products' => $products,
+            'size' => $size,
+            'fabric' => $fabric,
+            'color' => $color,
+            'craft' => $craft,
+
         );
 
         $this->load->view('warehouse/update_form', $data);
@@ -343,7 +375,7 @@ class Warehouse extends CI_Controller
             $warehouse_date = date("Y-m-d", strtotime($_POST['warehouse_date']));
             $purchase_date = date("Y-m-d"); //, strtotime($_POST['purchase_date']));
 //           $user_id = $this->Crud_model->GetData("employees", "id", "name='" . $_POST['received_from'] . "'", "", "", "", "1");
-            $user_id = $this->Crud_model->GetData('employees', '', "id='" . $_POST['received_from'] . "'", '', '', '', '1');
+//            $user_id = $this->Crud_model->GetData('employees', '', "id='" . $_POST['received_from'] . "'", '', '', '', '1');
 
            // echo"<pre>"; print_r($user_id);exit();
           //  $user_id =$_POST['received_from'];
@@ -372,6 +404,12 @@ class Warehouse extends CI_Controller
                 'category_id' =>$_POST['category_id'][0],
                 'price' =>$_POST['product_mrp'][0],
                 'total_amount' =>$_POST['multitotal'][0],
+                'asset_type_id' => $_POST['asset_type_id'][0],
+                'product_type_id' => $_POST['asset_type_2_id'][0],
+                'size_id' =>$_POST['size_id'][0],
+                'fabric_id' =>$_POST['fabric_id'][0],
+                'craft_id' =>$_POST['craft_id'][0],
+                'color_id' =>$_POST['color_id'][0],
                 'modified' => date('Y-m-d H:i:s'),
             );
            // echo"<pre>"; print_r($data);exit();
@@ -431,7 +469,7 @@ class Warehouse extends CI_Controller
         //name the worksheet
         $this->excel->getActiveSheet()->setTitle('Warehouse Note-Bill');
         //set cell A1 content with some text
-        $this->excel->getActiveSheet()->setCellValue('B1', 'Product Details');
+        $this->excel->getActiveSheet()->setCellValue('B1', ' Warehouse Product Details');
 
         $this->excel->getActiveSheet()->setCellValue('A3', 'Sr. No.');
         $this->excel->getActiveSheet()->setCellValue('B3', 'DN Number.');
@@ -445,8 +483,8 @@ class Warehouse extends CI_Controller
         foreach ($Data as $result) {
 
             $this->excel->getActiveSheet()->setCellValue('A' . $a, $sr);
-            $this->excel->getActiveSheet()->setCellValue('B' . $a, $result->bill_no);
-            $this->excel->getActiveSheet()->setCellValue('C' . $a, date('d-m-Y', strtotime($result->bill_date)));
+            $this->excel->getActiveSheet()->setCellValue('B' . $a, $result->dn_number);
+            $this->excel->getActiveSheet()->setCellValue('C' . $a, date('d-m-Y', strtotime($result->warehouse_date)));
             $this->excel->getActiveSheet()->setCellValue('D' . $a, $result->employee_name);
             $this->excel->getActiveSheet()->setCellValue('E' . $a, "Rs. " . number_format($result->total_amount, 2));
             $sr++;
@@ -485,7 +523,7 @@ class Warehouse extends CI_Controller
         $html = $this->load->view('warehouse/product_pdf2', $data, TRUE);
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
-        $mpdf->Output('Dispatch Note/Bill', 'I');
+        $mpdf->Output('Warehouse Note/Bill', 'I');
     }
 
     public function export_pdf($id)
@@ -494,14 +532,14 @@ class Warehouse extends CI_Controller
         $html = $this->load->view('warehouse/product_pdf', $data, TRUE);
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
-        $mpdf->Output('Product_Details', 'I');
+        $mpdf->Output('Warehouse Product_Details', 'I');
     }
 
     /* ----- Export functionality start ----- */
     public function export_summary($id)
     {
         $results = $this->Warehouse_model->getAllDetails($id);
-        $FileTitle = 'Product Summary Report';
+        $FileTitle = 'warehouse Summary Report';
 
         $this->load->library('excel');
         //activate worksheet number 1
@@ -614,7 +652,7 @@ class Warehouse extends CI_Controller
                     <li class='active'>Add Existing Stock</li>
                     </ul>";
         $getAssetData = $this->Warehouse_model->getAllDetails($id);
-        $action =  site_url("Products/addexStock_action/" . $id);
+        $action =  site_url("Warehouse/addexStock_action/" . $id);
         $data = array(
             'breadcrumbs' => $breadcrumbs,
             'heading' => 'Existing Stock',
@@ -736,7 +774,7 @@ class Warehouse extends CI_Controller
 
         $msg = $_POST['val'] . " quantity of " . $_POST['assetName'] . " added into stock";
         $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">' . $msg . '</span>');
-        redirect('Products/view/' . $id);
+        redirect('Warehouse/view/' . $id);
     }
 
 
@@ -809,7 +847,7 @@ class Warehouse extends CI_Controller
     public function assetDetails($ast_id, $id, $flag)
     {
         if ($ast_id == '' || $id == '' || $flag == '') {
-            redirect('Products/index');
+            redirect('Warehouse/index');
         } else {
             $heading = "Add details";
             $button = "Add details";

@@ -58,8 +58,13 @@ $this->load->view('common/left_panel');
                                     <thead>
                                     <tr>
                                         <th>Category Name</th>
-<!--                                        <th>Product Type Name</th>-->
                                         <th>Product Name</th>
+                                        <th>Product Type Name</th>
+                                        <th>Product Type Name 2</th>
+                                        <th>Color</th>
+                                        <th>Size</th>
+                                        <th>Frabric</th>
+                                        <th>Craft</th>
                                         <th>Quantity</th>
                                         <th>Product Price</th>
                                         <th>Total Amount</th>
@@ -80,8 +85,13 @@ $this->load->view('common/left_panel');
                                         ?>
                                         <tr>
                                             <td><?php echo $getData->title ?></td>
-<!--                                            <td>--><?php //echo $getData->type ?><!--</td>-->
                                             <td><?php echo $getData->asset_name ?></td>
+                                            <td><?php echo $getData->type ?></td>
+                                            <td><?php echo $getData->label ?></td>
+                                            <td><?php echo $getData->t ?></td>
+                                            <td><?php echo $getData->t ?></td>
+                                            <td><?php echo $getData->t ?></td>
+                                            <td><?php echo $getData->ti ?></td>
                                             <td><?php echo $getData->total_quantity ?></td>
                                             <td><?php echo "Rs. " . number_format($getData->product_mrp, 2); ?></td>
                                             <td><?php echo "Rs. " . number_format($getData->total_quantity * $getData->product_mrp, 2); ?></td>
@@ -101,7 +111,7 @@ $this->load->view('common/left_panel');
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <td colspan="3"></td>
+                                        <td colspan="9"></td>
 <!--                                        <th>--><?//= $qty; ?><!--</th>-->
 <!--                                        <th>--><?//= "Rs. " . number_format($product_mrp, 2); ?><!--</th>-->
                                         <th>Total Amount</th>
@@ -110,14 +120,14 @@ $this->load->view('common/left_panel');
                                     </tr>
 
                                     <tr>
-                                        <td colspan="4" >&nbsp;<span class="pull-right">Total GST Amount</span></td>
+                                        <td colspan="10" >&nbsp;<span class="pull-right">Total GST Amount</span></td>
                                         <th>
                                             <?= "Rs. " . number_format($totalGST, 2); ?>
                                         </th>
                                         <th colspan="2"></th>
                                     </tr>
                                     <tr>
-                                        <td colspan="4" >&nbsp;<span class="pull-right">Final Total Amount</span></td>
+                                        <td colspan="10" >&nbsp;<span class="pull-right">Final Total Amount</span></td>
                                         <th>
                                             <?= "Rs. " . number_format($totalGST + $total, 2); ?>
                                         </th>

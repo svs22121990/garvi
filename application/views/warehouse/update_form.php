@@ -51,19 +51,12 @@ $this->load->view('common/left_panel'); ?>
                                         <label class="col-md-11"> Received From <span style="color: red">*</span> <span  id="received_from_error" style="color: red"></span></label>
                                         <div class="col-md-11">
                                             <select name="received_from" id="received_from" class="form-control">
-                                                <option value="">Select User</option>
-                                                <?php
-                                                if(!empty($users)) {
-                                                    foreach ($users as $user) {
-                                                        ?>
-                                                        <option id="<?php echo $user->id; ?>"  value="<?php echo $products->received_from; ?>"><?php echo $user->name; ?></option>
-                                                        <?php
-                                                    }
-                                                }
-                                                ?>
+                                                <option value="">--Select User-</option>
+                                                <?php foreach($users as $user) { ?>
+                                                    <option value="<?php echo $user->id?>"<?php if($products->received_from==$user->id)echo "selected";?>><?php echo $user->name?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
-                                    </div>
                                 </div>
 
                             </div>
@@ -75,21 +68,30 @@ $this->load->view('common/left_panel'); ?>
                                     <thead>
                                     <tr>
                                         <th> Date <span style="color: red">*</span><span style="color: red"></span></th>
-                                        <th> Category  <a href="#myModalCategory" class="pull-right" data-toggle="modal" data-target="" title="Add new Category"></a><span style="color: red">*</span> <span  id="category_id_error" style="color: red"></span></th>
                                         <th> Name <span style="color: red">*</span><span style="color: red" id="asset_name_error"></span></th>
+                                        <th> Category  <a href="#myModalCategory" class="pull-right" data-toggle="modal" data-target="" title="Add new Category"></a><span style="color: red">*</span> <span  id="category_id_error" style="color: red"></span></th>
+                                        <th>Product Type <a href="#myModalAssetType" class="pull-right" data-toggle="modal" data-target="" title="Add new Product Type"></a><span style="color: red">*</span> <span  id="asset_type_id_error" style="color: red"></span></th>
+                                        <th>Product Type 2 <span style="color: red">*</span> </th>
+                                        <th>Color<span style="color: red">*</span> </th>
+                                        <th> Size <span style="color: red">*</span> </th>
+                                        <th> Fabric <span style="color: red">*</span> </th>
+                                        <th> Craft<span style="color: red">*</span> </th>
                                         <th> Quantity <span style="color: red">*</span><span style="color: red" id="error_quantity"></span></th>
                                         <th> Cost Price  <span style="color: red">*</span><span style="color: red"id="error_price"></span></th>
                                         <th>Total Amount</th>
                                         <th> GST % <span style="color: red">*</span><span  id="error_gst_percent"></span></th>
                                         <th> HSN <span style="color: red">*</span><span id="error_hsn"></span></th>
                                         <th> Markup <span style="color: red">*</span><span style="color: red" id="lf_no_error"></span></th>
-                                        <th class="text-center"> <a  href="javascript:void(0)" class="btn  btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>
+<!--                                        <th class="text-center"> <a  href="javascript:void(0)" class="btn  btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>-->
                                     </tr>
                                     </thead>
                                     <tbody id="professorTableBody">
                                     <tr class="trRow">
                                         <td>
                                             <input type="text" name="product_purchase_date[]" id="product_purchase_date1"value="<?php echo $getAssetData->purchase_date; ?>" class="form-control datepicker" placeholder="Purchase Date">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="asset_name[]" id="asset_name1" value="<?php echo $getAssetData->asset_name; ?>" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
                                         </td>
                                         <td>
                                             <select class="form-control" name="category_id[]" id="category_id1" onchange="getGST(this.value,$(this).closest('tr').index());">
@@ -99,10 +101,55 @@ $this->load->view('common/left_panel'); ?>
                                                 <?php } ?>
                                             </select>
                                         </td>
-
                                         <td>
-                                            <input type="text" class="form-control" name="asset_name[]" id="asset_name1" value="<?php echo $getAssetData->asset_name; ?>" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
+                                            <select class="form-control" name="asset_type_id[]" id="asset_type_id1">
+                                                <option value="">--Select Product Type Name--</option>
+                                                <?php foreach($asset_type_data as $asset_type_dataRow) { ?>
+                                                    <option value="<?php echo $asset_type_dataRow->id?>"<?php if($getAssetData->asset_type_id==$asset_type_dataRow->id)echo "selected";?>><?php echo $asset_type_dataRow->type ?></option>
+                                                <?php } ?>
+                                            </select>
                                         </td>
+                                        <td>
+                                            <select class="form-control" name="asset_type_2_id[]" id="asset_type_2_id1">
+                                                <option value="">--Select Product Type 2 Name--</option>
+                                                <?php foreach($productTypes as $asset_type_dataRow) { ?>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->product_type_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->label?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control" name="color_id[]" id="color_id">
+                                                <option value="">--Select Product Color--</option>
+                                                <?php foreach($color as $asset_type_dataRow) { ?>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->color_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control" name="size_id[]" id="size_id">
+                                                <option value="">--Select Product Size--</option>
+                                                <?php foreach($size as $asset_type_dataRow) { ?>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->size_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control" name="fabric_id[]" id="fabric_id">
+                                                <option value="">--Select Product Fabric--</option>
+                                                <?php foreach($fabric as $asset_type_dataRow) { ?>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->fabric_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control" name="craft_id[]" id="craft_id">
+                                                <option value="">--Select Product Craft--</option>
+                                                <?php foreach($craft as $asset_type_dataRow) { ?>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->craft_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </td>
+
                                         <td>
                                             <input type="text" class="form-control qty" name="quantity[]" id="quantity1" value="<?php echo $getAssetData->quantity; ?>" placeholder="Enter Quantity" autocomplete="off">
                                         </td>
@@ -110,7 +157,7 @@ $this->load->view('common/left_panel'); ?>
                                             <input type="text" class="form-control price" name="product_mrp[]" id="product_mrp1" value="<?php echo $getAssetData->product_mrp; ?>" placeholder="Enter Product Price" autocomplete="off" >
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control multTotal" name="multitotal[]" value="<?php echo $getAssetData->multTotal; ?>" autocomplete="off" onkeypress="return only_number(event)" readonly="readonly">
+                                            <input type="text" class="form-control multTotal" name="multitotal[]" value="<?php echo $getAssetData->total_amount; ?>" autocomplete="off" onkeypress="return only_number(event)" readonly="readonly">
                                         </td>
 
                                         <td>
@@ -122,10 +169,10 @@ $this->load->view('common/left_panel'); ?>
                                         <td>
                                             <input type="text" class="form-control" name="lf_no[]" id="lf_no1" value="<?php echo $getAssetData->lf_no; ?>" placeholder="Enter Markup" autocomplete="off">
                                         </td>
-                                        <td class="text-center">
-                                            <input type="hidden" class="sectionA" value="1">
-                                            <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn  btn-sm btn-danger"><i class="fa fa-minus"></i></a>
-                                        </td>
+<!--                                        <td class="text-center">-->
+<!--                                            <input type="hidden" class="sectionA" value="1">-->
+<!--                                            <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn  btn-sm btn-danger"><i class="fa fa-minus"></i></a>-->
+<!--                                        </td>-->
                                     </tr>
                                     </tbody>
                                     <tfoot>
@@ -134,7 +181,7 @@ $this->load->view('common/left_panel'); ?>
                                         <th><input type="text" class="form-control" name="gtotal" id="grandTotal" readonly="readonly" value="0"></th>
                                         <th colspan="2"><span class="pull-right">Total GST Amount</span></th>
                                         <th>
-                                            <input type="text" class="form-control" id="totalGST" readonly="readonly" value="0">
+                                            <input type="text" class="form-control" id="totalGST" readonly="readonly" value="0" >
                                         </th>
                                     </tr>
                                     <tr>
