@@ -591,7 +591,7 @@ $this->load->view('common/left_panel'); ?>
         //alert(datastring);
         $.ajax({
             type : "post",
-            url : "<?php echo site_url('Products/addDataAssetType'); ?>",
+            url : "<?php echo site_url('Warehouse/addDataAssetType'); ?>",
             data : datastring,
             success : function(response)
             {
@@ -676,7 +676,7 @@ $this->load->view('common/left_panel'); ?>
         var datastring = "id=" + id;
         $.ajax({
             type: "post",
-            url: "<?php echo site_url('Products/getSubcat'); ?>",
+            url: "<?php echo site_url('Warehouse/getSubcat'); ?>",
             data: datastring,
             success: function(returndata) {
                 //alert(returndata);
@@ -711,11 +711,11 @@ $this->load->view('common/left_panel'); ?>
         //   return false;
         // } else
         if(dn_number=='') {
-            $("#dn_number_error").html("Please enter Bill No").fadeIn();
+            $("#dn_number_error").html("Please enter DN No").fadeIn();
             setTimeout(function(){$("#dn_number_error").fadeOut()},5000);
             return false;
         } else if(warehouse_date=='') {
-            $("#warehouse_date_error").html("Please select Bill Date").fadeIn();
+            $("#warehouse_date_error").html("Please select  Date").fadeIn();
             setTimeout(function(){$("#warehouse_date_error").fadeOut()},5000);
             return false;
         }else if(received_from=='') {

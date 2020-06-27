@@ -88,10 +88,10 @@ $this->load->view('common/left_panel');
                                             <td><?php echo $getData->asset_name ?></td>
                                             <td><?php echo $getData->type ?></td>
                                             <td><?php echo $getData->label ?></td>
-                                            <td><?php echo $getData->t ?></td>
-                                            <td><?php echo $getData->t ?></td>
-                                            <td><?php echo $getData->t ?></td>
-                                            <td><?php echo $getData->ti ?></td>
+                                            <td><?php echo $getData->title ?></td>
+                                            <td><?php echo $getData->title ?></td>
+                                            <td><?php echo $getData->title ?></td>
+                                            <td><?php echo $getData->title ?></td>
                                             <td><?php echo $getData->total_quantity ?></td>
                                             <td><?php echo "Rs. " . number_format($getData->product_mrp, 2); ?></td>
                                             <td><?php echo "Rs. " . number_format($getData->total_quantity * $getData->product_mrp, 2); ?></td>
