@@ -140,7 +140,7 @@
             <tr>
                 <td colspan="6" style="text-align:right;">Total Markup Amount</td>
                 <th>
-                    <?= "Rs. " . number_format($totalGST, 2); ?>
+                    <?= "Rs. " . number_format($markup, 2); ?>
                 </th>
 
             </tr>
