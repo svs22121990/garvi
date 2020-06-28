@@ -395,7 +395,6 @@ class Warehouse extends CI_Controller
 
                 $this->Crud_model->SaveData("warehouse", $data_array, "id='" . $id . "'");
             $data = array(
-                'warehouse_id' => $id,
                 'purchase_date' => $purchase_date,
                 'markup_percent' => $_POST['markup'][0],
                 'asset_name' => $_POST['asset_name'][0],
@@ -415,8 +414,7 @@ class Warehouse extends CI_Controller
                 'color_id' =>$_POST['color_id'][0],
                 'modified' => date('Y-m-d H:i:s'),
             );
-//          echo"<pre>"; print_r($data);exit();
-            $this->Crud_model->SaveData("warehouse_details", $data, "id='" . $id . "'");
+            $this->Crud_model->SaveData("warehouse_details", $data, "warehouse_id='" . $id . "'");
 
             $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Product has been updated successfully</span>');
             redirect('Warehouse/index');
