@@ -175,7 +175,7 @@ $this->load->view('common/left_panel'); ?>
                                             <input type="text" class="form-control" name="hsn[]" id="hsn1" readonly="readonly" autocomplete="off" placeholder="Enter HSN" autocomplete="off">
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control" name="lf_no[]" id="lf_no1" placeholder="Enter Markup" autocomplete="off">
+                                            <input type="text" class="form-control" name="markup[]" id="markup1" readonly="readonly" placeholder="Enter Markup" autocomplete="off">
                                         </td>
 <!--                                        <td class="text-center">-->
 <!--                                            <input type="hidden" class="sectionA" value="1">-->
@@ -474,7 +474,7 @@ $this->load->view('common/left_panel'); ?>
 
             $('#gst_percent'+(len+1)).val(obj.gst_percent);
             $('#hsn'+(len+1)).val(obj.hsn);
-
+            $('#markup'+(len+1)).val(obj.markup);
         });
     }
 
@@ -733,7 +733,7 @@ $this->load->view('common/left_panel'); ?>
             var product_mrp = $('#product_mrp1').val();
             var gst_percent = $('#gst_percent1').val();
             var hsn = $('#hsn1').val();
-            var lf_no = $('#lf_no1').val();
+            var markup = $('#markup1').val();
 
             /*alert(category_id);
              alert(asset_type_id);

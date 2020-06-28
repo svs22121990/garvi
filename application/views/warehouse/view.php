@@ -63,7 +63,7 @@ $this->load->view('common/left_panel');
                                         <th>Product Type Name 2</th>
                                         <th>Color</th>
                                         <th>Size</th>
-                                        <th>Frabric</th>
+                                        <th>Fabric</th>
                                         <th>Craft</th>
                                         <th>Quantity</th>
                                         <th>Product Price</th>
@@ -88,10 +88,10 @@ $this->load->view('common/left_panel');
                                             <td><?php echo $getData->asset_name ?></td>
                                             <td><?php echo $getData->type ?></td>
                                             <td><?php echo $getData->label ?></td>
-                                            <td><?php echo $getData->title ?></td>
-                                            <td><?php echo $getData->title ?></td>
-                                            <td><?php echo $getData->title ?></td>
-                                            <td><?php echo $getData->title ?></td>
+                                            <td><?php echo $getData->color ?></td>
+                                            <td><?php echo $getData->size ?></td>
+                                            <td><?php echo $getData->fabric ?></td>
+                                            <td><?php echo $getData->craft ?></td>
                                             <td><?php echo $getData->total_quantity ?></td>
                                             <td><?php echo "Rs. " . number_format($getData->product_mrp, 2); ?></td>
                                             <td><?php echo "Rs. " . number_format($getData->total_quantity * $getData->product_mrp, 2); ?></td>

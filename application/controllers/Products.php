@@ -2753,6 +2753,7 @@ class Products extends CI_Controller
       $response['success'] = '1';
       $response['gst_percent'] = $select->gst_percent;
       $response['hsn'] = $select->hsn;
+      $response['markup'] = $select->markup_percent;
     } else {
       $response['success'] = '0';
     }
