@@ -99,16 +99,16 @@ class Warehouse_model extends CI_Model
             ast.gst_percent,
             ast.total_amount,
             ast.purchase_date,
-            ast.lf_no,
+            ast.markup_percent,
             p.dn_number,
             p.warehouse_date,
             p.received_from,
             e.name as employee_name,'
         );
         $this->db->join("size siz","siz.id = ast.size_id","left");
-        $this->db->join("color col","col.id = ast.size_id","left");
-        $this->db->join("fabric fab","fab.id = ast.size_id","left");
-        $this->db->join("craft cra","cra.id = ast.size_id","left");
+        $this->db->join("color col","col.id = ast.color_id","left");
+        $this->db->join("fabric fab","fab.id = ast.fabric_id","left");
+        $this->db->join("craft cra","cra.id = ast.craft_id","left");
         $this->db->join("categories cat","cat.id = ast.category_id","left");
         $this->db->join("mst_asset_types mat","mat.id = ast.asset_type_id","left");
         $this->db->join("product_type pro","pro.id = ast.product_type_id","left");

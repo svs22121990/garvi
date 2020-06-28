@@ -67,10 +67,11 @@ $this->load->view('common/left_panel');
                                         <th>Craft</th>
                                         <th>Quantity</th>
                                         <th>Product Price</th>
-                                        <th>Total Amount</th>
                                         <th>GST %</th>
                                         <th>HSN</th>
-                                        <th>Markup</th>
+                                        <th>Markup %</th>
+                                        <th>Total Amount</th>
+
                                         <!-- <th>Image</th> -->
                                     </tr>
                                     </thead>
@@ -94,44 +95,53 @@ $this->load->view('common/left_panel');
                                             <td><?php echo $getData->craft ?></td>
                                             <td><?php echo $getData->total_quantity ?></td>
                                             <td><?php echo "Rs. " . number_format($getData->product_mrp, 2); ?></td>
-                                            <td><?php echo "Rs. " . number_format($getData->total_quantity * $getData->product_mrp, 2); ?></td>
                                             <td><?php echo $getData->gst_percent; ?></td>
                                             <td><?php echo $getData->hsn ?></td>
                                             <td>
-                                                <div class=scrollable><?php echo $getData->lf_no ?></div>
+                                                <div class=scrollable><?php echo $getData->markup_percent ?></div>
                                             </td>
+                                            <td><?php echo "Rs. " . number_format($getData->total_quantity * $getData->product_mrp, 2); ?></td>
+
                                         </tr>
                                         <?php
                                         $qty += $getData->total_quantity;
                                         $product_mrp += $getData->product_mrp;
                                         $total += $getData->total_quantity * $getData->product_mrp;
                                         $totalGST += (($getData->gst_percent/100) * ($getData->total_quantity * $getData->product_mrp));
+                                        $totalmarkup += (($getData->markup_percent/100) * ($getData->total_quantity * $getData->product_mrp));
+                                        $selling += ($total+ $totalmarkup+ $totalGST);
+                                       // print_r($totalmarkup);exit;
                                     }
                                     ?>
                                     </tbody>
                                     <tfoot>
-                                    <tr>
-                                        <td colspan="9"></td>
-<!--                                        <th>--><?//= $qty; ?><!--</th>-->
-<!--                                        <th>--><?//= "Rs. " . number_format($product_mrp, 2); ?><!--</th>-->
-                                        <th>Total Amount</th>
-                                        <th><?= "Rs. " . number_format($total, 2); ?></th>
-                                        <td colspan="3"></td>
-                                    </tr>
+
 
                                     <tr>
-                                        <td colspan="10" >&nbsp;<span class="pull-right">Total GST Amount</span></td>
+                                        <td colspan="13" >&nbsp;<span class="pull-right">Total GST Amount</span></td>
                                         <th>
                                             <?= "Rs. " . number_format($totalGST, 2); ?>
                                         </th>
                                         <th colspan="2"></th>
                                     </tr>
+<!--                                    <tr>-->
+<!--                                        <td colspan="13" >&nbsp;<span class="pull-right">Final Total Amount</span></td>-->
+<!--                                        <th>-->
+<!--                                            --><?//= "Rs. " . number_format($totalGST + $total, 2); ?>
+<!--                                        </th>-->
+<!--                                        <th colspan="2"></th>-->
+<!--                                    </tr>-->
                                     <tr>
-                                        <td colspan="10" >&nbsp;<span class="pull-right">Final Total Amount</span></td>
+                                        <td colspan="13" >&nbsp;<span class="pull-right">Total Markup Amount</span></td>
                                         <th>
-                                            <?= "Rs. " . number_format($totalGST + $total, 2); ?>
+                                            <?= "Rs. " . number_format($totalmarkup, 2); ?>
                                         </th>
                                         <th colspan="2"></th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="13">&nbsp;<span class="pull-right">Final Selling Amount</span></td>
+                                        <th><?= "Rs. " . number_format($selling, 2); ?></th>
+                                        <td colspan="3"></td>
                                     </tr>
 
                                     </tfoot>

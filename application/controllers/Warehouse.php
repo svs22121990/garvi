@@ -159,6 +159,9 @@ class Warehouse extends CI_Controller
             if (!empty($view)) {
                 $btn .= '<a href=' . site_url("Warehouse/view/" . $row->id) . ' title="Details" class="btn btn-primary btn-circle btn-sm"><i class="fa fa-eye"></i></a>';
             }
+            if (!empty($view)) {
+                $btn .= '&nbsp;|&nbsp;' . '<a href=' . site_url("Warehouse/export_pdf/" . $row->id) . ' title="PDF" target="_blank" class="btn btn-danger btn-circle btn-sm"><i class="fa fa-file-pdf-o"></i></a>';
+            }
 
             if (!empty($view)) {
                 $btn .= '&nbsp;|&nbsp;' .'<a href=' . site_url("Warehouse/update/" . $row->id) . ' title="Details" class="btn btn-primary btn-info btn-sm"><i class="fa fa-pencil bigger-130"></i></a>';
@@ -256,7 +259,7 @@ class Warehouse extends CI_Controller
             );
             $this->Crud_model->SaveData("warehouse", $data_array);
             $last_id = $this->db->insert_id();
-           // echo"<pre>"; print_r($total_quantity);exit();
+//            echo"<pre>"; print_r($last_id);exit();
 
             $purchase_date = date("Y-m-d");
             $data = array(
@@ -264,7 +267,7 @@ class Warehouse extends CI_Controller
                 'purchase_date' => $purchase_date,
                 'asset_type_id' => $_POST['asset_type_id'][0],
                 'product_type_id' => $_POST['asset_type_2_id'][0],
-                'lf_no' => $_POST['lf_no'][0],
+                'markup_percent' => $_POST['markup'][0],
                 'asset_name' => $_POST['asset_name'][0],
                 'quantity' => $_POST['quantity'][0],
                 'total_quantity' => $_POST['quantity'][0],
@@ -284,34 +287,8 @@ class Warehouse extends CI_Controller
 
             $this->Crud_model->SaveData("warehouse_details", $data);
 
-            $code= $this->set_barcode('23');
+//            $code= $this->set_barcode('23');
             //  echo"<pre>"; print_r($code);exit();
-            $getOldData = $this->Crud_model->GetData('temp_barcode_data', "", "warehouse_details_id='" . $id . "' and type='existing'");
-            if (!empty($getOldData)) {
-                foreach ($getOldData as $key) {
-                    unlink('../admin/warehouse/purchaseOrder_barcode/' . $key->barcode_image);
-                    $this->Crud_model->DeleteData('temp_barcode_data', "id='" . $key->id . "'");
-                }
-            }
-            for ($j = 0; $j < $_POST['val']; $j++) {
-                $barcodeData = array(
-                    'warehouse_details_id' => $id,
-                    'quantity' => 1,
-                );
-                $this->Crud_model->SaveData('temp_barcode_data', $barcodeData);
-                $barcodeId = $this->db->insert_id();
-                $barcode_number = $barcodeId . '97' . rand('1111', '9999');
-                $barcodeImg = $this->$code($barcode_number);
-                $barcodeData = array(
-                    'barcode_image' => $barcodeImg,
-                    'barcode_number' => $barcode_number,
-                );
-               // echo"<pre>"; print_r($barcodeData);exit();
-                $this->Crud_model->SaveData('temp_barcode_data', $barcodeData);
-            }
-
-
-
             $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Product has been created successfully</span>');
             redirect('Warehouse/index');
         } else {
@@ -367,7 +344,6 @@ class Warehouse extends CI_Controller
         $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
         $getAssetData = $this->Crud_model->GetData("warehouse_details", "", "warehouse_id='" . $id . "'", "", "", "", "1");
         $users = $this->Crud_model->GetData('employees', "", "status='Active'", '', 'name asc');
-
      //   $users=$products->received_from;
         // echo"<pre>"; print_r($users);exit();
 //         print_r($users);exit;
@@ -418,11 +394,10 @@ class Warehouse extends CI_Controller
                 );
 
                 $this->Crud_model->SaveData("warehouse", $data_array, "id='" . $id . "'");
-
-
             $data = array(
+                'warehouse_id' => $id,
                 'purchase_date' => $purchase_date,
-                'lf_no' => $_POST['lf_no'][0],
+                'markup_percent' => $_POST['markup'][0],
                 'asset_name' => $_POST['asset_name'][0],
                 'quantity' => $_POST['quantity'][0],
                 'total_quantity' => $_POST['quantity'][0],
@@ -440,7 +415,7 @@ class Warehouse extends CI_Controller
                 'color_id' =>$_POST['color_id'][0],
                 'modified' => date('Y-m-d H:i:s'),
             );
-           // echo"<pre>"; print_r($data);exit();
+//          echo"<pre>"; print_r($data);exit();
             $this->Crud_model->SaveData("warehouse_details", $data, "id='" . $id . "'");
 
             $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Product has been updated successfully</span>');
@@ -592,7 +567,7 @@ class Warehouse extends CI_Controller
         $this->excel->getActiveSheet()->setCellValue('F5', 'Total Amount');
         $this->excel->getActiveSheet()->setCellValue('G5', 'GST %');
         $this->excel->getActiveSheet()->setCellValue('H5', 'HSN');
-        $this->excel->getActiveSheet()->setCellValue('I5', 'LF No.');
+        $this->excel->getActiveSheet()->setCellValue('I5', 'Markup %.');
 
         $a = '6';
         $sr = 1;
@@ -616,7 +591,7 @@ class Warehouse extends CI_Controller
             $this->excel->getActiveSheet()->setCellValue('F' . $a, "Rs. " . number_format($result->total_quantity * $result->product_mrp, 2));
             $this->excel->getActiveSheet()->setCellValue('G' . $a, $result->gst_percent);
             $this->excel->getActiveSheet()->setCellValue('H' . $a, $result->hsn);
-            $this->excel->getActiveSheet()->setCellValue('I' . $a, $result->lf_no);
+            $this->excel->getActiveSheet()->setCellValue('I' . $a, $result->markup_percent);
             //$this->excel->getActiveSheet()->setCellValue('G'.$a, $result->status);
             //$this->excel->getActiveSheet()->setCellValue('H'.$a, $total);
             $sr++;
@@ -706,55 +681,55 @@ class Warehouse extends CI_Controller
         return $code . '.png';
     }
 
-//    public function getstickerData($id)
-//    {
-//        $getOldData = $this->Crud_model->GetData('temp_barcode_data', "", "asset_id='" . $id . "' and type='existing'");
-//        if (!empty($getOldData)) {
-//            foreach ($getOldData as $key) {
-//                unlink('../admin/warehouse/purchaseOrder_barcode/' . $key->barcode_image);
-//                $this->Crud_model->DeleteData('temp_barcode_data', "id='" . $key->id . "'");
-//            }
-//        }
-//        for ($j = 0; $j < $_POST['val']; $j++) {
-//            $barcodeData = array(
-//                'asset_id' => $id,
-//                'quantity' => 1,
-//            );
-//            $this->Crud_model->SaveData('temp_barcode_data', $barcodeData);
-//            $barcodeId = $this->db->insert_id();
-//            $barcode_number = $barcodeId . '97' . rand('1111', '9999');
-//            $barcodeImg = $this->set_barcode($barcode_number);
-//            $barcodeData = array(
-//                'barcode_image' => $barcodeImg,
-//                'barcode_number' => $barcode_number,
-//            );
-//
-//            $this->Crud_model->SaveData('temp_barcode_data', $barcodeData, "id='" . $barcodeId . "'");
-//        }
-//
-//        $getData = $this->Crud_model->GetData('temp_barcode_data', "", "asset_id='" . $id . "' and type='existing'");
-//
-//        $html = "<table class='table table-bordered table-striped'><thead>
-//            <tr>
-//            <th>Sr. No</th>
-//            <th>Barcode No</th>
-//            <th>Barcode Sticker</th>
-//            </tr>
-//            </thead>
-//            <tbody>";
-//        $sr = 1;
-//        foreach ($getData as $key) {
-//            $html .= "<tr>
-//                  <td>" . $sr . "</td>
-//                  <td>" . $key->barcode_number . "</td>
-//                  <td><img src=" . base_url('../admin/warehouse/purchaseOrder_barcode/' . $key->barcode_image) . " width='120px'></td>
-//              </tr>";
-//            $sr++;
-//        }
-//        $html .= "</tbody>
-//            </table>";
-//        echo ($html);
-//    }
+    public function getstickerData($id)
+    {
+        $getOldData = $this->Crud_model->GetData('temp_barcode_data', "", "asset_id='" . $id . "' and type='existing'");
+        if (!empty($getOldData)) {
+            foreach ($getOldData as $key) {
+                unlink('../admin/warehouse/purchaseOrder_barcode/' . $key->barcode_image);
+                $this->Crud_model->DeleteData('temp_barcode_data', "id='" . $key->id . "'");
+            }
+        }
+        for ($j = 0; $j < $_POST['val']; $j++) {
+            $barcodeData = array(
+                'asset_id' => $id,
+                'quantity' => 1,
+            );
+            $this->Crud_model->SaveData('temp_barcode_data', $barcodeData);
+            $barcodeId = $this->db->insert_id();
+            $barcode_number = $barcodeId . '97' . rand('1111', '9999');
+            $barcodeImg = $this->set_barcode($barcode_number);
+            $barcodeData = array(
+                'barcode_image' => $barcodeImg,
+                'barcode_number' => $barcode_number,
+            );
+
+            $this->Crud_model->SaveData('temp_barcode_data', $barcodeData, "id='" . $barcodeId . "'");
+        }
+
+        $getData = $this->Crud_model->GetData('temp_barcode_data', "", "asset_id='" . $id . "' and type='existing'");
+
+        $html = "<table class='table table-bordered table-striped'><thead>
+            <tr>
+            <th>Sr. No</th>
+            <th>Barcode No</th>
+            <th>Barcode Sticker</th>
+            </tr>
+            </thead>
+            <tbody>";
+        $sr = 1;
+        foreach ($getData as $key) {
+            $html .= "<tr>
+                  <td>" . $sr . "</td>
+                  <td>" . $key->barcode_number . "</td>
+                  <td><img src=" . base_url('../admin/warehouse/purchaseOrder_barcode/' . $key->barcode_image) . " width='120px'></td>
+              </tr>";
+            $sr++;
+        }
+        $html .= "</tbody>
+            </table>";
+        echo ($html);
+    }
 
     public function addexStock_action($id)
     {

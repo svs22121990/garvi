@@ -82,6 +82,7 @@ $this->load->view('common/left_panel');
                                 <th class="text-center"> Date</th>
                                 <!--<th class="text-center">Amount</th>-->
                                 <th class="text-center">Received from</th>
+<!--                                <th class="text-center">Total Quantity</th>-->
                                 <th class="text-center">Total Amount</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -221,7 +222,7 @@ $this->load->view('common/left_panel');
                 { "data": "dn_number" },
                 { "data": "warehouse_date" },
                 { "data": "employee_name" },
-                //{ "data": "total_amount" },
+//                { "data": "total_quantity" },
                 {
                     "data": "total_amount",
                     "render": function ( data, type, row, meta ) {

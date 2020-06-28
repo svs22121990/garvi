@@ -78,11 +78,12 @@ $this->load->view('common/left_panel'); ?>
                                         <th> Craft<span style="color: red">*</span> </th>
                                         <th> Quantity <span style="color: red">*</span><span style="color: red" id="error_quantity"></span></th>
                                         <th> Cost Price  <span style="color: red">*</span><span style="color: red"id="error_price"></span></th>
-                                        <th>Total Amount</th>
                                         <th> GST % <span style="color: red">*</span><span  id="error_gst_percent"></span></th>
                                         <th> HSN <span style="color: red">*</span><span id="error_hsn"></span></th>
                                         <th> Markup <span style="color: red">*</span><span style="color: red" id="lf_no_error"></span></th>
-<!--                                        <th class="text-center"> <a  href="javascript:void(0)" class="btn  btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>-->
+                                        <th>Total Amount</th>
+
+                                        <!--                                        <th class="text-center"> <a  href="javascript:void(0)" class="btn  btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>-->
                                     </tr>
                                     </thead>
                                     <tbody id="professorTableBody">
@@ -156,9 +157,7 @@ $this->load->view('common/left_panel'); ?>
                                         <td>
                                             <input type="text" class="form-control price" name="product_mrp[]" id="product_mrp1" value="<?php echo $getAssetData->product_mrp; ?>" placeholder="Enter Product Price" autocomplete="off" >
                                         </td>
-                                        <td>
-                                            <input type="text" class="form-control multTotal" name="multitotal[]" value="<?php echo $getAssetData->total_amount; ?>" autocomplete="off" onkeypress="return only_number(event)" readonly="readonly">
-                                        </td>
+
 
                                         <td>
                                             <input type="text" class="form-control gstPercent" name="gst_percent[]" id="gst_percent1" value="<?php echo $getAssetData->gst_percent; ?>" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
@@ -167,7 +166,11 @@ $this->load->view('common/left_panel'); ?>
                                             <input type="text" class="form-control" name="hsn[]" id="hsn1"  value="<?php echo $getAssetData->hsn; ?>" readonly="readonly" autocomplete="off" placeholder="Enter HSN" autocomplete="off">
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control" name="lf_no[]" id="lf_no1" value="<?php echo $getAssetData->lf_no; ?>" placeholder="Enter Markup" autocomplete="off">
+                                            <input type="text" class="form-control markup" name="markup[]" id="markup1" value="<?php echo $getAssetData->markup_percent; ?>" readonly="readonly" placeholder="Enter Markup" autocomplete="off">
+
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control multTotal" name="multitotal[]" value="<?php echo $getAssetData->total_amount; ?>" autocomplete="off" onkeypress="return only_number(event)" readonly="readonly">
                                         </td>
 <!--                                        <td class="text-center">-->
 <!--                                            <input type="hidden" class="sectionA" value="1">-->
@@ -177,15 +180,18 @@ $this->load->view('common/left_panel'); ?>
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th colspan="6" >&nbsp;<span class="pull-right">Selling Price</span></th>
-                                        <th><input type="text" class="form-control" name="gtotal" id="grandTotal" readonly="readonly" value="0"></th>
-                                        <th colspan="2"><span class="pull-right">Total GST Amount</span></th>
+                                        <th colspan="14"><span class="pull-right">Total GST Amount</span></th>
                                         <th>
-                                            <input type="text" class="form-control" id="totalGST" readonly="readonly" value="0" >
+                                            <input type="text" class="form-control" id="totalGST" readonly="readonly" value="0">
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th colspan="6" >&nbsp;<span class="pull-right">Total Amount as per SP </span></th>
+                                        <th colspan="14" >&nbsp;<span class="pull-right">Total Markup Amount</span></th>
+                                        <th><input type="text" class="form-control" name="gtotal" id="grandTotal" readonly="readonly" value="0"></th>
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan="14" >&nbsp;<span class="pull-right">Final Selling Price </span></th>
                                         <th>
                                             <input type="text" class="form-control" id="finalTotal" readonly="readonly" value="0">
                                         </th>

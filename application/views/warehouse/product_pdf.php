@@ -30,9 +30,9 @@
         <div class="title-center"><img class="img-responsive logo-image" src="http://app.garvigurjari.in/images/logo.jpg" style=""></div>
             
             <div class="title-center"><?= $_SESSION[SESSION_NAME]['address'] ?></div>
-            <div style="text-align: center;">GST Number: <?= $_SESSION[SESSION_NAME]['gst_number'] ?></div>
-            <h4 style="text-align: center;">Product Details</h4>
-            <?php $qty=0; $product_mrp=0; $sr = 1; $data = array(); $allTotal = 0;  $totalGST = 0; $finalTotal = 0; ?>
+            <!--<div style="text-align: center;">GST Number: <?/*= $_SESSION[SESSION_NAME]['gst_number'] */?></div>-->
+            <h4 style="text-align: center;">Warehouse Product Details</h4>
+            <?php $qty=0; $product_mrp=0; $sr = 1; $data = array(); $allTotal = 0; ; $markup = 0; $totalGST = 0; $finalTotal = 0; ?>
             <?php foreach ($results as $result) { 
                 $total = $result->product_mrp * $result->total_quantity;
                 $data[] = array(
@@ -45,7 +45,7 @@
                     'total' => $total,
                     'gst_percent' =>$result->gst_percent,  
                     'hsn' =>$result->hsn,
-                    'lf_no' =>$result->lf_no,
+                    'markup_percent' =>$result->markup_percent,
                     //'hsn' =>$result->hsn; 
                     //'gst_percent' =>$result->gst_percent, 
                 );
@@ -53,21 +53,22 @@
                 $product_mrp += $result->product_mrp;
                 $allTotal += $total;
                 $totalGST += (($result->gst_percent/100) * ($total));
+                $markup += (($result->markup_percent/100) * ($total));
              } 
-             $data[] = array(
-                    'no'  => '',
-                    'title' =>'',
-                    'type' =>'', 
-                    'asset_name' =>'',
-                    'quantity' =>$qty,
-                    'product_mrp' =>$product_mrp,
-                    'total' => $allTotal,
-                    'gst_percent' =>'', 
-                    'hsn' =>'',
-                    'lf_no' =>'',
-                    //'hsn' =>$result->hsn; 
-                    //'gst_percent' =>$result->gst_percent, 
-                );
+//             $data[] = array(
+//                    'no'  => '',
+//                    'title' =>'',
+//                    'type' =>'',
+//                    'asset_name' =>'',
+//                    'quantity' =>$qty,
+//                    'product_mrp' =>$product_mrp,
+//                    'total' => $allTotal,
+//                    'gst_percent' =>'',
+//                    'hsn' =>'',
+//                    'markup_percent' =>'',
+//                    //'hsn' =>$result->hsn;
+//                    //'gst_percent' =>$result->gst_percent,
+//                );
              ?>
              <div class="row" style="padding: 10px; font-size: 1.3em;">
                     <div class="col-md-4">
@@ -79,20 +80,34 @@
                     <div class="col-md-4">
                         Received From: <strong><?php echo !empty($results) ? $results[0]->employee_name : ""; ?></strong>
                     </div>
+                 <div class="col-md-4">
+                     Category Name: <strong><?php echo !empty($results) ? $results[0]->title : ""; ?></strong>
+                 </div>
+                 <div class="col-md-4">
+                     Product Type Name: <strong><?php echo !empty($results) ? $results[0]->type : ""; ?></strong>
+                 </div>
+                 <div class="col-md-4">
+                     Product Name: <strong><?php echo !empty($results) ? $results[0]->asset_name : ""; ?></strong>
+                 </div>
+
+<!--                 <div class="col-md-4">-->
+<!--                     Quantity: <strong>--><?php //echo !empty($results) ? $results[0]->quantity : ""; ?><!--</strong>-->
+<!--                 </div>-->
+
                 </div>
         <table id="customers">
             <thead>
                 <tr>    
                      <th>Sr. No.</th>
-                    <th>Category Name</th>                    
-                    <th>Product Type Name</th>
-                    <th>Product Name</th>                             
+<!--                    <th>Category Name</th>                    -->
+<!--                    <th>Product Type Name</th>-->
+<!--                    <th>Product Name</th>-->
                     <th>Quantity</th>
-                    <th>Product Price</th> 
-					<th>Total Amount</th>
+                    <th>Price</th>
 					<th>GST %</th>
 					<th>HSN</th>
-					<th>LF No.</th>
+					<th>Markup %</th>
+                    <th>Total Amount</th>
                 </tr>
             </thead>
             
@@ -101,15 +116,16 @@
                 <?php foreach ($data as $result) { ?>
                 <tr>
                     <td><?= $result['no']; ?></td>
-                    <td><?= $result['title']; ?></td>
-                    <td><?= $result['type']; ?></td>
-                    <td><?= $result['asset_name']; ?></td>
+<!--                    <td>--><?//= $result['title']; ?><!--</td>-->
+<!--                    <td>--><?//= $result['type']; ?><!--</td>-->
+<!--                    <td>--><?//= $result['asset_name']; ?><!--</td>-->
                     <td><?= $result['quantity']; ?></td>
                     <td><?= "Rs. ".number_format($result['product_mrp'],2); ?></td>
-					<td> <?= "Rs. ".number_format($result['total'],2); ?></td>
 					<td> <?= $result['gst_percent'];  ?></td>
 					<td> <?= $result['hsn']; ?></td>
-					<td> <?= $result['lf_no']; ?></td>    
+					<td> <?= $result['markup_percent']; ?></td>
+                    <td> <?= "Rs. ".number_format($result['total'],2); ?></td>
+
                 </tr>    
                 <?php } ?>                  
             </tbody>
@@ -119,18 +135,25 @@
                 <th>
                     <?= "Rs. " . number_format($totalGST, 2); ?>
                 </th>  
-                <td colspan="3"></td>            
+
             </tr>
             <tr>
-                <td colspan="6" style="text-align:right;">Final Total Amount</td>
+                <td colspan="6" style="text-align:right;">Total Markup Amount</td>
                 <th>
-                    <?= "Rs. " . number_format($totalGST + $allTotal, 2); ?>
+                    <?= "Rs. " . number_format($totalGST, 2); ?>
+                </th>
+
+            </tr>
+            <tr>
+                <td colspan="6" style="text-align:right;">Final Selling Amount</td>
+                <th>
+                    <?= "Rs. " . number_format($markup+$totalGST + $allTotal, 2); ?>
                 </th>              
-                <td colspan="3"></td>            
+
             </tr>
             
             </tfoot>
-        </table>                   
+        </table>
     </body>
 </html>
         
