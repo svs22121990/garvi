@@ -81,7 +81,7 @@ $this->load->view('common/left_panel'); ?>
                                         <th> Product Type 2 <span style="color: red">*</span> </th>
                                         <th>Color<span style="color: red">*</span> </th>
                                         <th> Size <span style="color: red">*</span> </th>
-                                        <th> Fabric/Material <span style="color: red">*</span> </th>
+                                        <th> Fabric <span style="color: red">*</span> </th>
                                         <th> Craft<span style="color: red">*</span> </th>
                                         <th> Quantity <span style="color: red">*</span><span style="color: red" id="error_quantity"></span></th>
                                         <th> Cost Price  <span style="color: red">*</span><span style="color: red"id="error_price"></span></th>
@@ -182,6 +182,7 @@ $this->load->view('common/left_panel'); ?>
 <!--                                            <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn  btn-sm btn-danger"><i class="fa fa-minus"></i></a>-->
 <!--                                        </td>-->
                                     </tr>
+
                                     </tbody>
                                     <tfoot>
                                     <tr>
