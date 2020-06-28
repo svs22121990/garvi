@@ -8,7 +8,6 @@ class Warehouse extends CI_Controller
 
         parent::__construct();
         $this->load->model('Warehouse_model');
-        $this->load->model('WarehouseBarcodes_model');
         $this->load->model('Assets_logs_model');
         $this->load->model('Asset_details_model');
         $this->load->model('Asset_Transfer_model');
@@ -250,7 +249,7 @@ class Warehouse extends CI_Controller
         //load in folder Zend
         $this->zend->load('Zend/Barcode');
         $newCode = $code;
-       
+
         $file = Zend_Barcode::draw('code128', 'image', array('text' => $newCode,'drawText' =>true), array());
         $code = time().$code;
         $store_image = imagepng($file,"admin/assets/warehouse_barcode/{$code}.png");
@@ -259,9 +258,10 @@ class Warehouse extends CI_Controller
 
     public function create_action()
     {
+        //echo"<pre>"; print_r($_POST);exit();
         if ($_POST) {
             $warehouse_date = date("Y-m-d", strtotime($_POST['warehouse_date']));
-
+//            $purchase_date = date("Y-m-d"); //, strtotime($_POST['purchase_date']));
             $user_id = $this->Crud_model->GetData("employees", "id", "name='" . $_POST['received_from'] . "'", "", "", "", "1");
 
             $data_array = array(
@@ -295,6 +295,8 @@ class Warehouse extends CI_Controller
                 'color_id' =>$_POST['color_id'][0],
                 'price' =>$_POST['product_mrp'][0],
                 'total_amount' =>$_POST['multitotal'][0],
+//                    'purchase_date' => $product_purchase_date,
+//                    'created_by' => $_SESSION[SESSION_NAME]['id'],
             );
 
             $this->Crud_model->SaveData("warehouse_details", $data);
@@ -560,7 +562,11 @@ class Warehouse extends CI_Controller
     public function export_pdf($id)
     {
         $data['results'] = $this->Warehouse_model->getAllDetails($id);
-        $data['barcodes'] = $this->WarehouseBarcodes_model->getBarcodes($id);
+        
+        $this->db->select('barcode_number, barcode_image, status');
+        $this->db->where("warehouse_id='".$id."'");
+        $data['barcodes'] = $this->db->get('warehouse_barcodes')->result();
+
         $html = $this->load->view('warehouse/product_pdf', $data, TRUE);
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
