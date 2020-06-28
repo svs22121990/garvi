@@ -154,6 +154,31 @@
             
             </tfoot>
         </table>
+        </br>
+        <h4 style="text-align: center;">Barcode Details</h4>
+        <table id="barcode" border=1 style="width: 100%;">
+            <thead>
+                <tr>    
+                    <th style="width: 10%;">Sr. No.</th>
+                    <th style="width: 30%;">Barcode Number</th>
+                    <th style="width: 30%;">Barcode Image</th>
+					<th style="width: 30%;">Status</th>
+                </tr>
+            </thead>
+            
+            <tbody> 
+                <?php $sr = 1; ?>
+                <?php foreach ($barcodes as $barcode) { ?>
+                <tr>
+                    <td><?php echo $sr ?></td>
+                    <td> <?= $barcode->barcode_number; ?></td>
+                    <td style="padding: 10px; text-align: center"><img src="<?php echo base_url(); ?>admin/assets/warehouse_barcode/<?php echo $barcode->barcode_image; ?>"></td>
+                    <td> <?= $barcode->status; ?></td>
+                </tr>    
+                <?php $sr++; } ?>                  
+            </tbody>
+        </table>
+
     </body>
 </html>
         
