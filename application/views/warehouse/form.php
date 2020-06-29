@@ -348,7 +348,8 @@ $this->load->view('common/left_panel'); ?>
         });
         $("#grandTotal").val(markup);
         $("#totalGST").val(totalGST);
-        $("#finalTotal").val(mult+totalGST+markup);
+        $("#finalTotal").val(mult+markup);
+        //$("#finalTotal").val(mult+totalGST+markup);
     }
 </script>
 <script>

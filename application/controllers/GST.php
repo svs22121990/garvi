@@ -231,7 +231,7 @@ class GST extends CI_Controller {
           'category_id' => set_value('category_id', $row->category_id),
           'hsn' => set_value('hsn', $row->hsn),
           'gst_percent' => set_value('gst_percent', $row->gst_percent),
-              'markup_percent' => set_value('markup_percent', $row->markup_percent),
+          'markup_percent' => set_value('markup_percent', $row->markup_percent),
           'modified' => date("Y-m-d H:i:s"),
           
            );

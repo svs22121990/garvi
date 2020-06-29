@@ -219,6 +219,7 @@
             return false;
         }
       var datastring  = "category_id="+category_id+"&hsn="+hsn+"&gst_percent="+gst_percent+"&markup_percent="+markup_percent;
+      var table = $('.example_datatable').DataTable();
       $.ajax({
         type : "post",
         url : "<?php echo site_url('GST/addData') ?>",
@@ -237,7 +238,7 @@
           $("#successStateEntry").fadeIn().html("<span class='label label-success'> GST has been Added successfully</span>");
             setTimeout(function(){$("#successStateEntry").fadeOut();},2000);
            $("#myModal").modal("hide"); 
-              table.draw();
+            table.ajax.reload();
             //setTimeout(function(){ window.location.reload(); },1000); 
          }
 
@@ -271,7 +272,7 @@ function updateData()
   var category_id = $("#category_id1").val();  
   var hsn = $("#hsn1").val();  
   var gst_percent = $("#gst_percent1").val();
-    var markup_percent = $("#markup_percent").val();
+    var markup_percent = $("#markup_percent1").val();
     var updateId = $("#updateId").val();
    //var city_name2 = /^[a-zA-Z -]+$/;
 
@@ -305,7 +306,7 @@ function updateData()
     }
 
   var datastring  = "category_id="+category_id+"&hsn="+hsn+"&id="+updateId+"&gst_percent="+gst_percent+"&markup_percent="+markup_percent;
-
+  var table = $('.example_datatable').DataTable();
   $.ajax({
     type : "post",
     url : "<?php echo site_url('GST/updateData') ?>",
@@ -322,7 +323,7 @@ function updateData()
       $(".close").click(); 
        $("#successStateEntry").fadeIn().html("<span class='label label-success'> GST % has been Updated successfully</span>");
        $("#myModaledit").modal("hide"); 
-       table.draw();
+       table.ajax.reload();
        //setTimeout(function(){ window.location.reload(); },1000); 
      }
 
