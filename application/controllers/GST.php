@@ -262,7 +262,7 @@ class GST extends CI_Controller {
 
          $data = array('gst_percent'=> $row->gst_percent,'markup_percent'=> $row->markup_percent,'id'=> $row->id,'category_id'=> $row->category_id, 'categories'=> $categories,'hsn'=> $row->hsn);
        
-          $this->load->view('GST/geteditCity',$data);
+          $this->load->view('GST/edit',$data);
       }
 
     
