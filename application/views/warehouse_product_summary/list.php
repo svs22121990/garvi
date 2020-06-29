@@ -90,11 +90,11 @@ $this->load->view('common/left_panel');
                                         <th>Selling Price</th>
                                         <th>Quantity</th>
                                         <th>Remaining</th>
-                                        <th>Damage Qty</th>
+                                        <th>Qty</th>
                                         <th>Total Amount</th>
                                         <!-- <th>Purchase Date</th> -->
-                                        <th>AGE</th>
-                                        <th>Action</th>
+                                        
+                                        
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -107,7 +107,7 @@ $this->load->view('common/left_panel');
                                         <th></th>
                                         <th></th>
                                         <!-- <th></th> -->
-                                        <th colspan="3"></th>
+                                        <th colspan="1"></th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -275,7 +275,7 @@ $this->load->view('common/left_panel');
                 },
                 { "data": "total_quantity" },
                 { "data": "quantity" },
-                { "data": "damage_qty" },
+                { "data": "quantity" },
                 {
                     "data": "total",
                     "render": function ( data, type, row, meta ) {
@@ -283,8 +283,8 @@ $this->load->view('common/left_panel');
                     }
                 },
                 // { "data": "purchase_date" },
-                { "data": "time" },
-                { "data": "btn" }
+                //{ "data": "time" },
+                //{ "data": "btn" }
             ],
             "ordering": false,
 

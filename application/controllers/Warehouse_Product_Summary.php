@@ -101,7 +101,6 @@ class Warehouse_Product_Summary extends CI_Controller
 
     public function ajax_manage_page($date = 0)
     {
-
         $con = "p.id<>''";
         if (!empty($_SESSION[SESSION_NAME]['branch_id'])) {
             $con .= " and ast.id in (select asset_id from asset_branch_mappings where branch_id='" . $_SESSION[SESSION_NAME]['branch_id'] . "')";
@@ -194,7 +193,7 @@ class Warehouse_Product_Summary extends CI_Controller
                 'hsn_code' => $row->hsn,
                 'product_mrp' => number_format($row->product_mrp, 2),
                 'total_quantity' => $row->total_quantity,
-                'damage_qty' => $row->damage_qty,
+                //'damage_qty' => $row->damage_qty,
                 'quantity' => $row->quantity,
                 'total' => number_format($row->quantity * $row->product_mrp, 2),
                 'purchase_date' => $row->purchase_date,
