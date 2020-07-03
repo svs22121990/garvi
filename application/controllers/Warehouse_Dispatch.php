@@ -1,13 +1,14 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 require_once(APPPATH . 'libraries/mpdf/vendor/autoload.php');
-class Warehouse extends CI_Controller
+class Warehouse_Dispatch extends CI_Controller
 {
     function __construct()
     {
 
         parent::__construct();
         $this->load->model('Warehouse_model');
+        $this->load->model('Dispatch_model');  
         $this->load->model('Assets_logs_model');
         $this->load->model('Asset_details_model');
         $this->load->model('Asset_Transfer_model');
@@ -30,16 +31,15 @@ class Warehouse extends CI_Controller
             $date = str_replace(" ", "", $date);
 
             //$newDate = date("Y-m-d", strtotime($date));
-            $strUrl = site_url('Warehouse/ajax_manage_page/' . $date);
+            $strUrl = site_url('warehouse_dispatch/ajax_manage_page/' . $date);
             $this->common_view($strUrl, $date);
         } else {
-            return redirect('Warehouse');
+            return redirect('warehouse_dispatch');
         }
     }
     public function index()
     {
-
-        $this->common_view(site_url('Warehouse/ajax_manage_page'));
+        $this->common_view(site_url('Warehouse_Dispatch/ajax_manage_page'));
     }
 
     public function common_view($action, $date = 0)
@@ -71,7 +71,8 @@ class Warehouse extends CI_Controller
 	                    <i class='ace-icon fa fa-home home-icon'></i>
 	                    <a href='" . site_url('Dashboard') . "'>Dashboard</a>
 	                </li>
-	                <li class='active'>Manage Warehouse</li>
+                    <li>Warehouse</li>
+                    <li class='active'>Dispatch Products</li>
 	                </ul>";
 
             $importaction = '<a data-target="#uploadData" style="cursor:pointer;color:black;" title="Upload Excel" data-backdrop="static" data-keyboard="false" data-toggle="modal" ><span class="fa fa-file-excel-o"></span></a>';
@@ -79,9 +80,9 @@ class Warehouse extends CI_Controller
             $download = ' <a  download="assets.xls" style="color:black;" title="Download Format" href="' . base_url('uploads/assets_demo_excel/assets.xls') . '"><span class="fa fa-download"></span></a>';
 
             $branch_data = $this->Crud_model->GetData('branches', "", "is_delete='No' and status='Active'", '', 'branch_title');
-            $data = array('dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '6', 'ajax_manage_page' => $action, 'heading' => 'Manage Warehouse', 'branch_data' => $branch_data, 'import' => $import, 'importaction' => $importaction, 'download' => $download, 'addPermission' => $add);
+            $data = array('dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '6', 'ajax_manage_page' => $action, 'heading' => 'Manage Warehouse Dispatch', 'branch_data' => $branch_data, 'import' => $import, 'importaction' => $importaction, 'download' => $download, 'addPermission' => $add);
 
-            $this->load->view('warehouse/list', $data);
+            $this->load->view('warehouse_dispatch/list', $data);
         } else {
             redirect('Dashboard');
         }
@@ -91,316 +92,207 @@ class Warehouse extends CI_Controller
 
     public function ajax_manage_page($date = 0)
     {
-        $con = "p.id<>''";
-
-
-        $Data = $this->Warehouse_model->get_datatables($con, $date);
-        /*echo"<pre>";
-        print_r($Data);exit;*/
-        $edit = '';
-        $delete = '';
-        $view = '';
-//        echo"<pre>";
-//        print_r($_SESSION[SESSION_NAME]['getMenus']);exit;
-        foreach ($_SESSION[SESSION_NAME]['getMenus'] as $row) {
-
-            foreach ($row as $menu) {
-                if ($menu->value == 'Warehouse') {
-
-                    if (!empty($menu->act_edit)) {
-                        $edit = '1';
-                    } else {
-                        $edit = '0';
-                    }
-                    if (!empty($menu->act_delete)) {
-                        $delete = '1';
-                    } else {
-                        $delete = '0';
-                    }
-                    if (!empty($menu->act_status)) {
-                        $actstatus = '1';
-                    } else {
-                        $actstatus = '0';
-                    }
-                    if (!empty($menu->act_add)) {
-                        $add = '1';
-                    } else {
-                        $add = '0';
-                    }
-                    if (!empty($menu->act_add_existing_stock)) {
-                        $act_add_existing_stock = '1';
-                    } else {
-                        $act_add_existing_stock = '0';
-                    }
-                    if (!empty($menu->act_log_details)) {
-                        $act_log_details = '1';
-                    } else {
-                        $act_log_details = '0';
-                    }
-                    if (!empty($menu->act_transfer)) {
-                        $act_transfer = '1';
-                    } else {
-                        $act_transfer = '0';
-                    }
-                    if (!empty($menu->act_view)) {
-                        $view = '1';
-                    } else {
-                        $view = '0';
-                    }
-                }
-            }
+        $con="p.id<>''";
+        if(!empty($_SESSION[SESSION_NAME]['branch_id'])){
+        $con.=" and ast.id in (select asset_id from asset_branch_mappings where branch_id='".$_SESSION[SESSION_NAME]['branch_id']."')";
         }
 
-        $data = array();
-        $no = 1;
-        $arrOutput = array();
-        foreach ($Data as $row) {
+        $Data = $this->Dispatch_model->warehouse_get_datatables($con,$date);
+
+        $edit = ''; 
+        $delete= '';
+        $actstatus= '';
+        $add = '';
+        $act_add_existing_stock = '';
+        $act_log_details = '';
+        $act_transfer = '';
+        $view = '';
+
+        foreach($_SESSION[SESSION_NAME]['getMenus'] as $row)
+        { 
+        foreach($row as $menu)
+        { 
+            if($menu->value=='Warehouse_Dispatch')
+            { 
+                if(!empty($menu->act_edit)){ $edit='1'; }else{ $edit='0'; }
+                if(!empty($menu->act_delete)){ $delete='1'; }else{ $delete='0'; }
+                if(!empty($menu->act_status)){  $actstatus='1';}else{ $actstatus='0';}
+                if(!empty($menu->act_add)){ $add='1'; }else{ $add='0'; }
+                if(!empty($menu->act_add_existing_stock)){ $act_add_existing_stock='1'; }else{ $act_add_existing_stock='0'; }
+                if(!empty($menu->act_log_details)){ $act_log_details='1'; }else{ $act_log_details='0'; }
+                if(!empty($menu->act_transfer)){ $act_transfer='1'; }else{ $act_transfer='0'; }
+                if(!empty($menu->act_view)){ $view='1'; }else{ $view='0'; }
+            }
+        }
+        }
+
+        $data = array();       
+        $no=0; 
+        foreach($Data as $row) 
+        {  
             $btn = '';
-            if (!empty($view)) {
-                $btn .= '<a href=' . site_url("Warehouse/view/" . $row->id) . ' title="Details" class="btn btn-primary btn-circle btn-sm"><i class="fa fa-eye"></i></a>';
-            }
-            if (!empty($view)) {
-                $btn .= '&nbsp;|&nbsp;' . '<a href=' . site_url("Warehouse/export_pdf/" . $row->id) . ' title="PDF" target="_blank" class="btn btn-danger btn-circle btn-sm"><i class="fa fa-file-pdf-o"></i></a>';
-            }
+            //if(!empty($view)){
+            $btn .='<a href='.site_url("Warehouse_Dispatch/view/".$row->id).' title="Details" class="btn btn-primary btn-circle btn-sm"><i class="fa fa-eye"></i></a>';
+            //}
 
-            if (!empty($view)) {
-                $btn .= '&nbsp;|&nbsp;' .'<a href=' . site_url("Warehouse/update/" . $row->id) . ' title="Details" class="btn btn-primary btn-info btn-sm"><i class="fa fa-pencil bigger-130"></i></a>';
+            if(!empty($delete)){
+            $btn .='&nbsp;|&nbsp;'.'<a href="#deleteData" data-toggle="modal" title="Delete" class="btn btn-danger btn-circle btn-sm" onclick="checkStatus('.$row->id.')"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>';
             }
-            if (!empty($delete)) {
-                $url = base_url() . 'index.php/warehouse/delete/' . $row->id;
-                $btn .= '&nbsp;|&nbsp;' . '<a href="' . $url . '" data-toggle="modal" title="Delete" class="btn btn-danger btn-circle btn-sm"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>';
+            if(!empty($edit)){
+                $btn = ('<a href="#myModaledit" title="Edit" class="btn btn-info btn-circle btn-sm" data-toggle="modal"  onclick="getEditvalue('.$row->id.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>');
             }
-
-            if (!empty($avlquantity)) {
+            if(!empty($avlquantity)){
                 $avl_quantity = $avlquantity;
-            } else {
+            }else{
                 $avl_quantity = '-';
             }
-            $arrOutput[] = array(
-                'no' => $no++,
-                'dn_number' => $row->dn_number,
-                'warehouse_date' => date('d-m-Y', strtotime($row->warehouse_date)),
-                'employee_name' => $row->employee_name,
-                'total_amount' => number_format($row->total_amount, 2),
-//                'productType' => $row->product_type,
-                'btn' => $btn,
-
-            );
+            $no++;
+            $data []=array(
+            'no' => $no,
+            'dn_number' => $row->dn_number,
+            'dispatch_date' => date('d-m-Y', strtotime($row->dispatch_date)),
+            'sum_amount' => number_format($row->sum_amount,2),
+            'employee_name' => $row->employee_name,
+            'btn' => $btn,
+            ); 
         }
-        $output = array(
-            //"draw" => $_POST['draw'],
-            "recordsTotal" => $this->Warehouse_model->count_all($con),
-            "recordsFiltered" => $this->Warehouse_model->count_filtered($con),
-            "data" => $arrOutput,
-        );
+        $output = array("data" => $data);
         echo json_encode($output);
-        exit();
     }
 
     public function create()
     {
-        //print_r($_SESSION);exit;
         $breadcrumbs = "<ul class='breadcrumb'>
                     <li>
                         <i class='ace-icon fa fa-home home-icon'></i>
-                        <a href='" . site_url('Dashboard') . "'>Dashboard</a>
+                        <a href='".site_url('Dashboard')."'>Dashboard</a>
                     </li>
-                     <li class=''> <a href='" . site_url('Warehouse') . "'>Manage Warehouse</a></li>
-                    <li class='active'>Create Warehouse</li>
+                    <li class=''> <a href='".site_url('Warehouse')."'>Manage Warehouse</a></li>
+                    <li class='active'>Create Dispatch</li>
                     </ul>";
+	  $where = array('created_by'=>$_SESSION[SESSION_NAME]['id']);
+      //$products = $this->Crud_model->GetData("assets","",$where); 
+      //$this->load->model('Invoice_model');
+      $query =  $this->db->select('a.asset_name,a.quantity,a.product_mrp,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
+                ->join("size siz","siz.id = a.size_id","left")
+                ->join("color col","col.id = a.color_id","left")
+                ->join("fabric fab","fab.id = a.fabric_id","left")
+                ->join("craft cra","cra.id = a.craft_id","left")
+                ->join("categories cat","cat.id = a.category_id","left")
+                ->from('warehouse_details as a')
+                ->where('a.quantity>',0)
+                ->get();
+            $products = $query->result();
+	  
+      $users = $this->Crud_model->GetData("employees","","id!='".$_SESSION['ASSETSTRACKING']['id']."' and type='User'");           
+      $action =  site_url("Warehouse_Dispatch/create_action");    
 
-        $category_data = $this->Crud_model->GetData('categories', "", "status='Active'", '', 'title asc');
-        $size = $this->Crud_model->GetData('size', "", "status='Active'", '', 'title asc');
-        $fabric = $this->Crud_model->GetData('fabric', "", "status='Active'", '', 'title asc');
-        $color = $this->Crud_model->GetData('color', "", "status='Active'", '', 'title asc');
-        $craft= $this->Crud_model->GetData('craft', "", "status='Active'", '', 'title asc');
-        $Subcategory_data =  $this->Crud_model->GetData('sub_categories', "", "status='Active'", '', 'sub_cat_title asc');
-        $asset_type_data = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
-        $brand_data = $this->Crud_model->GetData('brands', "", "status='Active'", "", "brand_name");
-        $unit_data =  $this->Crud_model->GetData('unit_types', "", "status='Active'", "", "unit");
-        $users = $this->Crud_model->GetData("employees", "", "id!='" . $_SESSION['ASSETSTRACKING']['id'] . "' and type='User'");
-        $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
-        $action =  site_url("Warehouse/create_action");
-        $data = array(
-            'breadcrumbs' => $breadcrumbs,
-            'heading' => 'Create Warehouse',
-            'button' => 'Create',
-            'category_data' => $category_data,
-            'Subcategory_data' => $Subcategory_data,
-            'asset_type_data' => $asset_type_data,
-            'brand_data' => $brand_data,
-            'unit_data' => $unit_data,
-            'users' => $users,
-            'size' => $size,
-            'fabric' => $fabric,
-            'color' => $color,
-            'craft' => $craft,
-            'productTypes' => $product_types,
-            'action' => $action,
-        );
-
-        $this->load->view('warehouse/form', $data);
+      $data = array(
+        'breadcrumbs' => $breadcrumbs,
+        'heading' => 'Create Dispatch',
+        'button'=>'Create',                       
+        'products' => $products, 
+        'users' => $users,
+        'action'=>$action, 
+      );
+      $this->load->view('warehouse_dispatch/form',$data);
     }
 
-    private function set_barcode($code)
-      {
-        //load library
-        $this->load->library('Zend');
-        //load in folder Zend
-        $this->zend->load('Zend/Barcode');
-        $newCode = $code;
 
-        $file = Zend_Barcode::draw('code128', 'image', array('text' => $newCode,'drawText' =>true), array());
-        $code = time().$code;
-        $store_image = imagepng($file,"admin/assets/warehouse_barcode/{$code}.png");
-        return $code.'.png';
-      }
-
-    public function create_action()
-    {
-        //echo"<pre>"; print_r($_POST);exit();
-        if ($_POST) {
-            $warehouse_date = date("Y-m-d", strtotime($_POST['warehouse_date']));
-//            $purchase_date = date("Y-m-d"); //, strtotime($_POST['purchase_date']));
-            $user_id = $this->Crud_model->GetData("employees", "id", "name='" . $_POST['received_from'] . "'", "", "", "", "1");
-
-            $data_array = array(
-                'dn_number' => $_POST['dn_number'],
-                'warehouse_date' => $warehouse_date,
-                'received_from' => $user_id->id,
-                'status' => 'Active',
-                'created' => date('Y-m-d H:i:s'),
-            );
-            $this->Crud_model->SaveData("warehouse", $data_array);
-            $last_id = $this->db->insert_id();
-//            echo"<pre>"; print_r($last_id);exit();
-
-            if (count($_POST['asset_name']) > 1) {
-                for ($i = 0; $i < count($_POST['asset_name']); $i++) {
-                    $purchase_date = date("Y-m-d");
-                    $data = array(
-                        'warehouse_id' => $last_id,
-                        'purchase_date' => $purchase_date,
-                        'asset_type_id' => $_POST['asset_type_id'][$i],
-                        'product_type_id' => $_POST['asset_type_2_id'][$i],
-                        'markup_percent' => $_POST['markup'][$i],
-                        'asset_name' => $_POST['asset_name'][$i],
-                        'quantity' => $_POST['quantity'][$i],
-                        'total_quantity' => $_POST['quantity'][$i],
-                        'product_mrp' => $_POST['product_mrp'][$i],
-                        'gst_percent' => $_POST['gst_percent'][$i],
-                        'hsn' => $_POST['hsn'][$i],
-                        'category_id' =>$_POST['category_id'][$i],
-                        'size_id' =>$_POST['size_id'][$i],
-                        'fabric_id' =>$_POST['fabric_id'][$i],
-                        'craft_id' =>$_POST['craft_id'][$i],
-                        'color_id' =>$_POST['color_id'][$i],
-                        'price' =>$_POST['product_mrp'][$i],
-                        'total_amount' =>$_POST['multitotal'][$i],
-        //                    'purchase_date' => $product_purchase_date,
-        //                    'created_by' => $_SESSION[SESSION_NAME]['id'],
-                    );
-
-                    $this->Crud_model->SaveData("warehouse_details", $data);
-
-                    for ($j=0; $j < $_POST['quantity'][$i]; $j++) 
-                    { 
-                        $barcodeData = array(
-                        'warehouse_id' => $last_id,
-                        'status'=>'Active',
-                        'created' => date('Y-m-d H:i:s'),
-                        );
-                        $this->Crud_model->SaveData('warehouse_barcodes',$barcodeData);
-                        $barcodeId = $this->db->insert_id(); 
-                        $barcode_number = 'GBDM0620'.$barcodeId;
-                        $barcodeData = array(
-                            'barcode_number' => $barcode_number,
-                            'barcode_image' => $this->set_barcode($barcode_number),
-                        );
-        
-                        $this->Crud_model->SaveData('warehouse_barcodes',$barcodeData,"id='".$barcodeId."'");
-                    }
-                }
-            } else {
-                $purchase_date = date("Y-m-d");
-                $data = array(
-                    'warehouse_id' => $last_id,
-                    'purchase_date' => $purchase_date,
-                    'asset_type_id' => $_POST['asset_type_id'][0],
-                    'product_type_id' => $_POST['asset_type_2_id'][0],
-                    'markup_percent' => $_POST['markup'][0],
-                    'asset_name' => $_POST['asset_name'][0],
-                    'quantity' => $_POST['quantity'][0],
-                    'total_quantity' => $_POST['quantity'][0],
-                    'product_mrp' => $_POST['product_mrp'][0],
-                    'gst_percent' => $_POST['gst_percent'][0],
-                    'hsn' => $_POST['hsn'][0],
-                    'category_id' =>$_POST['category_id'][0],
-                    'size_id' =>$_POST['size_id'][0],
-                    'fabric_id' =>$_POST['fabric_id'][0],
-                    'craft_id' =>$_POST['craft_id'][0],
-                    'color_id' =>$_POST['color_id'][0],
-                    'price' =>$_POST['product_mrp'][0],
-                    'total_amount' =>$_POST['multitotal'][0],
-//                    'purchase_date' => $product_purchase_date,
-//                    'created_by' => $_SESSION[SESSION_NAME]['id'],
-                );
-
-                $this->Crud_model->SaveData("warehouse_details", $data);
-
-                for ($j=0; $j < $_POST['quantity'][0]; $j++) 
-                { 
-                    $barcodeData = array(
-                    'warehouse_id' => $last_id,
-                    'status'=>'Active',
+    public function create_action($finish = null) 
+    {  
+        if($_POST) {
+            $product_id = $_POST['asset_name'];
+            $qty = $this->input->post('quantity');
+            $this->db->select('*');
+            $this->db->where('id',$product_id);
+            $query = $this->db->get('warehouse_details');
+            $product = $query->row();
+            if($qty<=$product->quantity){
+                    $dispatchdate = str_replace('/', '-', $_POST['date']);
+                    //$user_id = $this->Crud_model->GetData("employees","id","name='".$_POST['sent_to']."'","","","","1");
+                    //print_r(); exit;
+                    
+                    $data_array = array(
+                    'dispatch_date' => date('Y-m-d', strtotime($_POST['date'])),
+                    'dn_number' => $_POST['dn_no'],
+                    'sent_to' => $_POST['sent_to'],
+                    'status' => 'Active',
                     'created' => date('Y-m-d H:i:s'),
                     );
-                    $this->Crud_model->SaveData('warehouse_barcodes',$barcodeData);
-                    $barcodeId = $this->db->insert_id(); 
-                    $barcode_number = 'GBDM0620'.$barcodeId;
-                    $barcodeData = array(
-                        'barcode_number' => $barcode_number,
-                        'barcode_image' => $this->set_barcode($barcode_number),
-                    );
-    
-                    $this->Crud_model->SaveData('warehouse_barcodes',$barcodeData,"id='".$barcodeId."'");
+                    //print_r($data_array);exit;
+                    if($did = $this->input->post('dispatch_id')){
+                        $condition = array('id'=>$did);
+                        $this->Crud_model->SaveData("warehouse_dispatch",$data_array,$condition);
+                        $last_id = $did;
+                    }
+                    else{
+                        $this->Crud_model->SaveData("warehouse_dispatch",$data_array);
+                        $last_id = $this->db->insert_id();
+                    }
+                    $data = array(
+                        'dispatch_id' => $last_id,
+                        'product_id' => $_POST['asset_name'],
+                        'quantity' => $_POST['quantity'],
+                        'price'=>$_POST['product_mrp'],
+                        'gst_percent'=>$_POST['gst_percent'],
+                        'lf_no'=>$_POST['lf_no'],
+                        'created_by'=>$_POST['sent_to'],
+                        'status' => 'Active',
+                        'created'=>date('Y-m-d H:i:s'),
+                        );
+                    $this->Crud_model->SaveData("warehouse_dispatch_details",$data);
+                    
+                    if($finish != 'finish') {
+                        return redirect('Warehouse_Dispatch/save_next/'.$last_id);
+                    } else {
+                    $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Dispatch has been created successfully</span>');
+                        redirect('Warehouse_Dispatch/index');
+                    
+                    }
+                } else {
+                    $this->session->set_flashdata('message', '<span class="label label-danger text-center" style="margin-bottom:0px">Please select available quantity!</span>');
+                    if($did = $this->input->post('dispatch_id')){
+                        return redirect('Warehouse_Dispatch/save_next/'.$did);
+                    }
+                    else{
+                        return redirect('Warehouse_Dispatch/create/');
+                    }
                 }
-            }
-
-//            $code= $this->set_barcode('23');
-            //  echo"<pre>"; print_r($code);exit();
-            $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Product has been created successfully</span>');
-            redirect('Warehouse/index');
         } else {
-            redirect('Warehouse/Create');
+            redirect('Warehouse_Dispatch/Create');
         }
     }
 
     public function view($id)
     {
-        if ($id == '') {
-            redirect('Warehouse/index');
+        if($id =='') {
+            redirect('Dispatch/index');
         } else {
             $breadcrumbs = "<ul class='breadcrumb'>
-          <li>
-            <i class='ace-icon fa fa-home home-icon'></i>
-            <a href='" . site_url('Dashboard') . "'>Dashboard</a>
-          </li>
-          <li class=''>
-            <a href='" . site_url('Warehouse') . "'>Manage Warehouse</a>
-          </li>
-          <li class='active'>View Warehouse Details</li>
-        </ul>";
-
-            $getAssetData = $this->Warehouse_model->getAllDetails($id);
-
+              <li>
+                <i class='ace-icon fa fa-home home-icon'></i>
+                <a href='".site_url('Dashboard')."'>Dashboard</a>
+              </li>
+              <li class=''> 
+                <a href='".site_url('Dispatch')."'>Manage Dispatch</a>
+              </li>
+              <li class='active'>View Dispatch Details</li>
+            </ul>";
+    
+            $getAssetData = $this->Dispatch_model->warehouse_getAllDetails($id);
+            //print_r($getAssetData);exit;
+            //$getassetDetails = $this->Crud_model->GetData('asset_details',"","asset_id='".$id."' and status='In_use'",'','','','');
+    
+                  
             $data = array(
-                'breadcrumbs' => $breadcrumbs,
-                'heading' => 'View Warehouse',
-                'getAssetData' => $getAssetData,
-                'id' => $id,
+              'breadcrumbs' => $breadcrumbs,
+              'heading' => 'View Warehouse Dispatch/Return',
+              'getAssetData'=>$getAssetData,       
+              //'getassetDetails'=>$getassetDetails,                                           
+              'id'=>$id,
             );
-            $this->load->view('warehouse/view', $data);
+            $this->load->view('warehouse_dispatch/view',$data); 
         }
     }
 
@@ -518,20 +410,22 @@ class Warehouse extends CI_Controller
         redirect(site_url('Warehouse'));
     }
 
-    public function getGST()
-    {
-        $select = $this->Crud_model->GetData("mst_gst", "", "category_id='" . $_POST['category_id'] . "' and status='Active'", "", "", "", "1");
-        if (!empty($select)) {
-            $response['success'] = '1';
-            $response['gst_percent'] = $select->gst_percent;
-            $response['hsn'] = $select->hsn;
+    public function getGST() {
+        $product = $this->input->post('product_id');
+        $where = array('id'=> $product);
+        $select = $this->Crud_model->GetData("assets","",$where,"","","","1");
+        
+        if(!empty($select)) {
+          $response['success'] = '1';
+          $response['gst_percent'] = $select->gst_percent;
+          $response['price'] = $select->product_mrp;
+          //$response['hsn'] = $select->hsn;
         } else {
-            $response['success'] = '0';
+          $response['success'] = '0';
         }
-
-        echo json_encode($response);
-        exit;
-    }
+  
+        echo json_encode($response);exit;
+      }
 
 
 

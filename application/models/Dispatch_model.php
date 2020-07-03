@@ -72,6 +72,31 @@ class Dispatch_model extends CI_Model
         $query = $this->db->get();
         return $query->result();
     }
+
+    function warehouse_get_datatables($con,$date)
+    {
+        $this->warehouse_get_datatables_query($con);
+
+		if($date!=0){
+			$dates = explode("_",$date);
+			$date1 = date("Y-m-d", strtotime($dates[0]));
+			$date2 = date("Y-m-d", strtotime($dates[1]));
+			$this->db->where('p.dispatch_date >=', $date1);
+			$this->db->where('p.dispatch_date <=', $date2);
+		}
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    private function warehouse_get_datatables_query($con)
+    {
+        $this->db->select('p.id,p.dn_number,p.dispatch_date,p.sent_to,p.status,e.name as employee_name,(select SUM(price) from warehouse_dispatch_details where dispatch_id=p.id) as sum_amount');
+        $this->db->from("warehouse_dispatch p");
+        $this->db->join("employees e","e.id = p.sent_to","left");
+        $this->db->join("warehouse_dispatch_details de","de.dispatch_id = p.id","right");
+        $this->db->where($con);
+        $this->db->distinct();
+    }
  
     function count_filtered($con)
     {
@@ -97,6 +122,20 @@ class Dispatch_model extends CI_Model
         $this->db->join("dispatch d","d.id = ast.dispatch_id","left");    
         $this->db->join("assets a","a.id = ast.product_id","left");    
         return $this->db->get('dispatch_details ast')->result();        
+    }
+
+    public function warehouse_getAllDetails($id)
+    {
+        $this->db->select('a.asset_name,ast.id,ast.price,ast.quantity,ast.gst_percent,ast.lf_no,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft');
+        $this->db->where("ast.dispatch_id='".$id."'"); 
+        $this->db->join("warehouse_dispatch d","d.id = ast.dispatch_id","left");    
+        $this->db->join("warehouse_details a","a.id = ast.product_id","left");
+        $this->db->join("size siz","siz.id = a.size_id","left");
+        $this->db->join("color col","col.id = a.color_id","left");
+        $this->db->join("fabric fab","fab.id = a.fabric_id","left");
+        $this->db->join("craft cra","cra.id = a.craft_id","left");
+        $this->db->join("categories cat","cat.id = a.category_id","left");  
+        return $this->db->get('warehouse_dispatch_details ast')->result();        
     }
 
     function ExportCSV($con)

@@ -172,12 +172,7 @@
                 <tr>
                     <td><?php echo $sr ?></td>
                     <td> <?= $barcode->barcode_number; ?></td>
-                    <td style="padding: 10px; text-align: center">
-                        <div>
-                            <div><?= $result['asset_name']; ?></div>
-                            <div><img src="<?php echo base_url(); ?>admin/assets/warehouse_barcode/<?php echo $barcode->barcode_image; ?>"></div>
-                        </div>
-                    </td>
+                    <td style="padding: 10px; text-align: center"><img src="<?php echo base_url(); ?>admin/assets/warehouse_barcode/<?php echo $barcode->barcode_image; ?>"></td>
                     <td> <?= $barcode->status; ?></td>
                 </tr>    
                 <?php $sr++; } ?>                  

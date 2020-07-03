@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 require_once(APPPATH.'libraries/mpdf/vendor/autoload.php');
-class Dispatch extends CI_Controller {
+class Warehouse_Products extends CI_Controller {
   function __construct()
   {
   parent::__construct();
@@ -20,20 +20,20 @@ class Dispatch extends CI_Controller {
 	  $date = str_replace(" ","",$date);
       
       //$newDate = date("Y-m-d", strtotime($date));
-	  $strUrl = site_url('Dispatch/ajax_manage_page/'.$date);
+	  $strUrl = site_url('Warehouse_Products/ajax_manage_page/'.$date);
       $this->common_view($strUrl,$date);
 
     }
     else
     {
-       return redirect('Dispatch');
+       return redirect('Warehouse_Products');
     }
        
   }
   public function index()
   {   
     
-    $this->common_view(site_url('Dispatch/ajax_manage_page'));
+    $this->common_view(site_url('Warehouse_Products/ajax_manage_page'));
   }
   
   public function common_view($action,$date=0)
@@ -47,9 +47,8 @@ class Dispatch extends CI_Controller {
 	    { 
 	      foreach($row as $menu)
 	      { 
-	          if($menu->value=='Dispatch')
+	          if($menu->value=='Warehouse_Products')
 	          { 
-	            
               if(!empty($menu->act_add)){ $add='1'; }else{ $add='0'; }
               if(!empty($menu->act_export)){ $exportbutton='1'; }else{ $exportbutton='0'; }
               if(!empty($menu->act_import)){ $import='1'; }else{ $import='0'; }
@@ -62,7 +61,8 @@ class Dispatch extends CI_Controller {
 	                    <i class='ace-icon fa fa-home home-icon'></i>
 	                    <a href='".site_url('Dashboard')."'>Dashboard</a>
 	                </li>
-	                <li class='active'>Manage Dispatch/Return</li>
+                  <li>Manage Products</li>
+                  <li class='active'>Warehouse Products</li>
 	                </ul>";
 
 	    $importaction ='<a data-target="#uploadData" style="cursor:pointer;color:black;" title="Upload Excel" data-backdrop="static" data-keyboard="false" data-toggle="modal" ><span class="fa fa-file-excel-o"></span></a>';
@@ -70,9 +70,9 @@ class Dispatch extends CI_Controller {
 	    $download =' <a  download="assets.xls" style="color:black;" title="Download Format" href="'. base_url('uploads/assets_demo_excel/assets.xls').'"><span class="fa fa-download"></span></a>'; 
 
 	    $branch_data = $this->Crud_model->GetData('branches',"","is_delete='No' and status='Active'",'','branch_title');
-	    $data = array('dateinfo'=>$date,'breadcrumbs' => $breadcrumbs ,'actioncolumn' => '5' ,'ajax_manage_page' => $action,'heading' => 'Manage Dispatch/Return','branch_data'=>$branch_data,'import' =>$import,'importaction' =>$importaction,'download' =>$download,'addPermission'=>$add,'export' =>$export, 'exportPermission'=>$exportbutton);
+	    $data = array('dateinfo'=>$date,'breadcrumbs' => $breadcrumbs ,'actioncolumn' => '5' ,'ajax_manage_page' => $action,'heading' => 'Warehouse Products','branch_data'=>$branch_data,'import' =>$import,'importaction' =>$importaction,'download' =>$download,'addPermission'=>$add,'export' =>$export);
 
-	    $this->load->view('dispatch/list',$data);
+	    $this->load->view('warehouse_products/list',$data);
 	}
 	else
 	{
@@ -86,8 +86,8 @@ class Dispatch extends CI_Controller {
     if(!empty($_SESSION[SESSION_NAME]['branch_id'])){
       $con.=" and ast.id in (select asset_id from asset_branch_mappings where branch_id='".$_SESSION[SESSION_NAME]['branch_id']."')";
     }
-    
-    $Data = $this->Dispatch_model->get_datatables($con,$date);
+
+    $Data = $this->Dispatch_model->warehouse_get_datatables($con,$date);
     //print_r($this->db->last_query());exit;
     $edit = ''; 
     $delete= '';
@@ -102,7 +102,7 @@ class Dispatch extends CI_Controller {
     { 
       foreach($row as $menu)
       { 
-          if($menu->value=='Dispatch')
+          if($menu->value=='Warehouse_Products')
           { 
             if(!empty($menu->act_edit)){ $edit='1'; }else{ $edit='0'; }
             if(!empty($menu->act_delete)){ $delete='1'; }else{ $delete='0'; }
@@ -121,13 +121,14 @@ class Dispatch extends CI_Controller {
     foreach($Data as $row) 
     {  
         $btn = '';
-        if(!empty($view)){
-        $btn .='<a href='.site_url("Dispatch/view/".$row->id).' title="Details" class="btn btn-primary btn-circle btn-sm"><i class="fa fa-eye"></i></a>';
-        }
+        //if(!empty($view)){
+        $btn .='<a href='.site_url("Warehouse_Products/view/".$row->id).' title="Details" class="btn btn-primary btn-circle btn-sm"><i class="fa fa-eye"></i></a>';
+        //}
         //if(!empty($delete)){
         //$btn .='&nbsp;|&nbsp;'.'<a href="#deleteData" data-toggle="modal" title="Delete" class="btn btn-danger btn-circle btn-sm" onclick="checkStatus('.$row->id.')"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>';
         //}
-        $btn .='&nbsp;|&nbsp;'.'<a href="#approveData" data-toggle="modal" title="Approve" class="btn btn-success btn-check btn-sm" onclick="approveStatus('.$row->id.')"><i class="ace-icon fa fa-check bigger-130"></i></a>';
+        if($row->status != 'Approved')
+          $btn .='&nbsp;|&nbsp;'.'<a href="#approveData" data-toggle="modal" title="Approve" class="btn btn-success btn-check btn-sm" onclick="approveStatus('.$row->id.')"><i class="ace-icon fa fa-check bigger-130"></i></a>';
         //if(!empty($edit)){
         //    $btn .= ('<a href="#myModaledit" title="Edit" class="btn btn-info btn-circle btn-sm" data-toggle="modal"  onclick="getEditvalue('.$row->id.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>');
        // }
@@ -150,291 +151,16 @@ class Dispatch extends CI_Controller {
     echo json_encode($output);
   }
   
-  //===================================summery pdf=========================
-
-  public function listpdf($date = 0)
-  {
-      $con="p.id<>''";
-      if(!empty($_SESSION[SESSION_NAME]['branch_id'])){
-      $con.=" and ast.id in (select asset_id from asset_branch_mappings where branch_id='".$_SESSION[SESSION_NAME]['branch_id']."')";
-      }
-
-      $data['rows'] = $this->Dispatch_model->get_datatables($con,$date);
-      $html = $this->load->view('dispatch/pdf_dispatch_list',$data,true);
-      $mpdf = new \Mpdf\Mpdf();
-      $mpdf->WriteHTML($html);
-      $mpdf->Output('Dispatch_Return','I');
-  }
-
-  //===================================/summery pdf========================
-
-  //===================================export summery pdf=========================
-
-  public function export_dispatch1($date = 0)
-  {
-      $con="p.id<>''";
-      if(!empty($_SESSION[SESSION_NAME]['branch_id'])){
-      $con.=" and ast.id in (select asset_id from asset_branch_mappings where branch_id='".$_SESSION[SESSION_NAME]['branch_id']."')";
-      }
-
-      $results = $this->Dispatch_model->get_datatables($con,$date);
-      //$results = $this->Dispatch_model->ExportCSV($con);
-        
-            $FileTitle='Dispatch Summary Report';
-                
-            $this->load->library('excel');
-            //activate worksheet number 1
-            $this->excel->setActiveSheetIndex(0);
-            //name the worksheet
-            $this->excel->getActiveSheet()->setTitle('Report Sheet');
-            //set cell A1 content with some text
-            $this->excel->getActiveSheet()->setCellValue('A1', 'Dispatch Summary Details ');
-            $this->excel->getActiveSheet()->setCellValue('A3', 'Sr. No');
-            $this->excel->getActiveSheet()->setCellValue('C3', 'DN No');
-            $this->excel->getActiveSheet()->setCellValue('B3', 'Date');
-            $this->excel->getActiveSheet()->setCellValue('D3', 'Amount');
-            $this->excel->getActiveSheet()->setCellValue('E3', 'User');
-            
-            $a='4'; $sr = 1;    $sum_amount=0;
-            //print_r($results);exit;
-            foreach ($results as $result) 
-            {       
-                $date = date('d-m-Y', strtotime($result->dispatch_date));
-                $this->excel->getActiveSheet()->setCellValue('A'.$a, $sr);
-                $this->excel->getActiveSheet()->setCellValue('C'.$a, $result->dn_number);
-                $this->excel->getActiveSheet()->setCellValue('B'.$a, $date);
-                $this->excel->getActiveSheet()->setCellValue('D'.$a, "Rs ".number_format($result->sum_amount,2));                
-                $this->excel->getActiveSheet()->setCellValue('E'.$a, $result->employee_name);
-                //$this->excel->getActiveSheet()->setCellValue('F'.$a, $result->hsn);
-                //$this->excel->getActiveSheet()->setCellValue('G'.$a, $result->status);
-                //$this->excel->getActiveSheet()->setCellValue('H'.$a, $total);
-                $sr++; $a++;  $sum_amount += $result->sum_amount;              
-            }
-                $this->excel->getActiveSheet()->setCellValue('D'.$a, "Rs ".number_format($sum_amount,2));
-                $this->excel->getActiveSheet()->getStyle('D'.$a)->getFont()->setBold(true);
-                $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
-                $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);                
-                $this->excel->getActiveSheet()->getStyle('A3')->getFont()->setBold(true);
-                $this->excel->getActiveSheet()->getStyle('B3')->getFont()->setBold(true);
-                $this->excel->getActiveSheet()->getStyle('C3')->getFont()->setBold(true);
-                $this->excel->getActiveSheet()->getStyle('D3')->getFont()->setBold(true);
-                $this->excel->getActiveSheet()->getStyle('E3')->getFont()->setBold(true);
-                $this->excel->getActiveSheet()->getStyle('F3')->getFont()->setBold(true);
-                //$this->excel->getActiveSheet()->getStyle('G3')->getFont()->setBold(true);
-                //$this->excel->getActiveSheet()->getStyle('H3')->getFont()->setBold(true);
-                //$this->excel->getActiveSheet()->mergeCells('A1:H1');
-                $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            
-            $filename=''.$FileTitle.'.xls'; //save our workbook as this file name
-            header('Content-Type: application/vnd.ms-excel'); //mime type
-            header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
-            header('Cache-Control: max-age=0'); //no cache
-            ob_clean();
-                        
-            //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
-            //if you want to save it as .XLSX Excel 2007 format
-            $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');  
-            //force user to download the Excel file without writing it to server's HD
-            $objWriter->save('php://output');
-  }
-
-  //===================================/summery pdf========================
-
-    public function create()
-    {    
-      //print_r($_SESSION);exit;
-      $breadcrumbs = "<ul class='breadcrumb'>
-                  <li>
-                      <i class='ace-icon fa fa-home home-icon'></i>
-                      <a href='".site_url('Dashboard')."'>Dashboard</a>
-                  </li>
-                   <li class=''> <a href='".site_url('Dispatch')."'>Manage Dispatch/Return</a></li>
-                  <li class='active'>Create Dispatch</li>
-                  </ul>";
-	  $where = array('created_by'=>$_SESSION[SESSION_NAME]['id']);
-      //$products = $this->Crud_model->GetData("assets","",$where); 
-      $this->load->model('Invoice_model');
-      $products = $this->Invoice_model->getProduct();
-	  
-      $users = $this->Crud_model->GetData("employees","","id!='".$_SESSION['ASSETSTRACKING']['id']."' and type='User'");           
-      $action =  site_url("Dispatch/create_action");    
-
-      $data = array(
-        'breadcrumbs' => $breadcrumbs,
-        'heading' => 'Create Dispatch',
-        'button'=>'Create',                       
-        'products' => $products, 
-        'users' => $users,
-        'action'=>$action, 
-      );
-      $this->load->view('dispatch/form',$data);
-    }
-	public function save_next($id)
-	{
-		$condition = array('id'=>$id);
-		$arrDispatch = $this->Crud_model->GetData('dispatch','',$condition,'','','',1);
-		$condition2 = array('d.dispatch_id'=>$id);
-		//$arrDispatchData = $this->Crud_model->GetData('dispatch_details','',$condition2);
-		$query = $this->db
-						->select('a.asset_name as name,d.quantity,d.price,d.gst_percent,d.lf_no,d.id')
-						->from('dispatch_details as d')
-						->join('assets as a','a.id=d.product_id')
-						->where($condition2)
-						->get();
-		$arrDispatchData = $query->result();
-		
-		$breadcrumbs = "<ul class='breadcrumb'>
-                  <li>
-                      <i class='ace-icon fa fa-home home-icon'></i>
-                      <a href='".site_url('Dashboard')."'>Dashboard</a>
-                  </li>
-                   <li class=''> <a href='".site_url('Dispatch')."'>Manage Dispatch/Return</a></li>
-                  <li class='active'>Create Dispatch</li>
-                  </ul>";
-	  $where = array('created_by'=>$_SESSION[SESSION_NAME]['id']);
-      $products = $this->Crud_model->GetData("assets","",$where); 
-	  
-      $users = $this->Crud_model->GetData("employees","","id!='".$_SESSION['ASSETSTRACKING']['id']."' and type='User'");           
-      $action =  site_url("Dispatch/create_action");    
-
-      $data = array(
-        'breadcrumbs' => $breadcrumbs,
-        'heading' => 'Create Dispatch',
-        'button'=>'Create',                       
-        'products' => $products, 
-        'users' => $users,
-        'action'=>$action, 
-		'dispatch' => $arrDispatch,
-		'dispatchData' => $arrDispatchData
-      );
-      $this->load->view('dispatch/form',$data);
-	}
-
-    public function create_action($finish = null) { 
-	   
-      if($_POST) {
-        $product_id = $_POST['asset_name'];
-        $qty = $this->input->post('quantity');
-        $this->db->select('*');
-        $this->db->where('id',$product_id);
-        $query = $this->db->get('assets');
-        $product = $query->row();
-        if($qty<=$product->quantity){
-                $dispatchdate = str_replace('/', '-', $_POST['date']);
-                //$user_id = $this->Crud_model->GetData("employees","id","name='".$_POST['sent_to']."'","","","","1");
-                //print_r(); exit;
-                
-                $data_array = array(
-                  'dispatch_date' => date('Y-m-d', strtotime($_POST['date'])),
-                  'dn_number' => $_POST['dn_no'],
-                  'sent_to' => $_POST['sent_to'],
-                  'status' => 'Active',
-                  'created' => date('Y-m-d H:i:s'),
-                );
-                //print_r($data_array);exit;
-        		if($did = $this->input->post('dispatch_id')){
-        			$condition = array('id'=>$did);
-        			$this->Crud_model->SaveData("dispatch",$data_array,$condition);
-        			$last_id = $did;
-        		}
-        		else{
-        			$this->Crud_model->SaveData("dispatch",$data_array);
-        			$last_id = $this->db->insert_id();
-        		}
-        		$data = array(
-                      'dispatch_id' => $last_id,
-                      'product_id' => $_POST['asset_name'],
-                      'quantity' => $_POST['quantity'],
-                      'price'=>$_POST['product_mrp'],
-                      'gst_percent'=>$_POST['gst_percent'],
-                      'lf_no'=>$_POST['lf_no'],
-                      'created_by'=>$_SESSION[SESSION_NAME]['id'],
-                      'status' => 'Active',
-                      'created'=>date('Y-m-d H:i:s'),
-                    );
-        			$condition = array('id'=>$_POST['asset_name']);
-        			$arrProduct = $this->Crud_model->GetData('assets','',$condition,'','','',1);
-        			if($this->input->post('dis_id')){
-        				$arrCondition = array('id'=>$this->input->post('dis_id'));
-        				$this->Crud_model->SaveData("dispatch_details",$data,$arrCondition);
-        				$quantity = $arrProduct->quantity+$_POST['actual_qty']-$_POST['quantity'];
-        				$total_quantity = $arrProduct->total_quantity+$_POST['actual_qty']-$_POST['quantity'];
-        			}
-        			else{
-        				$this->Crud_model->SaveData("dispatch_details",$data);
-        				$quantity = $arrProduct->quantity-$_POST['quantity'];
-        				$total_quantity = $arrProduct->total_quantity-$_POST['quantity'];
-        			}
-        		  $arrData = array('quantity'=>$quantity,'total_quantity'=>$total_quantity);
-        		  $this->Crud_model->SaveData('assets',$arrData,$condition);
-                if($finish != 'finish') {
-                    return redirect('dispatch/save_next/'.$last_id);
-                } else {
-        		  $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Dispatch/Return has been created successfully</span>');
-        			redirect('Dispatch/index');
-        		  
-                }
-              } else {
-                 $this->session->set_flashdata('message', '<span class="label label-danger text-center" style="margin-bottom:0px">Please select avilable quntity!</span>');
-                if($did = $this->input->post('dispatch_id')){
-                    return redirect('dispatch/save_next/'.$did);
-                }
-                else{
-                   return redirect('dispatch/create/');
-                }
-
-
-
-              }
-      } else {
-        redirect('Dispatch/Create');
-      }
-    }
-	public function edit_action($id,$last_id)
-	{
-		//print_r($_SESSION);exit;
-      $breadcrumbs = "<ul class='breadcrumb'>
-                  <li>
-                      <i class='ace-icon fa fa-home home-icon'></i>
-                      <a href='".site_url('Dashboard')."'>Dashboard</a>
-                  </li>
-                   <li class=''> <a href='".site_url('Dispatch')."'>Manage Dispatch/Return</a></li>
-                  <li class='active'>Create Dispatch</li>
-                  </ul>";
-	  $where = array('created_by'=>$_SESSION[SESSION_NAME]['id']);
-      $products = $this->Crud_model->GetData("assets","",$where); 
-	  
-      $users = $this->Crud_model->GetData("employees","","id!='".$_SESSION['ASSETSTRACKING']['id']."' and type='User'");           
-      $action =  site_url("Dispatch/create_action/edit");    
-	  $condition = array('id'=>$id);
-		$objDis = $this->Crud_model->GetData('dispatch_details','',$condition,'','','',1);
-		$condition2 = array('id'=>$last_id);
-		$arrDispatchData = $this->Crud_model->GetData('dispatch','',$condition2,'','','',1);
-		
-      $data = array(
-        'breadcrumbs' => $breadcrumbs,
-        'heading' => 'Create Dispatch',
-        'button'=>'Create',                       
-        'products' => $products, 
-        'users' => $users,
-        'action'=>$action,
-		'dispatch' => $arrDispatchData, 
-		'dispatchData' => $objDis,
-		'view' => 'edit',
-      );
-	  //echo"<pre>";
-	 // print_r($data);
-	  //exit();
-      $this->load->view('dispatch/form',$data);
-  }
-  
 
   public function approveProduct() { 
 	  $id = $_POST['id'];
     if($id) {
+      $update['status'] ="Approved";
+      $this->Crud_model->SaveData('warehouse_dispatch',$update,"id='".$id."'");
+
       $this->db->select('*');
       $this->db->where('id',$id);
-      $query = $this->db->get('dispatch');
+      $query = $this->db->get('warehouse_dispatch');
       $disptach = $query->row();
 
       $data_array = array(
@@ -449,7 +175,7 @@ class Dispatch extends CI_Controller {
       $last_id = $this->db->insert_id();
 
       $this->db->select('*');
-      $this->db->from("dispatch_details d");
+      $this->db->from("warehouse_dispatch_details d");
       $this->db->join("warehouse_details w","w.id = d.product_id");
       $this->db->where('d.dispatch_id',$id);
       $query = $this->db->get();
@@ -476,16 +202,16 @@ class Dispatch extends CI_Controller {
 
       $this->Crud_model->SaveData("assets", $data);
 
-      $con = "id='" . $id . "'";
-      $delete = $this->Crud_model->DeleteData('dispatch',$con);
-      $con = "dispatch_id='" . $id . "'";
-      $delete = $this->Crud_model->DeleteData('dispatch_details',$con);
+      //$con = "id='" . $id . "'";
+      //$delete = $this->Crud_model->DeleteData('dispatch',$con);
+      //$con = "dispatch_id='" . $id . "'";
+      //$delete = $this->Crud_model->DeleteData('dispatch_details',$con);
 
       $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Dispatch/Return has been created successfully</span>');
-      redirect('Dispatch/index');
+      redirect('Warehouse_Products/index');
       
     } else {
-      redirect('Dispatch/Create');
+      redirect('Warehouse_Products/Create');
     }
   }
 
@@ -594,7 +320,7 @@ class Dispatch extends CI_Controller {
 
     public function view($id) {
       if($id =='') {
-        redirect('Dispatch/index');
+        redirect('Warehouse_Products/index');
       } else {
         $breadcrumbs = "<ul class='breadcrumb'>
           <li>
@@ -602,24 +328,24 @@ class Dispatch extends CI_Controller {
             <a href='".site_url('Dashboard')."'>Dashboard</a>
           </li>
           <li class=''> 
-            <a href='".site_url('Dispatch')."'>Manage Dispatch/Return</a>
+            <a href='".site_url('Dispatch')."'>Manage Products</a>
           </li>
-          <li class='active'>View Dispatch Details</li>
+          <li class='active'>View Warehouse Products</li>
         </ul>";
 
-        $getAssetData = $this->Dispatch_model->getAllDetails($id);
+        $getAssetData = $this->Dispatch_model->warehouse_getAllDetails($id);
         //print_r($getAssetData);exit;
         //$getassetDetails = $this->Crud_model->GetData('asset_details',"","asset_id='".$id."' and status='In_use'",'','','','');
 
               
         $data = array(
           'breadcrumbs' => $breadcrumbs,
-          'heading' => 'View Dispatch/Return',
+          'heading' => 'View Warehouse Products',
           'getAssetData'=>$getAssetData,       
           //'getassetDetails'=>$getassetDetails,                                           
           'id'=>$id,
         );
-        $this->load->view('dispatch/view',$data); 
+        $this->load->view('warehouse_products/view',$data); 
       }
     }
 

@@ -32,7 +32,7 @@ $this->load->view('common/left_panel'); ?>
                                     <div class="form-group">
                                         <label class="col-md-11"> DN Number <span style="color: red">*</span> <span  id="dn_number_error" style="color: red"></span></label>
                                         <div class="col-md-11">
-                                            <input type="text" name="dn_number" id="dn_number" class="form-control" placeholder="DN Number">
+                                            <input type="text" name="dn_number" id="dn_number" value="<?php echo $products->dn_number; ?>" class="form-control" placeholder="dn Number">
                                         </div>
                                     </div>
                                 </div>
@@ -41,7 +41,7 @@ $this->load->view('common/left_panel'); ?>
                                     <div class="form-group">
                                         <label class="col-md-11">  Date <span style="color: red">*</span> <span  id="warehouse_date_error" style="color: red"></span></label>
                                         <div class="col-md-11">
-                                            <input type="text" name="warehouse_date" id="warehouse_date" class="form-control datepicker" autocomplete="off" placeholder=" Date">
+                                            <input type="text" name="warehouse_date" id="warehouse_date" value="<?php echo $products->warehouse_date; ?>" class="form-control datepicker" placeholder=" Date">
                                         </div>
                                     </div>
                                 </div>
@@ -51,19 +51,12 @@ $this->load->view('common/left_panel'); ?>
                                         <label class="col-md-11"> Received From <span style="color: red">*</span> <span  id="received_from_error" style="color: red"></span></label>
                                         <div class="col-md-11">
                                             <select name="received_from" id="received_from" class="form-control">
-                                                <option value="">Select User</option>
-                                                <?php
-                                                if(!empty($users)) {
-                                                    foreach ($users as $user) {
-                                                        ?>
-                                                        <option id="<?php echo $user->id; ?>"><?php echo $user->name; ?></option>
-                                                        <?php
-                                                    }
-                                                }
-                                                ?>
+                                                <option value="">--Select User-</option>
+                                                <?php foreach($users as $user) { ?>
+                                                    <option value="<?php echo $user->id?>"<?php if($products->received_from==$user->id)echo "selected";?>><?php echo $user->name?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
-                                    </div>
                                 </div>
 
                             </div>
@@ -74,34 +67,38 @@ $this->load->view('common/left_panel'); ?>
                                 <table class="table table-striped table-bordered">
                                     <thead>
                                     <tr>
-                                        <th> Purchase Date <span style="color: red">*</span><span style="color: red"></span></th>
+                                        <th> Date <span style="color: red">*</span><span style="color: red"></span></th>
+                                        <th> Name <span style="color: red">*</span><span style="color: red" id="asset_name_error"></span></th>
                                         <th> Category  <a href="#myModalCategory" class="pull-right" data-toggle="modal" data-target="" title="Add new Category"></a><span style="color: red">*</span> <span  id="category_id_error" style="color: red"></span></th>
                                         <th>Product Type <a href="#myModalAssetType" class="pull-right" data-toggle="modal" data-target="" title="Add new Product Type"></a><span style="color: red">*</span> <span  id="asset_type_id_error" style="color: red"></span></th>
-                                        <th> Product Type 2 <span style="color: red">*</span> </th>
-                                        <th> Name <span style="color: red">*</span><span style="color: red" id="asset_name_error"></span></th>
-                                        <th> Quantity <span style="color: red">*</span><span style="color: red" id="error_quantity"></span></th>
+                                        <th>Product Type 2 <span style="color: red">*</span> </th>
                                         <th>Color<span style="color: red">*</span> </th>
                                         <th> Size <span style="color: red">*</span> </th>
                                         <th> Fabric <span style="color: red">*</span> </th>
                                         <th> Craft<span style="color: red">*</span> </th>
+                                        <th> Quantity <span style="color: red">*</span><span style="color: red" id="error_quantity"></span></th>
                                         <th> Cost Price  <span style="color: red">*</span><span style="color: red"id="error_price"></span></th>
                                         <th> GST % <span style="color: red">*</span><span  id="error_gst_percent"></span></th>
                                         <th> HSN <span style="color: red">*</span><span id="error_hsn"></span></th>
-                                        <th> Markup %<span style="color: red">*</span><span style="color: red" id="lf_no_error"></span></th>
+                                        <th> Markup <span style="color: red">*</span><span style="color: red" id="lf_no_error"></span></th>
                                         <th>Total Amount</th>
-                                        <th class="text-center"> <a  href="javascript:void(0)" class="btn  btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>
+
+                                        <!--                                        <th class="text-center"> <a  href="javascript:void(0)" class="btn  btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>-->
                                     </tr>
                                     </thead>
                                     <tbody id="professorTableBody">
                                     <tr class="trRow">
                                         <td>
-                                            <input type="text" name="product_purchase_date[]" id="product_purchase_date1" class="form-control datepicker" autocomplete="off" placeholder="Purchase Date">
+                                            <input type="text" name="product_purchase_date[]" id="product_purchase_date1"value="<?php echo $getAssetData->purchase_date; ?>" class="form-control datepicker" placeholder="Purchase Date">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="asset_name[]" id="asset_name1" value="<?php echo $getAssetData->asset_name; ?>" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
                                         </td>
                                         <td>
                                             <select class="form-control" name="category_id[]" id="category_id1" onchange="getGST(this.value,$(this).closest('tr').index());">
                                                 <option value="">--Select Product Category--</option>
                                                 <?php foreach($category_data as $category_dataRow) { ?>
-                                                    <option value="<?php echo $category_dataRow->id?>"><?php echo $category_dataRow->title?></option>
+                                                    <option value="<?php echo $category_dataRow->id?>"<?php if($getAssetData->category_id==$category_dataRow->id)echo "selected";?>><?php echo $category_dataRow->title?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -109,7 +106,7 @@ $this->load->view('common/left_panel'); ?>
                                             <select class="form-control" name="asset_type_id[]" id="asset_type_id1">
                                                 <option value="">--Select Product Type Name--</option>
                                                 <?php foreach($asset_type_data as $asset_type_dataRow) { ?>
-                                                    <option value="<?php echo $asset_type_dataRow->id?>"><?php echo $asset_type_dataRow->type ?></option>
+                                                    <option value="<?php echo $asset_type_dataRow->id?>"<?php if($getAssetData->asset_type_id==$asset_type_dataRow->id)echo "selected";?>><?php echo $asset_type_dataRow->type ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -117,21 +114,15 @@ $this->load->view('common/left_panel'); ?>
                                             <select class="form-control" name="asset_type_2_id[]" id="asset_type_2_id1">
                                                 <option value="">--Select Product Type 2 Name--</option>
                                                 <?php foreach($productTypes as $asset_type_dataRow) { ?>
-                                                    <option value="<?=$asset_type_dataRow->id?>"><?=$asset_type_dataRow->label?></option>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->product_type_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->label?></option>
                                                 <?php } ?>
                                             </select>
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control" name="asset_name[]" id="asset_name1" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control qty quantity" name="quantity[]" id="quantity1" placeholder="Enter Quantity" autocomplete="off">
                                         </td>
                                         <td>
                                             <select class="form-control" name="color_id[]" id="color_id">
                                                 <option value="">--Select Product Color--</option>
                                                 <?php foreach($color as $asset_type_dataRow) { ?>
-                                                    <option value="<?=$asset_type_dataRow->id?>"><?=$asset_type_dataRow->title?></option>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->color_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -139,7 +130,7 @@ $this->load->view('common/left_panel'); ?>
                                             <select class="form-control" name="size_id[]" id="size_id">
                                                 <option value="">--Select Product Size--</option>
                                                 <?php foreach($size as $asset_type_dataRow) { ?>
-                                                    <option value="<?=$asset_type_dataRow->id?>"><?=$asset_type_dataRow->title?></option>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->size_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -147,7 +138,7 @@ $this->load->view('common/left_panel'); ?>
                                             <select class="form-control" name="fabric_id[]" id="fabric_id">
                                                 <option value="">--Select Product Fabric--</option>
                                                 <?php foreach($fabric as $asset_type_dataRow) { ?>
-                                                    <option value="<?=$asset_type_dataRow->id?>"><?=$asset_type_dataRow->title?></option>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->fabric_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -155,37 +146,39 @@ $this->load->view('common/left_panel'); ?>
                                             <select class="form-control" name="craft_id[]" id="craft_id">
                                                 <option value="">--Select Product Craft--</option>
                                                 <?php foreach($craft as $asset_type_dataRow) { ?>
-                                                    <option value="<?=$asset_type_dataRow->id?>"><?=$asset_type_dataRow->title?></option>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->craft_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
+
                                         <td>
-                                            <input type="text" class="form-control price" name="product_mrp[]" id="product_mrp1" placeholder="Enter Product Price" autocomplete="off" >
+                                            <input type="text" class="form-control qty" name="quantity[]" id="quantity1" value="<?php echo $getAssetData->quantity; ?>" placeholder="Enter Quantity" autocomplete="off">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control price" name="product_mrp[]" id="product_mrp1" value="<?php echo $getAssetData->product_mrp; ?>" placeholder="Enter Product Price" autocomplete="off" >
                                         </td>
 
 
                                         <td>
-                                            <input type="text" class="form-control gstPercent" name="gst_percent[]" id="gst_percent1" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
+                                            <input type="text" class="form-control gstPercent" name="gst_percent[]" id="gst_percent1" value="<?php echo $getAssetData->gst_percent; ?>" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control" name="hsn[]" id="hsn1" readonly="readonly" autocomplete="off" placeholder="Enter HSN" autocomplete="off">
+                                            <input type="text" class="form-control" name="hsn[]" id="hsn1"  value="<?php echo $getAssetData->hsn; ?>" readonly="readonly" autocomplete="off" placeholder="Enter HSN" autocomplete="off">
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control markup" name="markup[]" id="markup1" readonly="readonly" placeholder="Enter Markup" autocomplete="off">
-                                        </td>
+                                            <input type="text" class="form-control markup" name="markup[]" id="markup1" value="<?php echo $getAssetData->markup_percent; ?>" readonly="readonly" placeholder="Enter Markup" autocomplete="off">
 
+                                        </td>
                                         <td>
-                                            <input type="text" class="form-control multTotal" name="multitotal[]"  autocomplete="off" onkeypress="return only_number(event)" readonly="readonly">
+                                            <input type="text" class="form-control multTotal" name="multitotal[]" value="<?php echo $getAssetData->total_amount; ?>" autocomplete="off" onkeypress="return only_number(event)" readonly="readonly">
                                         </td>
-                                        <td class="text-center">
-                                            <input type="hidden" class="sectionA" value="1">
-                                            <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn  btn-sm btn-danger"><i class="fa fa-minus"></i></a>
-                                        </td>
+<!--                                        <td class="text-center">-->
+<!--                                            <input type="hidden" class="sectionA" value="1">-->
+<!--                                            <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn  btn-sm btn-danger"><i class="fa fa-minus"></i></a>-->
+<!--                                        </td>-->
                                     </tr>
-
                                     </tbody>
                                     <tfoot>
-
                                     <tr>
                                         <th colspan="14"><span class="pull-right">Total GST Amount</span></th>
                                         <th>
@@ -321,8 +314,6 @@ $this->load->view('common/left_panel'); ?>
     });
     function price()
     {
-
-        var markup = 0;
         var mult = 0;
         var totalGST = 0;
         var finalTotal = 0;
@@ -337,16 +328,12 @@ $this->load->view('common/left_panel'); ?>
             //consol.log($total);
             mult += $total;
 
-            var $markup = $('.markup', this).val();
-            markup+= ($markup / 100) * $total;
-
             var $gstPercent = $('.gstPercent', this).val();
             totalGST+= ($gstPercent / 100) * $total;
         });
-        $("#grandTotal").val(markup);
+        $("#grandTotal").val(mult);
         $("#totalGST").val(totalGST);
-        $("#finalTotal").val(mult+markup);
-        //$("#finalTotal").val(mult+totalGST+markup);
+        $("#finalTotal").val(mult+totalGST);
     }
 </script>
 <script>
@@ -414,73 +401,63 @@ $this->load->view('common/left_panel'); ?>
         var len = y.rows.length;
         var _date = new Date();
 
-        var inp1 = new_row.cells[0].getElementsByTagName('input')[0];
-        inp1.value = ''; // _date.getDate() + '/' + _date.getMonth() + '/' + _date.getFullYear();
-        inp1.id = 'product_purchase_date'+(len+1);
-        inp1.class = '';
-        inp1.classList.remove('datepicker', 'hasDatepicker');
+        var inp15 = new_row.cells[0].getElementsByTagName('input')[0];
+        inp15.value = ''; // _date.getDate() + '/' + _date.getMonth() + '/' + _date.getFullYear();
+        inp15.id = 'product_purchase_date'+(len+1);
+        inp15.class = '';
+        inp15.classList.remove('datepicker', 'hasDatepicker');
 
-        var inp2 = new_row.cells[1].getElementsByTagName('select')[0];
+        var inp12 = new_row.cells[1].getElementsByTagName('select')[0];
+        inp12.value = '';
+        inp12.id = 'category_id'+(len+1);
+
+        var inp13 = new_row.cells[2].getElementsByTagName('select')[0];
+        inp13.value = '';
+        inp13.id = 'asset_type_id'+(len+1);
+
+        var inp16 = new_row.cells[3].getElementsByTagName('select')[0];
+        inp16.value = '';
+        inp16.id = 'asset_type_2_id'+(len+1);
+
+        var inp1 = new_row.cells[4].getElementsByTagName('input')[0];
+        inp1.value = '';
+        inp1.id = 'sku'+(len+1);
+
+        var inp2 = new_row.cells[5].getElementsByTagName('input')[0];
         inp2.value = '';
-        inp2.id = 'category_id'+(len+1);
+        inp2.id = 'asset_name'+(len+1);
 
-        var inp3 = new_row.cells[2].getElementsByTagName('select')[0];
+        var inp3 = new_row.cells[6].getElementsByTagName('input')[0];
         inp3.value = '';
-        inp3.id = 'asset_type_id'+(len+1);
+        inp3.id = 'quantity'+(len+1);
 
-        var inp4 = new_row.cells[3].getElementsByTagName('select')[0];
+        var inp4 = new_row.cells[7].getElementsByTagName('input')[0];
         inp4.value = '';
-        inp4.id = 'asset_type_2_id'+(len+1);
+        inp4.id = 'product_mrp'+(len+1);
 
-        var inp5 = new_row.cells[4].getElementsByTagName('input')[0];
-        inp5.value = '';
-        inp5.id = 'asset_name'+(len+1);
-
-        var inp6 = new_row.cells[5].getElementsByTagName('input')[0];
-        inp6.value = '';
-        inp6.id = 'quantity'+(len+1);
-
-        var inp4 = new_row.cells[6].getElementsByTagName('select')[0];
-        inp4.value = '';
-        inp4.id = 'color_id'+(len+1);
-
-        var inp4 = new_row.cells[7].getElementsByTagName('select')[0];
-        inp4.value = '';
-        inp4.id = 'size_id'+(len+1);
-
-        var inp4 = new_row.cells[8].getElementsByTagName('select')[0];
-        inp4.value = '';
-        inp4.id = 'fabric_id'+(len+1);
-
-        var inp4 = new_row.cells[9].getElementsByTagName('select')[0];
-        inp4.value = '';
-        inp4.id = 'craft_id'+(len+1);
-
-        var inp5 = new_row.cells[10].getElementsByTagName('input')[0];
-        inp5.value = '';
-        inp5.id = 'product_mrp'+(len+1);
-
-        var inp6 = new_row.cells[11].getElementsByTagName('input')[0];
-        inp6.value = '';
-        inp6.id = 'gst_percent'+(len+1);
-
-        var inp7 = new_row.cells[12].getElementsByTagName('input')[0];
-        inp7.value = '';
-        inp7.id = 'hsn'+(len+1);
-
-        var inp8 = new_row.cells[13].getElementsByTagName('input')[0];
-        inp8.value = '';
-        inp8.id = 'markup'+(len+1);
-
-        var inp5 = new_row.cells[14].getElementsByTagName('input')[0];
+        var inp5 = new_row.cells[8].getElementsByTagName('input')[0];
         inp5.value = '';
         inp5.id = 'total'+(len+1);
         inp5.class = 'multTotal';
 
+
+        var inp6 = new_row.cells[9].getElementsByTagName('input')[0];
+        inp6.value = '';
+        inp6.id = 'gst_percent'+(len+1);
+
+
+        var inp7 = new_row.cells[10].getElementsByTagName('input')[0];
+        inp7.value = '';
+        inp7.id = 'hsn'+(len+1);
+
+        var inp8 = new_row.cells[11].getElementsByTagName('input')[0];
+        inp8.value = '';
+        inp8.id = 'lf_no'+(len+1);
+
         $('.sectionA').val(len+1);
 
         y.appendChild(new_row);
-        $('#'+inp1.id).datepicker();
+        $('#'+inp15.id).datepicker();
     }
 
 
@@ -494,7 +471,7 @@ $this->load->view('common/left_panel'); ?>
 
             $('#gst_percent'+(len+1)).val(obj.gst_percent);
             $('#hsn'+(len+1)).val(obj.hsn);
-            $('#markup'+(len+1)).val(obj.markup);
+
         });
     }
 
@@ -612,7 +589,7 @@ $this->load->view('common/left_panel'); ?>
         //alert(datastring);
         $.ajax({
             type : "post",
-            url : "<?php echo site_url('Warehouse/addDataAssetType'); ?>",
+            url : "<?php echo site_url('Products/addDataAssetType'); ?>",
             data : datastring,
             success : function(response)
             {
@@ -697,7 +674,7 @@ $this->load->view('common/left_panel'); ?>
         var datastring = "id=" + id;
         $.ajax({
             type: "post",
-            url: "<?php echo site_url('Warehouse/getSubcat'); ?>",
+            url: "<?php echo site_url('Products/getSubcat'); ?>",
             data: datastring,
             success: function(returndata) {
                 //alert(returndata);
@@ -732,11 +709,11 @@ $this->load->view('common/left_panel'); ?>
         //   return false;
         // } else
         if(dn_number=='') {
-            $("#dn_number_error").html("Please enter DN No").fadeIn();
+            $("#dn_number_error").html("Please enter Bill No").fadeIn();
             setTimeout(function(){$("#dn_number_error").fadeOut()},5000);
             return false;
         } else if(warehouse_date=='') {
-            $("#warehouse_date_error").html("Please select  Date").fadeIn();
+            $("#warehouse_date_error").html("Please select Bill Date").fadeIn();
             setTimeout(function(){$("#warehouse_date_error").fadeOut()},5000);
             return false;
         }else if(received_from=='') {
@@ -753,7 +730,7 @@ $this->load->view('common/left_panel'); ?>
             var product_mrp = $('#product_mrp1').val();
             var gst_percent = $('#gst_percent1').val();
             var hsn = $('#hsn1').val();
-            var markup = $('#markup1').val();
+            var lf_no = $('#lf_no1').val();
 
             /*alert(category_id);
              alert(asset_type_id);
@@ -900,4 +877,7 @@ $this->load->view('common/left_panel'); ?>
     }
 
 </script>
+
+
+
 

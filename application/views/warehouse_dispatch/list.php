@@ -17,9 +17,9 @@ $this->load->view('common/left_panel');
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-			<?= form_open('Dispatch/search',['id'=>'serch_date']); ?>
+			<?= form_open('Warehouse_Dispatch/search',['id'=>'serch_date']); ?>
                   <div class="form-group row" style="padding-top: 20px;" >
-                    <label class="col-md-2"> select Date<span style="color: red">*</span> <span  id="purchase_date_error" style="color: red"></span></label>
+                    <label class="col-md-2"> Select Date<span style="color: red">*</span> <span  id="purchase_date_error" style="color: red"></span></label>
                     <div class="col-md-3">
                       <!--<input type="text" name="purchase_date" id="purchase_date" class="form-control datepicker" placeholder="Purchase Date" required>-->
 					  <input type="text" class="form-control" name="daterange" value="" />
@@ -35,9 +35,9 @@ $this->load->view('common/left_panel');
                   </div>
                   <?= form_close(); ?>
 			  <?php if($dateinfo!=0){ ?>
-              <form method="post" action="<?=site_url("Dispatch/export_dispatch1/$dateinfo")?>">
+              <form method="post" action="<?=site_url("Warehouse_Dispatch/export_dispatch1/$dateinfo")?>">
 			  <?php }else{ ?>
-			  <form method="post" action="<?=site_url('Dispatch/export_dispatch1')?>">
+			  <form method="post" action="<?=site_url('Warehouse_Dispatch/export_dispatch1')?>">
 			  <?php } ?>
                 <div class="panel-heading">                                
                     <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
@@ -59,16 +59,16 @@ $this->load->view('common/left_panel');
                         <?php if($exportPermission=='1'){?>
 						  <li>
 						    <?php if($dateinfo!=0){ ?>
-							<a href="<?= base_url(); ?>index.php/Dispatch/listpdf/<?= $dateinfo; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
+							<a href="<?= base_url(); ?>index.php/Warehouse_Dispatch/listpdf/<?= $dateinfo; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
 							<?php } else { ?>
-                            <a href="<?= base_url(); ?>index.php/Dispatch/listpdf" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
+                            <a href="<?= base_url(); ?>index.php/Warehouse_Dispatch/listpdf" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
 							<?php } ?>
                           </li>
                           <li><?=$export; ?></li>
                           <button type="submit" style="display: none" id="subbtn"></button>
                           <?php }?>
                         <?php if($addPermission=='1'){?>
-                         <li><a href="<?php echo site_url("Dispatch/create")?>" ><span class="fa fa-plus"></span></a></li>
+                         <li><a href="<?php echo site_url("Warehouse_Dispatch/create")?>" ><span class="fa fa-plus"></span></a></li>
 
                         <?php }?>
                        
@@ -137,29 +137,6 @@ $this->load->view('common/left_panel');
                         <input type="hidden" name="id" id="deleteId" style="display: none;">
                         <span style="font-size: 16px"> 
                           You want to delete this record. 
-                        <br>Are you sure? </span>
-                    </center>
-                </div>
-                <div class="modal-footer">
-                    
-                    <button type="submit" class="btn btn-primary btn-sm">Ok</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="approveData" data-modal-color="lightblue" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">   
-            <form method="post" action="<?= site_url('Dispatch/approveProduct') ?>">       
-                <div class="modal-body" style="height: 120px;padding-top: 3%">
-                    <center>
-                        <input type="hidden" name="id" id="approveId" style="display: none;">
-                        <span style="font-size: 16px"> 
-                          You want to Approve this Product and receive it. 
                         <br>Are you sure? </span>
                     </center>
                 </div>
@@ -302,11 +279,6 @@ $(function() {
       {
         $("#statusId").val(id);
         $("#deleteId").val(id);        
-      }
-      function approveStatus(id)
-      {
-        $("#statusId").val(id);
-        $("#approveId").val(id);        
       }
     </script>
 

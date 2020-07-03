@@ -30,8 +30,8 @@
   </div> 
 
   <div class="form-line">
-   <label>GST %&nbsp;<span style="color:red">*</span>&nbsp;<span id="EdittitleError4" style="color:red"></span> </label>
-  <input class="form-control" type="text" name="markup_percent" id="markup_percent1" placeholder="GST %" value="<?= $markup_percent ?>" size="35"/> &nbsp;
+   <label>Markup %&nbsp;<span style="color:red">*</span>&nbsp;<span id="EdittitleError4" style="color:red"></span> </label>
+  <input class="form-control" type="text" name="markup_percent" id="markup_percent1" placeholder="Markup %" value="<?= $markup_percent ?>" size="35"/> &nbsp;
   </div> 
 
   <input type="hidden" name="id" id="updateId" value="<?= $id ?>" size="35"/> &nbsp; 
