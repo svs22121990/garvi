@@ -88,7 +88,7 @@ $this->load->view('common/left_panel'); ?>
                                     </tr>
                                     </thead>
                                     <tbody id="professorTableBody">
-                                    <?php for ($i=0; $i<count($getAssetData); $i++) { ?>
+                                    <?php for ($i=1; $i<=$getAssetData; $i++) { ?>
                                     <tr class="trRow">
                                         <td>
                                             <input type="text" name="product_purchase_date[]" id="product_purchase_date<?php $i ?>" value="<?php echo $getAssetData[$i]->purchase_date; ?>" class="form-control datepicker" placeholder="Purchase Date">
@@ -97,7 +97,7 @@ $this->load->view('common/left_panel'); ?>
                                             <select class="form-control" name="category_id[]" id="category_id1" onchange="getGST(this.value,$(this).closest('tr').index());">
                                                 <option value="">--Select Product Category--</option>
                                                 <?php foreach($category_data as $category_dataRow) { ?>
-                                                    <option value="<?php echo $category_dataRow->id?>"<?php if($getAssetData[$i]->category_id==$category_dataRow->id)echo "selected";?>><?php echo $category_dataRow->title?></option>
+                                                    <option value="<?php echo $category_dataRow->id?>"<?php if($getAssetData->category_id==$category_dataRow->id)echo "selected";?>><?php echo $category_dataRow->title?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -105,7 +105,7 @@ $this->load->view('common/left_panel'); ?>
                                             <select class="form-control" name="asset_type_id[]" id="asset_type_id1">
                                                 <option value="">--Select Product Type Name--</option>
                                                 <?php foreach($asset_type_data as $asset_type_dataRow) { ?>
-                                                    <option value="<?php echo $asset_type_dataRow->id?>"<?php if($getAssetData[$i]->asset_type_id==$asset_type_dataRow->id)echo "selected";?>><?php echo $asset_type_dataRow->type ?></option>
+                                                    <option value="<?php echo $asset_type_dataRow->id?>"<?php if($getAssetData->asset_type_id==$asset_type_dataRow->id)echo "selected";?>><?php echo $asset_type_dataRow->type ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -113,21 +113,21 @@ $this->load->view('common/left_panel'); ?>
                                             <select class="form-control" name="asset_type_2_id[]" id="asset_type_2_id1">
                                                 <option value="">--Select Product Type 2 Name--</option>
                                                 <?php foreach($productTypes as $asset_type_dataRow) { ?>
-                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData[$i]->product_type_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->label?></option>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->product_type_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->label?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control" name="asset_name[]" id="asset_name1" value="<?php echo $getAssetData[$i]->asset_name; ?>" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
+                                            <input type="text" class="form-control" name="asset_name[]" id="asset_name1" value="<?php echo $getAssetData->asset_name; ?>" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control qty" name="quantity[]" id="quantity1" value="<?php echo $getAssetData[$i]->quantity; ?>" placeholder="Enter Quantity" autocomplete="off">
+                                            <input type="text" class="form-control qty" name="quantity[]" id="quantity1" value="<?php echo $getAssetData->quantity; ?>" placeholder="Enter Quantity" autocomplete="off">
                                         </td>
                                         <td>
                                             <select class="form-control" name="color_id[]" id="color_id">
                                                 <option value="">--Select Product Color--</option>
                                                 <?php foreach($color as $asset_type_dataRow) { ?>
-                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData[$i]->color_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->color_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -135,7 +135,7 @@ $this->load->view('common/left_panel'); ?>
                                             <select class="form-control" name="size_id[]" id="size_id">
                                                 <option value="">--Select Product Size--</option>
                                                 <?php foreach($size as $asset_type_dataRow) { ?>
-                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData[$i]->size_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->size_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -143,7 +143,7 @@ $this->load->view('common/left_panel'); ?>
                                             <select class="form-control" name="fabric_id[]" id="fabric_id">
                                                 <option value="">--Select Product Fabric--</option>
                                                 <?php foreach($fabric as $asset_type_dataRow) { ?>
-                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData[$i]->fabric_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->fabric_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -151,32 +151,32 @@ $this->load->view('common/left_panel'); ?>
                                             <select class="form-control" name="craft_id[]" id="craft_id">
                                                 <option value="">--Select Product Craft--</option>
                                                 <?php foreach($craft as $asset_type_dataRow) { ?>
-                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData[$i]->craft_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
+                                                    <option value="<?=$asset_type_dataRow->id?>"<?php if($getAssetData->craft_id==$asset_type_dataRow->id)echo "selected";?>><?=$asset_type_dataRow->title?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control price" name="price[]" id="price1" value="<?php echo $getAssetData[$i]->product_mrp; ?>" placeholder="Enter Product Price" autocomplete="off" >
+                                            <input type="text" class="form-control price" name="price[]" id="price1" value="<?php echo $getAssetData->product_mrp; ?>" placeholder="Enter Product Price" autocomplete="off" >
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control cost_total" name="cost_total[]" id="cost_total1" value="<?php echo $getAssetData[$i]->product_mrp; ?>" readonly="readonly" autocomplete="off" >
+                                            <input type="text" class="form-control cost_total" name="cost_total[]" id="cost_total1" value="<?php echo $getAssetData->product_mrp; ?>" readonly="readonly" autocomplete="off" >
                                         </td>
 
                                         <td>
-                                            <input type="text" class="form-control gstPercent" name="gst_percent[]" id="gst_percent1" value="<?php echo $getAssetData[$i]->gst_percent; ?>" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
+                                            <input type="text" class="form-control gstPercent" name="gst_percent[]" id="gst_percent1" value="<?php echo $getAssetData->gst_percent; ?>" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control" name="hsn[]" id="hsn1"  value="<?php echo $getAssetData[$i]->hsn; ?>" readonly="readonly" autocomplete="off" placeholder="Enter HSN" autocomplete="off">
+                                            <input type="text" class="form-control" name="hsn[]" id="hsn1"  value="<?php echo $getAssetData->hsn; ?>" readonly="readonly" autocomplete="off" placeholder="Enter HSN" autocomplete="off">
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control markup" name="markup[]" id="markup1" value="<?php echo $getAssetData[$i]->markup_percent; ?>" readonly="readonly" placeholder="Enter Markup" autocomplete="off">
+                                            <input type="text" class="form-control markup" name="markup[]" id="markup1" value="<?php echo $getAssetData->markup_percent; ?>" readonly="readonly" placeholder="Enter Markup" autocomplete="off">
 
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control sp" name="sp[]" id="sp1" value="<?php echo $getAssetData[$i]->product_mrp; ?>" readonly="readonly" autocomplete="off">
+                                            <input type="text" class="form-control sp" name="sp[]" id="sp1" value="<?php echo $getAssetData->product_mrp; ?>" readonly="readonly" autocomplete="off">
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control sp_total" name="sp_total[]" value="<?php echo $getAssetData[$i]->sp_total; ?>" id="sp_total1" autocomplete="off" readonly="readonly">
+                                            <input type="text" class="form-control sp_total" name="sp_total[]" value="<?php echo $getAssetData->sp_total; ?>" id="sp_total1" autocomplete="off" readonly="readonly">
                                         </td>
                                     </tr>
                                     <?php } ?>
@@ -340,7 +340,6 @@ $this->load->view('common/left_panel'); ?>
     }
 </script>
 <script>
-    price();
     $(document).ready(function(e){
         src = '<?= site_url('Products/getSubcategory'); ?>';
         $("#subcategory_id").autocomplete({
@@ -477,7 +476,6 @@ $this->load->view('common/left_panel'); ?>
             $('#hsn'+(len+1)).val(obj.hsn);
             $('#markup'+(len+1)).val(obj.markup);
         });
-        price();
     }
 
 

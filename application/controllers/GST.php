@@ -126,6 +126,7 @@ class GST extends CI_Controller {
             $nestedData = array();
             $nestedData[] = $no;
             $nestedData[] = $row->title;
+            $nestedData[] = $row->code;
             $nestedData[] = $row->hsn;
             $nestedData[] = $row->gst_percent;
             $nestedData[] = $row->markup_percent;
@@ -175,6 +176,7 @@ class GST extends CI_Controller {
           {
               $data = array(
                 'category_id' => $this->input->post('category_id'),
+                'code' => strtoupper($this->input->post('code')),
                 'hsn' => $this->input->post('hsn'),
                 'gst_percent' => $this->input->post('gst_percent'),
                   'markup_percent' => $this->input->post('markup_percent'),
@@ -202,7 +204,8 @@ class GST extends CI_Controller {
           else
           {
               $data = array(
-                'category_id' => $this->input->post('category_id'),     
+                'category_id' => $this->input->post('category_id'),   
+                'code' => strtoupper($this->input->post('code')),  
                 'hsn' => $this->input->post('hsn'),           
                 'gst_percent' => $this->input->post('gst_percent'),
                   'markup_percent' => $this->input->post('markup_percent'),
@@ -229,6 +232,7 @@ class GST extends CI_Controller {
           'action' => site_url('GST/update_action/'.$id),
           'id' => set_value('id', $row->id),
           'category_id' => set_value('category_id', $row->category_id),
+          'code' => set_value('code', $row->code),
           'hsn' => set_value('hsn', $row->hsn),
           'gst_percent' => set_value('gst_percent', $row->gst_percent),
           'markup_percent' => set_value('markup_percent', $row->markup_percent),
@@ -251,6 +255,35 @@ class GST extends CI_Controller {
         redirect('GST/index');
       }
 
+      public function checkCode1()
+      {
+        $this->db->select('*');
+        $this->db->from('mst_gst');
+        $this->db->where('code', strtoupper($_POST['code']));
+        $query = $this->db->get();
+        return $query->num_rows();
+        $row = $this->Crud_model->GetData('mst_gst','',"code='".strtoupper($_POST['code'])."'",'','','','row'); 
+        print_r($row);
+        die;
+        if($row == null)
+            echo "0";
+        else
+            echo "1";      
+      }
+
+      public function checkCode()
+      {
+        if (isset($_POST['id'])) {
+          $con = "code='" . strtoupper($_POST['code']) . "' and id!='" . $_POST['id'] . "'";
+        } else {
+          $con = "code='" . strtoupper($_POST['code']) . "'";
+        }
+        $chkdupliasset = $this->Crud_model->GetData('assets', "", $con);
+        if (count($chkdupliasset) > 0) {
+          echo "1";
+        }
+      }
+
       public function getUpdateName()
       {
         $row = $this->Crud_model->GetData('mst_gst','',"id='".$_POST['id']."'",'','','','row');       
@@ -260,7 +293,7 @@ class GST extends CI_Controller {
 
         //  echo "$country->name";
 
-         $data = array('gst_percent'=> $row->gst_percent,'markup_percent'=> $row->markup_percent,'id'=> $row->id,'category_id'=> $row->category_id, 'categories'=> $categories,'hsn'=> $row->hsn);
+         $data = array('gst_percent'=> $row->gst_percent,'markup_percent'=> $row->markup_percent,'id'=> $row->id,'category_id'=> $row->category_id, 'categories'=> $categories,'hsn'=> $row->hsn,'code'=> $row->code);
        
           $this->load->view('GST/geteditCity',$data);
       }

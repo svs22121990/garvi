@@ -24,10 +24,8 @@ class Warehouse_model extends CI_Model
                 p.warehouse_date,
                 p.received_from,
                 e.name as employee_name,
-                (select SUM(product_mrp) from warehouse_details where warehouse_id=p.id) as sum_amount,
-                (select SUM(total_quantity) from warehouse_details where warehouse_id=p.id) as sum_quantity,
-                (select SUM(product_mrp * total_quantity) from warehouse_details as a where warehouse_id=p.id) as total_amount,
-                (select label from product_type where id=warehouse_details.product_type_id) as product_type
+                (select SUM(cost_total) from warehouse_details where warehouse_id=p.id) as cost_total,
+                (select SUM(sp_total) from warehouse_details as a where warehouse_id=p.id) as sp_total,
             ');
         $this->db->from("warehouse p");
         $this->db->join("employees e","e.id = p.received_from","left");
@@ -81,7 +79,8 @@ class Warehouse_model extends CI_Model
             ast.asset_type_id,
             ast.product_type_id,
             ast.product_mrp,
-            ast.total_quantity,
+            ast.sp_total,
+            ast.price,
             ast.quantity,
             ast.size_id,
             ast.color_id,
@@ -97,7 +96,7 @@ class Warehouse_model extends CI_Model
             cat.title,
             ast.hsn,
             ast.gst_percent,
-            ast.total_amount,
+            ast.cost_total,
             ast.purchase_date,
             ast.markup_percent,
             p.dn_number,
@@ -115,6 +114,53 @@ class Warehouse_model extends CI_Model
         $this->db->join("warehouse p", "p.id = ast.warehouse_id", "left");
         $this->db->join("employees e","e.id = p.received_from","left");
         $this->db->where("ast.warehouse_id='".$id."'");
+        return $this->db->get('warehouse_details ast')->result();
+    }
+
+    public function getSingleDetails($id)
+    {
+        $this->db->select('
+            ast.asset_name,
+            ast.id,
+            ast.category_id,
+            ast.asset_type_id,
+            ast.product_type_id,
+            ast.product_mrp,
+            ast.sp_total,
+            ast.price,
+            ast.quantity,
+            ast.size_id,
+            ast.color_id,
+            ast.fabric_id,
+            ast.craft_id,
+            cat.title,
+            mat.type,
+            pro.label,
+            siz.title as size,
+            col.title as color,
+            fab.title as fabric,
+            cra.title as craft,
+            cat.title,
+            ast.hsn,
+            ast.gst_percent,
+            ast.cost_total,
+            ast.purchase_date,
+            ast.markup_percent,
+            p.dn_number,
+            p.warehouse_date,
+            p.received_from,
+            e.name as employee_name,'
+        );
+        $this->db->join("size siz","siz.id = ast.size_id","left");
+        $this->db->join("color col","col.id = ast.color_id","left");
+        $this->db->join("fabric fab","fab.id = ast.fabric_id","left");
+        $this->db->join("craft cra","cra.id = ast.craft_id","left");
+        $this->db->join("categories cat","cat.id = ast.category_id","left");
+        $this->db->join("mst_asset_types mat","mat.id = ast.asset_type_id","left");
+        $this->db->join("product_type pro","pro.id = ast.product_type_id","left");
+        $this->db->join("warehouse p", "p.id = ast.warehouse_id", "left");
+        $this->db->join("employees e","e.id = p.received_from","left");
+        $this->db->where("ast.id='".$id."'");
         return $this->db->get('warehouse_details ast')->result();
     }
 

@@ -90,7 +90,7 @@ class Dispatch_model extends CI_Model
 
     private function warehouse_get_datatables_query($con)
     {
-        $this->db->select('p.id,p.dn_number,p.dispatch_date,p.sent_to,p.status,e.name as employee_name,(select SUM(price) from warehouse_dispatch_details where dispatch_id=p.id) as sum_amount');
+        $this->db->select('p.id,p.dn_number,p.dispatch_date,p.sent_to,p.status,de.gst_percent,e.name as employee_name,(select SUM(price) from warehouse_dispatch_details where dispatch_id=p.id) as sum_amount, (select SUM(quantity) from warehouse_dispatch_details where dispatch_id=p.id) as sum_quantity');
         $this->db->from("warehouse_dispatch p");
         $this->db->join("employees e","e.id = p.sent_to","left");
         $this->db->join("warehouse_dispatch_details de","de.dispatch_id = p.id","right");
@@ -126,7 +126,7 @@ class Dispatch_model extends CI_Model
 
     public function warehouse_getAllDetails($id)
     {
-        $this->db->select('a.asset_name,ast.id,ast.price,ast.quantity,ast.gst_percent,ast.lf_no,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft');
+        $this->db->select('a.asset_name,ast.id,ast.price,ast.quantity,ast.gst_percent,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft');
         $this->db->where("ast.dispatch_id='".$id."'"); 
         $this->db->join("warehouse_dispatch d","d.id = ast.dispatch_id","left");    
         $this->db->join("warehouse_details a","a.id = ast.product_id","left");

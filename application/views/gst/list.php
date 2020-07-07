@@ -31,6 +31,7 @@
                             <tr>
                                 <th>Sr no.</th>
                                 <th>Category Name</th>
+                                <th>Code</th>
                                 <th>HSN</th>
                                 <th>GST %</th>
                                 <th>Markup %</th>
@@ -71,18 +72,22 @@
               <option value="<?php echo $row_data->id; ?>"><?php echo $row_data->title; ?> </option>
               <?php } ?>
             </select> &nbsp;
-            
             </div>
+
+            <div class="form-line">
+            <label for="datetime">Code: <span style="color:red">*</span>&nbsp;<span id="codeError" style="color:red"></span></label>
+              <input class="form-control"  type="text" name="code" id="code" placeholder="Code" value="" size="2"/> &nbsp; 
+            </div>
+
             <div class="form-line">
             <label for="datetime">HSN: <span style="color:red">*</span>&nbsp;<span id="state_idError1" style="color:red"></span></label>
               <input class="form-control"  type="text" name="hsn" id="hsn" placeholder="HSN" value="" size="35"/> &nbsp; 
             </div>
 
             <div class="form-line">
-            <label>GST %<span style="color:red">*</span>&nbsp;<span id="city_nameError" style="color:red"></span></label>
-            <input class="form-control"  type="text" name="gst_percent" id="gst_percent" placeholder="GST %" value="" size="35"/> &nbsp; 
-            
-          </div>
+              <label>GST %<span style="color:red">*</span>&nbsp;<span id="city_nameError" style="color:red"></span></label>
+              <input class="form-control"  type="text" name="gst_percent" id="gst_percent" placeholder="GST %" value="" size="35"/> &nbsp;   
+            </div>
              <div class="form-line">
                  <label>Markup %<span style="color:red">*</span>&nbsp;<span id="city_nameError2" style="color:red"></span></label>
                  <input class="form-control"  type="text" name="markup_percent" id="markup_percent" placeholder="Markup %" value="" size="35"/> &nbsp;
@@ -184,6 +189,7 @@
     {
       
       var category_id = $("#category_id").val();
+      var code = $("#code").val();  
       var hsn = $("#hsn").val();
       var gst_percent = $("#gst_percent").val();
         var markup_percent = $("#markup_percent").val();
@@ -195,6 +201,31 @@
         setTimeout(function(){$("#nameError1").fadeOut();},2000);
         $("#category_id").focus();
         return false;
+      }
+      if($.trim(code) == "")
+      {
+        $("#codeError").fadeIn().html("Please enter Code");
+        setTimeout(function(){$("#codeError").fadeOut();},2000);
+        $("#code").focus();
+        return false;
+      } else {
+          $.ajax({
+            type: "POST",
+            url: "<?= site_url('GST/checkCode'); ?>",
+            data: {code:$.trim(code)},
+            cache: false,       
+            success: function(result)
+            {
+              if(result == "1")
+              {
+                alert(result);
+                $("#codeError").fadeIn().html("Code Already in use.");
+                setTimeout(function(){$("#codeError").fadeOut();},2000);
+                $("#code").focus();
+                return false;
+              }
+            }             
+          });
       }
       if($.trim(hsn) == "")
       {
@@ -218,7 +249,7 @@
             $("#markup_percent").focus();
             return false;
         }
-      var datastring  = "category_id="+category_id+"&hsn="+hsn+"&gst_percent="+gst_percent+"&markup_percent="+markup_percent;
+      var datastring  = "category_id="+category_id+"&code="+code+"&hsn="+hsn+"&gst_percent="+gst_percent+"&markup_percent="+markup_percent;
       var table = $('.example_datatable').DataTable();
       $.ajax({
         type : "post",
@@ -270,6 +301,7 @@
 function updateData()
 { 
   var category_id = $("#category_id1").val();  
+  var code = $("#code1").val();  
   var hsn = $("#hsn1").val();  
   var gst_percent = $("#gst_percent1").val();
     var markup_percent = $("#markup_percent1").val();
@@ -283,9 +315,16 @@ function updateData()
     $("#category_id1").focus();
     return false;
   }
+  if($.trim(code) == "")
+  {
+    $("#codeError").fadeIn().html("Please enter Code");
+    setTimeout(function(){$("#codeError").fadeOut();},2000);
+    $("#code1").focus();
+    return false;
+  }
   if($.trim(hsn) == "")
   {
-    $("#EdittitleError2").fadeIn().html("Please enter hsn");
+    $("#EdittitleError2").fadeIn().html("Please enter HSN");
     setTimeout(function(){$("#EdittitleError2").fadeOut();},2000);
     $("#hsn1").focus();
     return false;
@@ -305,7 +344,7 @@ function updateData()
         return false;
     }
 
-  var datastring  = "category_id="+category_id+"&hsn="+hsn+"&id="+updateId+"&gst_percent="+gst_percent+"&markup_percent="+markup_percent;
+  var datastring  = "category_id="+category_id+"&code="+code+"&id="+"&hsn="+hsn+"&id="+updateId+"&gst_percent="+gst_percent+"&markup_percent="+markup_percent;
   var table = $('.example_datatable').DataTable();
   $.ajax({
     type : "post",

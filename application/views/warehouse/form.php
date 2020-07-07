@@ -70,7 +70,7 @@ $this->load->view('common/left_panel'); ?>
 
                         </div>
                         <div class="col-md-12" style="padding: 0;">
-                            <div class="">
+                            <div>
                                 <table class="table table-striped table-bordered">
                                     <thead>
                                     <tr>
@@ -79,16 +79,18 @@ $this->load->view('common/left_panel'); ?>
                                         <th>Product Type <a href="#myModalAssetType" class="pull-right" data-toggle="modal" data-target="" title="Add new Product Type"></a><span style="color: red">*</span> <span  id="asset_type_id_error" style="color: red"></span></th>
                                         <th> Product Type 2 <span style="color: red">*</span> </th>
                                         <th> Name <span style="color: red">*</span><span style="color: red" id="asset_name_error"></span></th>
-                                        <th> Quantity <span style="color: red">*</span><span style="color: red" id="error_quantity"></span></th>
-                                        <th>Color<span style="color: red">*</span> </th>
+                                        <th> Qty <span style="color: red">*</span><span style="color: red" id="error_quantity"></span></th>
+                                        <th> Color<span style="color: red">*</span> </th>
                                         <th> Size <span style="color: red">*</span> </th>
                                         <th> Fabric <span style="color: red">*</span> </th>
                                         <th> Craft<span style="color: red">*</span> </th>
                                         <th> Cost Price  <span style="color: red">*</span><span style="color: red"id="error_price"></span></th>
+                                        <th> Total Cost Amt  <span style="color: red">*</span></th>
                                         <th> GST % <span style="color: red">*</span><span  id="error_gst_percent"></span></th>
                                         <th> HSN <span style="color: red">*</span><span id="error_hsn"></span></th>
                                         <th> Markup %<span style="color: red">*</span><span style="color: red" id="lf_no_error"></span></th>
-                                        <th>Total Amount</th>
+                                        <th> Selling Price </th>
+                                        <th>Total Selling Amt</th>
                                         <th class="text-center"> <a  href="javascript:void(0)" class="btn  btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>
                                     </tr>
                                     </thead>
@@ -162,8 +164,9 @@ $this->load->view('common/left_panel'); ?>
                                         <td>
                                             <input type="text" class="form-control price" name="product_mrp[]" id="product_mrp1" placeholder="Enter Product Price" autocomplete="off" >
                                         </td>
-
-
+                                        <td>
+                                            <input type="text" class="form-control cost_total" name="cost_total[]" id="cost_total1" readonly="readonly" autocomplete="off" >
+                                        </td>
                                         <td>
                                             <input type="text" class="form-control gstPercent" name="gst_percent[]" id="gst_percent1" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
                                         </td>
@@ -173,9 +176,11 @@ $this->load->view('common/left_panel'); ?>
                                         <td>
                                             <input type="text" class="form-control markup" name="markup[]" id="markup1" readonly="readonly" placeholder="Enter Markup" autocomplete="off">
                                         </td>
-
                                         <td>
-                                            <input type="text" class="form-control multTotal" name="multitotal[]"  autocomplete="off" onkeypress="return only_number(event)" readonly="readonly">
+                                            <input type="text" class="form-control sp" name="sp[]" id="sp1" readonly="readonly" autocomplete="off">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control sp_total" name="sp_total[]" id="sp_total1" autocomplete="off" onkeypress="return only_number(event)" readonly="readonly">
                                         </td>
                                         <td class="text-center">
                                             <input type="hidden" class="sectionA" value="1">
@@ -185,22 +190,32 @@ $this->load->view('common/left_panel'); ?>
 
                                     </tbody>
                                     <tfoot>
-
                                     <tr>
-                                        <th colspan="14"><span class="pull-right">Total GST Amount</span></th>
-                                        <th>
-                                            <input type="text" class="form-control" id="totalGST" readonly="readonly" value="0">
+                                        <th colspan="15"><span class="pull-right">Total SGST Amount</span></th>
+                                        <th colspan="2">
+                                            <input type="text" class="form-control" id="totalSGST" readonly="readonly" value="0">
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th colspan="14" >&nbsp;<span class="pull-right">Total Markup Amount</span></th>
-                                        <th><input type="text" class="form-control" name="gtotal" id="grandTotal" readonly="readonly" value="0"></th>
+                                        <th colspan="15"><span class="pull-right">Total CGST Amount</span></th>
+                                        <th colspan="2">
+                                            <input type="text" class="form-control" id="totalCGST" readonly="readonly" value="0">
+                                        </th>
                                     </tr>
-
                                     <tr>
-                                        <th colspan="14" >&nbsp;<span class="pull-right">Final Selling Price </span></th>
-                                        <th>
-                                            <input type="text" class="form-control" id="finalTotal" readonly="readonly" value="0">
+                                        <th colspan="15" >&nbsp;<span class="pull-right">Total Markup Amount</span></th>
+                                        <th colspan="2"><input type="text" class="form-control" name="gtotal" id="grandTotal" readonly="readonly" value="0"></th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="15" >&nbsp;<span class="pull-right">Total Cost Price </span></th>
+                                        <th colspan="2">
+                                            <input type="text" class="form-control" id="costTotal" readonly="readonly" value="0">
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="15" >&nbsp;<span class="pull-right">Total Selling Price </span></th>
+                                        <th colspan="2">
+                                            <input type="text" class="form-control" id="spTotal" readonly="readonly" value="0">
                                         </th>
                                     </tr>
                                     </tfoot>
@@ -222,95 +237,6 @@ $this->load->view('common/left_panel'); ?>
 </div>
 <!-- END PAGE CONTENT WRAPPER -->
 
-<!--add new unit-->
-<div class="modal fade" id="myModalunit" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" id="closeUnit">&times;</button>
-                <h4 class="modal-title">Add New Unit Type <span id="successEntry" style="color:green"></span></h4>
-            </div>
-            <div class="modal-body">
-                <form method="post" id="unit" onsubmit="return saveData()">
-                    <label>Unit Type Name:</label> <span style="color:red">*</span> <span id="nameError" style="color:red"></span><br>
-                    <input type="text" name="name"  class="form-control" id="name" value="" autocomplete="off" size="35"/> &nbsp;
-
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-round btn-success" id="statusSubBtn" onclick="return saveData()">Submit</button>
-                <button type="button" class="btn btn-round btn-danger"  data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--add new unit-->
-
-<div id="myModalCategory" class="modal fade" role="dialog xs">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Add Category</h4>
-            </div>
-            <div class="modal-body">
-                <div class="col-md-12 text-success text-center" id="success_message"></div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <label>Category Name <span style="color:red;">*</span><span id="error_category_id_title" style="color:red"></span></label>
-                        <input type="text" class="form-control" name="category_title" id="category_title" placeholder="Category Name">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="return validation_subcategory();">Submit</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--Asset type modal-->
-<div class="modal fade" id="myModalAssetType" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" id="assetclosetype">&times;</button>
-                <h4 class="modal-title">Add New Product Type <span id="successEntry" style="color:green"></span></h4>
-            </div>
-            <div class="modal-body">
-                <form method="post" id="asset" onsubmit="return saveDataAssetType()">
-                    <label>Product Type Name:</label> <span style="color:red">*</span> <span id="nameErrorAsset" style="color:red"></span><br>
-                    <input type="text" name="nametype"  class="form-control" id="nametype" placeholder="Product Type Name" value="" autocomplete="off" size="35"/> &nbsp; <br>
-
-                    <!-- <label>Is saleable:</label> <span style="color:red">*</span> <span id="saleableError" style="color:red"></span><br>
-                    <select class="form-control" name="saleable" id="saleable">
-                      <option value="">--Select Type--</option>
-                      <option value="Yes">Yes</option>
-                      <option value="NO">No</option>
-                    </select> <br>
-
-                    <label>Is barcode:</label> <span style="color:red">*</span> <span id="barcodeError" style="color:red"></span>
-                    <select class="form-control" name="barcode" id="barcode">
-                      <option value="">--Select Type--</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                    </select> -->
-
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-round btn-success" id="statusSubBtn" onclick="return saveDataAssetType()">Submit</button>
-                <button type="button" class="btn btn-round btn-danger"  data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--Asset type modal-->
-
-
-
 <?php $this->load->view('common/footer');?>
 <script>
     $(document).on('keyup','.price',function(){
@@ -321,7 +247,6 @@ $this->load->view('common/left_panel'); ?>
     });
     function price()
     {
-
         var markup = 0;
         var mult = 0;
         var totalGST = 0;
@@ -333,19 +258,26 @@ $this->load->view('common/left_panel'); ?>
             var $val2 = $('.qty', this).val();
             var $total = ($val1 * 1) * ($val2 * 1);
             // set total for the row
-            $('.multTotal', this).val($total);
-            //consol.log($total);
+            $('.cost_total', this).val($total);
+
             mult += $total;
 
             var $markup = $('.markup', this).val();
-            markup+= ($markup / 100) * $total;
 
+            var $sp = ($val1 * 1) + (($val1 * 1) * (($markup * 1)/100));
+            $('.sp', this).val($sp);
+            var $sp_total = ($sp * 1) * ($val2 * 1);
+            $('.sp_total', this).val($sp_total);
+            markup+= ($markup / 100) * $total;
+            
             var $gstPercent = $('.gstPercent', this).val();
             totalGST+= ($gstPercent / 100) * $total;
         });
         $("#grandTotal").val(markup);
-        $("#totalGST").val(totalGST);
-        $("#finalTotal").val(mult+markup);
+        $("#totalCGST").val(totalGST / 2);
+        $("#totalSGST").val(totalGST / 2);
+        $("#costTotal").val(mult);
+        $("#spTotal").val(mult+markup);
         //$("#finalTotal").val(mult+totalGST+markup);
     }
 </script>
@@ -460,21 +392,29 @@ $this->load->view('common/left_panel'); ?>
         inp5.value = '';
         inp5.id = 'product_mrp'+(len+1);
 
-        var inp6 = new_row.cells[11].getElementsByTagName('input')[0];
+        var inp5 = new_row.cells[11].getElementsByTagName('input')[0];
+        inp5.value = '';
+        inp5.id = 'cost_total'+(len+1);
+
+        var inp6 = new_row.cells[12].getElementsByTagName('input')[0];
         inp6.value = '';
         inp6.id = 'gst_percent'+(len+1);
 
-        var inp7 = new_row.cells[12].getElementsByTagName('input')[0];
+        var inp7 = new_row.cells[13].getElementsByTagName('input')[0];
         inp7.value = '';
         inp7.id = 'hsn'+(len+1);
 
-        var inp8 = new_row.cells[13].getElementsByTagName('input')[0];
+        var inp8 = new_row.cells[14].getElementsByTagName('input')[0];
         inp8.value = '';
         inp8.id = 'markup'+(len+1);
 
-        var inp5 = new_row.cells[14].getElementsByTagName('input')[0];
+        var inp8 = new_row.cells[15].getElementsByTagName('input')[0];
+        inp8.value = '';
+        inp8.id = 'sp'+(len+1);
+
+        var inp5 = new_row.cells[16].getElementsByTagName('input')[0];
         inp5.value = '';
-        inp5.id = 'total'+(len+1);
+        inp5.id = 'sp_total'+(len+1);
         inp5.class = 'multTotal';
 
         $('.sectionA').val(len+1);

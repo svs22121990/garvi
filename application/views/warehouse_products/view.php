@@ -46,38 +46,60 @@ $this->load->view('common/left_panel');
                                                              <tr>                                                               
                                                                 <th>Product Name</th>
                                                                 <th>Quantity</th>  
-                                                                <th>Price</th>
                                                                 <th>Category</th>
                                                                 <th>Size</th>
                                                                 <th>Color</th>
                                                                 <th>Fabric</th>  
                                                                 <th>Craft</th>
+                                                                <th>Selling Price</th>
                                                                 <th>GST %</th>
-                                                                <th>LF No.</th>
+                                                                <th>GST</th>
                                                                 <!-- <th>Image</th> -->                                                          
                                                             </tr>
                                                         </thead>
                                                         
                                                         <tbody> 
                                                             <?php 
+                                                            $totalGST = 0;
+                                                            $totalSP = 0;
                                                             foreach ($getAssetData as $getData) {
                                                             ?> 
                                                             <tr>
                                                                 <td><?php echo $getData->asset_name ?></td>
                                                                 <td><?php echo $getData->quantity; ?></td>
-                                                                <td><?php echo $getData->price; ?></td>
                                                                 <td><?php echo $getData->title; ?></td>
                                                                 <td><?php echo $getData->size; ?></td>
                                                                 <td><?php echo $getData->color; ?></td>
                                                                 <td><?php echo $getData->fabric; ?></td>
                                                                 <td><?php echo $getData->craft; ?></td>
+                                                                <td><?php echo 'Rs. '.$getData->price; ?></td>
                                                                 <td><?php echo $getData->gst_percent ?></td>
-                                                                <td><div class=scrollable><?php echo $getData->lf_no ?></div></td>
+                                                                <td><?php echo 'Rs. '.(($getData->price * $getData->quantity) * ($getData->gst_percent/100)) ?></td>
                                                             </tr>  
                                                             <?php 
+                                                            $totalGST += (($getData->price * $getData->quantity) * ($getData->gst_percent/100));
+                                                            $totalSP += ($getData->price * $getData->quantity);
                                                             }
                                                             ?>     
                                                         </tbody>
+                                                        <tr>
+                                                            <td colspan="8" >&nbsp;<span class="pull-right">Total CGST Amount</span></td>
+                                                            <th colspan="2">
+                                                                <?= "Rs. " . number_format($totalGST/2, 2); ?>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="8" >&nbsp;<span class="pull-right">Total SGST Amount</span></td>
+                                                            <th colspan="2">
+                                                                <?= "Rs. " . number_format($totalGST/2, 2); ?>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="8" >&nbsp;<span class="pull-right">Total Selling Price</span></td>
+                                                            <th colspan="2">
+                                                                <?= "Rs. " . number_format($totalSP, 2); ?>
+                                                            </th>
+                                                        </tr>
                                                     </table>
                                                     <?php } ?>
                                                 </div>

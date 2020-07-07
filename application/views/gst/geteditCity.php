@@ -14,6 +14,11 @@
   </select> &nbsp;
 </div>
 
+<div class="form-line">
+  <label for="datetime">Code: <span style="color:red">*</span>&nbsp;<span id="codeError" style="color:red"></span></label>
+  <input class="form-control"  type="text" name="code" id="code1" placeholder="Code" value="<?php echo $code ?>" size="2"/> &nbsp; 
+</div>
+
 <!--For Edit Country Ends-->
 
 <!-- For State Edit-->

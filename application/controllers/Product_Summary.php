@@ -182,6 +182,7 @@ class Product_Summary extends CI_Controller
           'quantity' => $row->quantity,
           'total' => number_format($row->quantity * $row->product_mrp, 2),
           'purchase_date' => $row->purchase_date,
+          'attributes' => '<b>Color : </b>'.$row->color.'</br><b>Size : </b>'.$row->size.'</br><b>Fabric : </b>'.$row->fabric.'</br><b>Craft : </b>'.$row->craft,
           'product_purchase_date' => $row->product_purchase_date,
           'productType' => $row->product_type,
           'time' => implode(" ", $arrTime),

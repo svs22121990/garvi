@@ -86,6 +86,7 @@ $this->load->view('common/left_panel');
                                 <th>Category</th>
                                 <th>Type</th>
                                 <th>Type 2</th>
+                                <th>Attributes</th>
                                 <th>HSN Code</th>
                                 <th>Selling Price</th>
                                 <th>Quantity</th>
@@ -101,7 +102,7 @@ $this->load->view('common/left_panel');
                         </tbody>
                         <tfoot>
                           <tr>
-                              <th colspan="7" style="text-align:right"></th>
+                              <th colspan="8" style="text-align:right"></th>
                               <th></th>
                               <th></th>
                               <th></th>
@@ -266,6 +267,7 @@ $this->load->view('common/left_panel');
             { "data": "title" },
             { "data": "type" },
             { "data": "productType" },
+            { "data": "attributes" },
             { "data": "hsn_code" },
             {
                 "data": "product_mrp",
@@ -298,13 +300,6 @@ $this->load->view('common/left_panel');
                     typeof i === 'number' ?
                         i : 0;
             };
-            total = api
-                .column(7, {filter: 'applied'})
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-            $( api.column( 7 ).footer() ).html('Rs. '+total.toFixed(2));
 
             total1 = api
                 .column(8, {filter: 'applied'})
@@ -312,7 +307,7 @@ $this->load->view('common/left_panel');
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
-            $( api.column( 8 ).footer() ).html(total1);
+            $( api.column( 8 ).footer() ).html('Rs. '+total1.toFixed(2));
 
             total2 = api
                 .column(9, {filter: 'applied'})
@@ -336,7 +331,15 @@ $this->load->view('common/left_panel');
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
-            $( api.column( 11 ).footer() ).html('Rs. '+total4.toFixed(2));
+            $( api.column( 11 ).footer() ).html(total4);
+
+            total5 = api
+                .column(12, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 12 ).footer() ).html('Rs. '+total5.toFixed(2));
         }
     });
   });

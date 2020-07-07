@@ -82,8 +82,8 @@ $this->load->view('common/left_panel');
                                 <th class="text-center"> Date</th>
                                 <!--<th class="text-center">Amount</th>-->
                                 <th class="text-center">Received from</th>
-<!--                                <th class="text-center">Total Quantity</th>-->
-                                <th class="text-center">Total Amount</th>
+                                <th class="text-center">Total Cost Amount</th>
+                                <th class="text-center">Total SP Amount</th>
                                 <th class="text-center">Action</th>
                             </tr>
                             </thead>
@@ -91,8 +91,9 @@ $this->load->view('common/left_panel');
                             </tbody>
                             <tfoot>
                             <tr>
-                                <th colspan="4" style="text-align:right"></th>
-                                <th></th>
+                                <th colspan="4" style="text-align:right">TOTAL</th>
+                                <th class="text-center"></th>
+                                <th class="text-center"></th>
                             </tr>
                             </tfoot>
                         </table>
@@ -222,9 +223,14 @@ $this->load->view('common/left_panel');
                 { "data": "dn_number" },
                 { "data": "warehouse_date" },
                 { "data": "employee_name" },
-//                { "data": "total_quantity" },
                 {
-                    "data": "total_amount",
+                    "data": "cost_total",
+                    "render": function ( data, type, row, meta ) {
+                        return 'Rs. '+data;
+                    }
+                },
+                {
+                    "data": "sp_total",
                     "render": function ( data, type, row, meta ) {
                         return 'Rs. '+data;
                     }
@@ -253,7 +259,18 @@ $this->load->view('common/left_panel');
                     }, 0 );
 
                 // Update footer
-                $( api.column( 4 ).footer() ).html('Total :'+total.toFixed(2));
+                $( api.column( 4 ).footer() ).html('Rs. '+total.toFixed(2));
+
+                // Total over all pages
+                total = api
+                    .column(5, {filter: 'applied'})
+                    .data()
+                    .reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+
+                // Update footer
+                $( api.column( 5).footer() ).html('Rs. '+total.toFixed(2));
             }
         });
     });

@@ -59,15 +59,6 @@
            <div class="panel-body">
             <div class="row">
               <div class="col-md-12" style="padding: 0;"> 
-
-                <!-- <div class="col-md-3">
-                  <div class="form-group">
-                    <label class="col-md-11"> Purchase Date <span style="color: red">*</span> <span  id="purchase_date_error" style="color: red"></span></label>
-                    <div class="col-md-11">
-                      <input type="text" name="purchase_date" id="purchase_date" class="form-control datepicker" placeholder="Purchase Date">
-                    </div>
-                  </div>
-                </div> -->
 				<?php if(isset($dispatch)): ?>
 					<input type="hidden" value="<?= $dispatch->id; ?>" name="dispatch_id">
 				<?php endif; ?>
@@ -77,7 +68,7 @@
                   <div class="form-group">
                     <label class="col-md-11"> DN Number <span style="color: red">*</span> <span  id="dn_no_error" style="color: red"></span></label>
                     <div class="col-md-11">
-                      <input type="text" name="dn_no" id="dn_no" class="form-control" placeholder="DN Number" value="<?php if(isset($dispatch)){ echo $dispatch->dn_number; } ?>">
+                      <input type="text" name="dn_no" id="dn_no" class="form-control" placeholder="DN Number" readonly="readonly" value="<?php if(isset($dn_number)){ echo $dn_number; } ?>">
                     </div>
                   </div>
                 </div>
@@ -116,113 +107,59 @@
       </div>
     <div class="col-md-12" style="padding: 0;">
       <div class="">
-        <table class="table table-striped table-bordered">
+        <table class="table table-striped table-bordered" id="thetable">
           <thead>
             <tr>
-              
               <th> Product Name <span style="color: red">*</span><span id="error_asset_name"></span></th>
               <th> Quantity <span style="color: red">*</span><span id="error_quantity"></span></th>
+              <th> Attributes </th>
               <th> Price <span style="color: red">*</span><span id="error_price"></span></th>
               <th> GST % <span style="color: red">*</span><span id="error_gst_percent"></span></th>
-              <th> LF No. <span style="color: red">*</span><span id="error_lf_no"></span></th>
-			  <?php if(!isset($view)): ?>
-              <th class="text-center"> <button type="button" class="btn  btn-sm btn-info"  id="save_next" ><i class="fa fa-plus"></i></button></th>
-			  <?php endif; ?>
-			  <!--<th class="text-center"> <a  href="javascript:void(0)" class="btn  btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>-->
+              <th> Total GST <span style="color: red">*</span><span id="error_gst_total"></span></th>
+              <th class="text-center"> <a href="javascript:void(0)" class="btn btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>
             </tr>
           </thead>
 		  
           <tbody id="professorTableBody">  
-		  <?php if(!isset($view)): ?>
-		    <?php if(isset($dispatchData)):
-					foreach($dispatchData as $d): ?>
-			<tr class="trRow"> 
-              <td>
-                <!-- <input type="text" class="form-control" name="asset_name[]" id="asset_name1" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())"> -->
-                <select class="form-control"  disabled>
-                  <option value="0"><?= $d->name; ?></option>
-				  
-                </select>
-              </td>
-              <td>
-                <input type="text" class="form-control" disabled value="<?= $d->quantity; ?>">
-              </td>
-              <td>
-                <input type="text" class="form-control" disabled value="<?= $d->price; ?>">
-              </td>
-              <td>
-                <input type="text" class="form-control" disabled value="<?= $d->gst_percent; ?>">
-              </td>
-              
-              <td>
-                <input type="text" class="form-control" disabled value="<?= $d->lf_no; ?>">
-              </td>
-              <td class="text-center">
-				<a href="<?= base_url(); ?>index.php/warehouse_dispatch/edit_action/<?= $d->id ?>/<?= $dispatch->id ?>" class="btn  btn-sm btn-success"><i class="fa fa-edit"></i></a>
-                <a href="<?= base_url(); ?>index.php/warehouse_dispatch/remove/<?= $d->id ?>/<?= $dispatch->id ?>" class="btn  btn-sm btn-danger"><i class="fa fa-minus"></i></a>
-				
-              </td>
-            </tr>
-			<?php endforeach; endif; ?>
-			
             <tr class="trRow">
-              
               <td>
-                <!-- <input type="text" class="form-control" name="asset_name[]" id="asset_name1" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())"> -->
-                <select class="form-control" name="asset_name" id="asset_name1" onclick="modelOpen()">
+                <select class="form-control asset_name" name="asset_name[]">
                   <option value="0">Select Product</option>
-
                 </select>
               </td>
               <td>
-                <input type="text" class="form-control" name="quantity" id="quantity1" placeholder="Enter Quantity" autocomplete="off">
+                <input type="text" class="form-control quantity" name="quantity[]" placeholder="Enter Quantity" autocomplete="off">
+                <span style="color: red" class="quantity_error"></span>
               </td>
               <td>
-                <input type="text" class="form-control" name="product_mrp" id="product_mrp1" readonly="readonly" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">
+                <div class="attribute_div">Attributes</div>
               </td>
               <td>
-                <input type="text" class="form-control" name="gst_percent" id="gst_percent1" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
+                <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">
+                <span style="color: red" class="price_error"></span>
               </td>
-              
               <td>
-                <input type="text" class="form-control" name="lf_no" id="lf_no1" placeholder="Enter LF No." autocomplete="off">
+                <input type="text" class="form-control gst_percent" name="gst_percent[]" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
+                <span style="color: red" class="gst_error"></span>
+              </td>
+              <td>
+                <input type="text" class="form-control gst_total" name="gst_total[]" readonly="readonly" placeholder="Enter GST" autocomplete="off">
+                <span style="color: red" class="gst_total_error"></span>
               </td>
               <td class="text-center">
+              <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn btn-sm btn-danger"><i class="fa fa-minus"></i></a>
               </td>
             </tr>
-			<?php endif; ?>
-			<?php if(isset($view)): ?>
-				<tr class="trRow">
-              
-              <td>
-                <!-- <input type="text" class="form-control" name="asset_name[]" id="asset_name1" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())"> -->
-                <select class="form-control" name="asset_name" id="asset_name1" onchange="getGST(this.value,$(this).closest('tr').index());">
-                  <option value="<?= $dispatchData->product_id; ?>"><?php foreach($products as $p){ if($p->id ==$dispatchData->product_id ){ echo $p->asset_name; } } ?></option>
-				  
-                </select>
-              </td>
-              <td>
-                <input type="text" value="<?= $dispatchData->quantity; ?>" class="form-control" name="quantity" id="quantity1" placeholder="Enter Quantity" autocomplete="off">
-                <input type="hidden" value=<?= $dispatchData->quantity; ?> name="actual_qty">
-				<input type="hidden" value=<?= $dispatchData->id; ?> name="dis_id">
-			  </td>
-			  
-              <td>
-                <input type="text"value="<?= $dispatchData->price; ?>" class="form-control" name="product_mrp" id="product_mrp1" readonly="readonly" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">
-              </td>
-              <td>
-                <input type="text" value="<?= $dispatchData->gst_percent; ?>" class="form-control" name="gst_percent" id="gst_percent1" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
-              </td>
-              
-              <td>
-                <input type="text" value="<?= $dispatchData->lf_no; ?>" class="form-control" name="lf_no" id="lf_no1" placeholder="Enter LF No." autocomplete="off">
-              </td>
-              <td class="text-center">
-					 <button type="button" id="edit-action-button" class="btn  btn-sm btn-success"><i class="fa fa-edit"></i></button>
-              </td>
-            </tr>
-			<?php endif; ?>
           </tbody>
+          <tfoot>                   
+            <tr>
+                <th colspan="3" >&nbsp;<span class="pull-right">Total</span></th>
+                <th><input type="text" class="form-control" id="priceTotal" readonly="readonly" value="0"></th>
+                <th></th>
+                <th><input type="text" class="form-control" id="GSTTotal" readonly="readonly" value="0"></th>
+            </tr>
+            </tfoot>
+
         </table>
 		
 		
@@ -242,94 +179,6 @@
 </div>
 <!-- END PAGE CONTENT WRAPPER -->
 
-<!--add new unit-->
-<div class="modal fade" id="myModalunit" role="dialog">
-  <div class="modal-dialog">     
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" id="closeUnit">&times;</button>
-        <h4 class="modal-title">Add New Unit Type <span id="successEntry" style="color:green"></span></h4>
-      </div>
-      <div class="modal-body">
-       <form method="post" id="unit" onsubmit="return saveData()">
-        <label>Unit Type Name:</label> <span style="color:red">*</span> <span id="nameError" style="color:red"></span><br>
-        <input type="text" name="name"  class="form-control" id="name" value="" autocomplete="off" size="35"/> &nbsp; 
-
-
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-round btn-success" id="statusSubBtn" onclick="return saveData()">Submit</button>
-      <button type="button" class="btn btn-round btn-danger"  data-dismiss="modal">Cancel</button>
-    </div>
-  </div>
-</div>
-</div>
-<!--add new unit-->
-
-<div id="myModalCategory" class="modal fade" role="dialog xs">
-  <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Add Category</h4>
-        </div>
-        <div class="modal-body">
-            <div class="col-md-12 text-success text-center" id="success_message"></div>
-            <div class="row">
-                <div class="col-md-12">
-                  <label>Category Name <span style="color:red;">*</span><span id="error_category_id_title" style="color:red"></span></label>
-                  <input type="text" class="form-control" name="category_title" id="category_title" placeholder="Category Name">
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" onclick="return validation_subcategory();">Submit</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-  </div>
-</div>
-
-<!--Asset type modal-->
-<div class="modal fade" id="myModalAssetType" role="dialog">
-  <div class="modal-dialog">     
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" id="assetclosetype">&times;</button>
-        <h4 class="modal-title">Add New Product Type <span id="successEntry" style="color:green"></span></h4>
-      </div>
-      <div class="modal-body">
-       <form method="post" id="asset" onsubmit="return saveDataAssetType()">
-        <label>Product Type Name:</label> <span style="color:red">*</span> <span id="nameErrorAsset" style="color:red"></span><br>
-        <input type="text" name="nametype"  class="form-control" id="nametype" placeholder="Product Type Name" value="" autocomplete="off" size="35"/> &nbsp; <br>
-
-        <!-- <label>Is saleable:</label> <span style="color:red">*</span> <span id="saleableError" style="color:red"></span><br>
-        <select class="form-control" name="saleable" id="saleable">
-          <option value="">--Select Type--</option>
-          <option value="Yes">Yes</option>
-          <option value="NO">No</option>
-        </select> <br>
-
-        <label>Is barcode:</label> <span style="color:red">*</span> <span id="barcodeError" style="color:red"></span>
-        <select class="form-control" name="barcode" id="barcode">
-          <option value="">--Select Type--</option> 
-          <option value="Yes">Yes</option>  
-          <option value="No">No</option>
-        </select> -->
-
-
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-round btn-success" id="statusSubBtn" onclick="return saveDataAssetType()">Submit</button>
-      <button type="button" class="btn btn-round btn-danger"  data-dismiss="modal">Cancel</button>
-    </div>
-  </div>
-</div>
-</div>
-<!--Asset type modal-->
-
-
 <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog modal-lg">
@@ -345,7 +194,8 @@
 
 				<table id="myTable" style="max-height:600px;overflow-x:scroll">
 				  <tr class="header"> 
-				    <th>Name</th>
+            <th>Name</th>
+            <th>Total Quantity</th>
 				    <th>Available Quantity</th>
 				    <th>Price</th>
             <th>Category</th>
@@ -376,7 +226,8 @@
 		              ?>
 						  <tr>
 						    <td><?= $product->asset_name; ?></td>
-						    <td><?= $product->quantity; ?></td>
+                <td><?= $product->quantity; ?></td>
+                <td><?= $product->available_qty; ?></td>
                 <td><?= $product->product_mrp; ?></td>
                 <td><?= $product->title; ?></td>
                 <td><?= $product->color; ?></td>
@@ -385,7 +236,7 @@
                 <td><?= $product->craft; ?></td>
                 <td><?= date("d-m-Y", strtotime($product->purchase_date)); ?></td> 
                 <td><?= implode(" ",$arrTime); ?></td>  
-						    <td><button id="add_product" class="btn btn-success add_product" data-name="<?= $product->asset_name; ?>" data-id="<?= $product->id; ?>"><i class="fa fa-plus"></i></button></td>
+						    <td><button id="add_product" class="btn btn-success add_product" data-row="" data-name="<?= $product->asset_name; ?>" data-id="<?= $product->id; ?>"><i class="fa fa-plus"></i></button></td>
 						  </tr>
 					<?php } } ?>
 				</table>
@@ -408,9 +259,11 @@
 $(document).on('click','.add_product',function(){
 		var id = $(this).attr('data-id');
 		var name = $(this).attr('data-name');
-		$('#asset_name1').html('<option value="'+id+'">'+name+'</option>');
+    var index = $(this).attr('data-row');
+		//$('#asset_name1').html('<option value="'+id+'">'+name+'</option>');
+    $('table .asset_name').slice(index, index + 1).html('<option value="'+id+'">'+name+'</option>');
 		$('#myModal').modal('hide');
-    getGST(id,$('#asset_name1').closest('tr').index());
+    getGST(id,index);
 });
 jQuery(document).on('click','#edit-action-button',function(){
 	$('#save_finish_body').html('');
@@ -429,13 +282,19 @@ jQuery(document).on('click','#save_finish',function(){
 	$( "#myForm" ).submit();
 	
 });
-jQuery(document).on('click','#asset_name1',function(){
-	$('#myModal').modal({backdrop: 'static', keyboard: false});
+//jQuery(document).on('click','#asset_name1',function(){
+//	$('#myModal').modal({backdrop: 'static', keyboard: false});
+//});
+$("table").on('click', 'tr select', function(e){
+   $('.add_product').attr('data-row', $(this).closest('td').parent()[0].sectionRowIndex);
+   $('#myModal').modal({backdrop: 'static', keyboard: false});
 });
-function modelOpen()
-{
-	$('#myModal').modal({backdrop: 'static', keyboard: false});
-}
+//function modelOpen(e)
+//{
+//  var colValue= this.dataItem($(e.currentTarget).closest("tr"));
+//  alert(colValue);/
+//	$('#myModal').modal({backdrop: 'static', keyboard: false});
+//}
 function myFunction() {
   var input, filter, table, tr, td, i, txtValue;
   input = document.getElementById("myInput");
@@ -518,31 +377,60 @@ function addrow() {
   var y = document.getElementById('professorTableBody'); 
   var new_row = y.rows[0].cloneNode(true); 
   var len = y.rows.length; 
-
+  
   var inp2 = new_row.cells[0].getElementsByTagName('select')[0];
   inp2.value = '';
-  inp2.id = 'asset_name'+(len+1);
+  //inp2.id = 'asset_name'+(len+1);
 
   var inp3 = new_row.cells[1].getElementsByTagName('input')[0];
   inp3.value = '';
-  inp3.id = 'quantity'+(len+1);
+  //inp3.id = 'quantity'+(len+1);
 
-  var inp4 = new_row.cells[2].getElementsByTagName('input')[0];
-  inp4.value = '';
-  inp4.id = 'product_mrp'+(len+1);
+  //var inp4 = new_row.cells[2].getElementsByClassName('attribute_div')[0];
+  //inp4.html = 'Attributes';
+  //inp4.id = 'product_mrp'+(len+1);
 
   var inp5 = new_row.cells[3].getElementsByTagName('input')[0];
   inp5.value = '';
-  inp5.id = 'gst_percent'+(len+1);
+  //inp5.id = 'gst_percent'+(len+1);
 
   var inp7 = new_row.cells[4].getElementsByTagName('input')[0];
   inp7.value = '';
-  inp7.id = 'lf_no'+(len+1);
+  //inp7.id = 'lf_no'+(len+1);
 
-  $('.sectionA').val(len+1);
-  
+  //$('.asset_name').val(len+1);
+
   y.appendChild(new_row);
+
+  $('table .attribute_div').slice(len, len + 1).empty();
+  $('table .attribute_div').slice(len, len + 1).html('Attributes');
 }
+
+
+    $(document).on('keyup','.quantity',function(){
+        price();
+    });
+    function price()
+    {
+      var GSTTotal = 0;
+      var priceTotal = 0;
+      // for each row:
+      $("tr.trRow").each(function () {
+          // get the values from this row:
+          var $qty = $('.quantity', this).val();
+          var $sp = $('.product_mrp', this).val();
+          var $gst = $('.gst_percent', this).val();
+          var $total = ($qty * 1) * ($sp * 1) * (($gst * 1) / 100);
+          // set total for the row
+          $('.gst_total', this).val($total);
+
+          GSTTotal += $total;
+          priceTotal += ($sp * 1);
+      });
+      $("#GSTTotal").val(GSTTotal);
+      $("#priceTotal").val(priceTotal);
+      //$("#finalTotal").val(mult+totalGST+markup);
+    }
 
 
 function getGST(val,len) {
@@ -553,12 +441,18 @@ function getGST(val,len) {
 	$.post(url, dataString, function(returndata){
 		//alert(returndata);
 		var obj = jQuery.parseJSON(returndata);
-		//alert(obj);
-      $('#gst_percent1').val(obj.gst_percent);
-			$('#product_mrp1').val(obj.price);
+
+      $('table .gst_percent').slice(len, len + 1).val(obj.gst_percent);
+      $('table .product_mrp').slice(len, len + 1).val(obj.price);
+
+      $('table .attribute_div').slice(len, len + 1).empty();
+      $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft);
+      //$('#gst_percent1').val(obj.gst_percent);
+			//$('#product_mrp1').val(obj.price);
 			//$('#hsn'+(len+1)).val(obj.hsn);
 		
 	});
+  price();
 }
 
 
@@ -778,7 +672,8 @@ function validateinfo() {
   var dn_no = $('#dn_no').val(); 
   var date = $('#date').val(); 
   var sent_to = $('#sent_to').val(); 
-  var sectionA = $('.sectionA').val();
+  var sectionA = $("#thetable td").closest("tr").length;
+  //var sectionA = $('.asset_name').val();
   
   if(dn_no=='') {
     $("#dn_no_error").html("Please enter DN Number").fadeIn();
@@ -792,81 +687,36 @@ function validateinfo() {
     $("#sent_to_error").html("Please select sent to").fadeIn();
     setTimeout(function(){$("#sent_to_error").fadeOut()},5000);
     return false;
-  } else if(sectionA==1) {
-    //alert("1");
-    var product_name = $('#asset_name1').val();
-    var quantity = $('#quantity1').val();
-    var product_mrp = $('#product_mrp1').val();
-    var gst_percent = $('#gst_percent1').val();
-    var lf_no = $('#lf_no1').val();
-
-    if(product_name=='') {
-      $("#asset_name_error").html("Please enter product name").fadeIn();
-      setTimeout(function(){$("#asset_name_error").fadeOut()},5000);
-      return false;
-    }
-
-    if(quantity=='') {
-      $("#quantity_error").html("Please enter quantity").fadeIn();
-      setTimeout(function(){$("#quantity_error").fadeOut()},5000);
-      return false;
-    }
-
-    if(product_mrp=='') {
-      $("#error_price").html("Please enter product price").fadeIn();
-      setTimeout(function(){$("#error_price").fadeOut()},5000);
-      return false;
-    }
-
-    if(gst_percent=='') {
-      $("#gst_percent_error").html("Please enter GST %").fadeIn();
-      setTimeout(function(){$("#gst_percent_error").fadeOut()},5000);
-      return false;
-    }
-
-    if(lf_no=='') {
-      $("#lf_no_error").html("Please enter LF No.").fadeIn();
-      setTimeout(function(){$("#lf_no_error").fadeOut()},5000);
-      return false;
-    }
-
-  } else if(sectionA > 1) {
-    //alert(sectionA);
-    for(var i = 1; i <= sectionA; i++) {
+  } else {
+    for(var i = 0; i < sectionA; i++) {
       
-      var product_name = $('#asset_name'+i).val();
-      var quantity = $('#quantity'+i).val();
-      var product_mrp = $('#product_mrp'+i).val();
-      var gst_percent = $('#gst_percent'+i).val();
-      var lf_no = $('#lf_no'+i).val();
+      var product_name = $('.asset_name').eq(i).val();
+      var quantity = $('.quantity').eq(i).val();
+      var product_mrp = $('.product_mrp').eq(i).val();
+      var gst_percent = $('.gst_percent').eq(i).val();
+      var lf_no = $('.lf_no').eq(i).val();
       
-      if(product_name=='') {
-        $("#asset_name_error").html("Please enter Product Name").fadeIn();
-        setTimeout(function(){$("#asset_name_error").fadeOut()},5000);
-        return false;
-      }
-
       if(quantity=='') {
-        $("#quantity_error").html("Please enter quantity").fadeIn();
-        setTimeout(function(){$("#quantity_error").fadeOut()},5000);
+        $('.quantity_error').eq(i).html("Please enter Quantity").fadeIn();
+        setTimeout(function(){$(".quantity_error").eq(i).fadeOut()},5000);
         return false;
       }
 
       if(product_mrp=='') {
-        $("#error_price").html("Please enter product price").fadeIn();
-        setTimeout(function(){$("#error_price").fadeOut()},5000);
+        $('.price_error').eq(i).html("Please enter Price").fadeIn();
+        setTimeout(function(){$(".price_error").eq(i).fadeOut()},5000);
         return false;
       }
 
       if(gst_percent=='') {
-        $("#gst_percent_error").html("Please enter GST %").fadeIn();
-        setTimeout(function(){$("#gst_percent_error").fadeOut()},5000);
+        $('.gst_error').eq(i).html("Please enter GST").fadeIn();
+        setTimeout(function(){$(".gst_error").eq(i).fadeOut()},5000);
         return false;
       }
 
       if(lf_no=='') {
-        $("#lf_no_error").html("Please enter LF No.").fadeIn();
-        setTimeout(function(){$("#lf_no_error").fadeOut()},5000);
+        $('.lf_no_error').eq(i).html("Please enter LF No.").fadeIn();
+        setTimeout(function(){$(".lf_no_error").eq(i).fadeOut()},5000);
         return false;
       }
     }

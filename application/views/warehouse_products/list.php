@@ -81,8 +81,12 @@ $this->load->view('common/left_panel');
                                 <th>Sr No</th>
                                 <th>DN No</th>
                                 <th>Date</th>
-                                <th>Amount</th>
                                 <th>User</th>
+                                <th>Quantity</th>
+                                <th>GST %</th>
+                                <th>GST</th>
+                                <th>Amount</th>
+                                <th>Total</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -90,9 +94,13 @@ $this->load->view('common/left_panel');
                         </tbody>
                         <tfoot>
                              <tr>
-                                <th colspan="3"></th>
-                                <th>Amount</th>
-                                <th colspan="2"></th>
+                              <th colspan="3"></th>
+                              <th>Amount</th>
+                              <th colspan="1"></th>
+                              <th colspan="1"></th>
+                              <th colspan="1"></th>
+                              <th colspan="1"></th>
+                              <th colspan="1"></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -245,13 +253,27 @@ $this->load->view('common/left_panel');
             { "data": "no" },
             { "data": "dn_number" },
             { "data": "dispatch_date" },
+            { "data": "employee_name" },
+            { "data": "sum_quantity" },
+            { "data": "gst_percent" },
+            {
+                "data": "gst",
+                "render": function ( data, type, row, meta ) {
+                  return 'Rs. '+data;
+                }
+            },
             {
                 "data": "sum_amount",
                 "render": function ( data, type, row, meta ) {
                   return 'Rs. '+data;
                 }
             },
-            { "data": "employee_name" },
+            {
+                "data": "total_sum",
+                "render": function ( data, type, row, meta ) {
+                  return 'Rs. '+data;
+                }
+            },
             { "data": "btn" }
         ],
       "ordering": false,
@@ -266,13 +288,37 @@ $this->load->view('common/left_panel');
                     typeof i === 'number' ?
                         i : 0;
             };
+
             total = api
-                .column( 3 )
+                .column( 4 )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
-            $( api.column( 3 ).footer() ).html('Rs. '+total.toFixed(2));
+            $( api.column( 4).footer() ).html(total);
+            total = api
+                .column( 6 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 6 ).footer() ).html('Rs. '+total.toFixed(2));
+
+            total = api
+                .column( 7 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 7 ).footer() ).html('Rs. '+total.toFixed(2));
+
+            total = api
+                .column( 8 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 8 ).footer() ).html('Rs. '+total.toFixed(2));
         }
     });
   });

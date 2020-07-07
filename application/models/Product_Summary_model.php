@@ -26,6 +26,10 @@ class Product_Summary_model extends CI_Model
             a.damage_qty, 
             a.id,
             a.hsn,
+            siz.title as size,
+            col.title as color,
+            fab.title as fabric,
+            cra.title as craft,
             a.purchase_date as product_purchase_date, 
             (select label from product_type where id=a.product_type_id) as product_type,
             c.title, 
@@ -35,6 +39,10 @@ class Product_Summary_model extends CI_Model
         $this->db->join("assets a","a.product_id = p.id","left");
         $this->db->join("categories c","a.category_id = c.id","left");
         $this->db->join("mst_asset_types t","t.id = a.asset_type_id","left");
+        $this->db->join("size siz","siz.id = a.size_id","left");
+        $this->db->join("color col","col.id = a.color_id","left");
+        $this->db->join("fabric fab","fab.id = a.fabric_id","left");
+        $this->db->join("craft cra","cra.id = a.craft_id","left");
         $this->db->where($con);
         $this->db->where('a.created_by',$_SESSION[SESSION_NAME]['id']);
         

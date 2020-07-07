@@ -152,6 +152,8 @@ class Warehouse_Dispatch extends CI_Controller
             'dn_number' => $row->dn_number,
             'dispatch_date' => date('d-m-Y', strtotime($row->dispatch_date)),
             'sum_amount' => number_format($row->sum_amount,2),
+            'sum_quantity' => number_format($row->sum_quantity),
+            'total_sum' => number_format(($row->sum_quantity * $row->sum_amount),2),
             'employee_name' => $row->employee_name,
             'btn' => $btn,
             ); 
@@ -173,16 +175,22 @@ class Warehouse_Dispatch extends CI_Controller
 	  $where = array('created_by'=>$_SESSION[SESSION_NAME]['id']);
       //$products = $this->Crud_model->GetData("assets","",$where); 
       //$this->load->model('Invoice_model');
-      $query =  $this->db->select('a.asset_name,a.quantity,a.product_mrp,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
+        $query =  $this->db->select('a.asset_name,a.quantity,a.available_qty,a.product_mrp,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
                 ->join("size siz","siz.id = a.size_id","left")
                 ->join("color col","col.id = a.color_id","left")
                 ->join("fabric fab","fab.id = a.fabric_id","left")
                 ->join("craft cra","cra.id = a.craft_id","left")
                 ->join("categories cat","cat.id = a.category_id","left")
                 ->from('warehouse_details as a')
-                ->where('a.quantity>',0)
+                ->where('a.available_qty>',0)
                 ->get();
-            $products = $query->result();
+        $products = $query->result();
+
+        $query =  $this->db->select('dn_number')
+                    ->from('warehouse_dispatch')
+                    ->order_by(key(array('id' => 'DESC')))
+                    ->get();
+        $dn_number = ($query->num_rows() + 1);
 	  
       $users = $this->Crud_model->GetData("employees","","id!='".$_SESSION['ASSETSTRACKING']['id']."' and type='User'");           
       $action =  site_url("Warehouse_Dispatch/create_action");    
@@ -193,6 +201,7 @@ class Warehouse_Dispatch extends CI_Controller
         'button'=>'Create',                       
         'products' => $products, 
         'users' => $users,
+        'dn_number' => $dn_number,
         'action'=>$action, 
       );
       $this->load->view('warehouse_dispatch/form',$data);
@@ -202,13 +211,13 @@ class Warehouse_Dispatch extends CI_Controller
     public function create_action($finish = null) 
     {  
         if($_POST) {
-            $product_id = $_POST['asset_name'];
-            $qty = $this->input->post('quantity');
-            $this->db->select('*');
-            $this->db->where('id',$product_id);
-            $query = $this->db->get('warehouse_details');
-            $product = $query->row();
-            if($qty<=$product->quantity){
+            //$product_id = $_POST['asset_name'];
+            //$qty = $this->input->post('quantity');
+            //$this->db->select('*');
+            //$this->db->where('id',$product_id);
+            //$query = $this->db->get('warehouse_details');
+            //$product = $query->row();
+            //if($qty<=$product->quantity){
                     $dispatchdate = str_replace('/', '-', $_POST['date']);
                     //$user_id = $this->Crud_model->GetData("employees","id","name='".$_POST['sent_to']."'","","","","1");
                     //print_r(); exit;
@@ -221,27 +230,32 @@ class Warehouse_Dispatch extends CI_Controller
                     'created' => date('Y-m-d H:i:s'),
                     );
                     //print_r($data_array);exit;
-                    if($did = $this->input->post('dispatch_id')){
-                        $condition = array('id'=>$did);
-                        $this->Crud_model->SaveData("warehouse_dispatch",$data_array,$condition);
-                        $last_id = $did;
-                    }
-                    else{
-                        $this->Crud_model->SaveData("warehouse_dispatch",$data_array);
-                        $last_id = $this->db->insert_id();
-                    }
-                    $data = array(
-                        'dispatch_id' => $last_id,
-                        'product_id' => $_POST['asset_name'],
-                        'quantity' => $_POST['quantity'],
-                        'price'=>$_POST['product_mrp'],
-                        'gst_percent'=>$_POST['gst_percent'],
-                        'lf_no'=>$_POST['lf_no'],
-                        'created_by'=>$_POST['sent_to'],
-                        'status' => 'Active',
-                        'created'=>date('Y-m-d H:i:s'),
+                    $this->Crud_model->SaveData("warehouse_dispatch",$data_array);
+                    $last_id = $this->db->insert_id();
+
+                    for ($i = 0; $i < count($_POST['asset_name']); $i++) {
+                        $data = array(
+                            'dispatch_id' => $last_id,
+                            'product_id' => $_POST['asset_name'][$i],
+                            'quantity' => $_POST['quantity'][$i],
+                            'price'=>$_POST['product_mrp'][$i],
+                            'gst_percent'=>$_POST['gst_percent'][$i],
+                            'created_by'=>$_POST['sent_to'][$i],
+                            'status' => 'Active',
+                            'created'=>date('Y-m-d H:i:s'),
                         );
-                    $this->Crud_model->SaveData("warehouse_dispatch_details",$data);
+                        $this->Crud_model->SaveData("warehouse_dispatch_details",$data);
+
+                        //Remaining Quantity in Warehouse Details
+                        $this->db->select('quantity');
+                        $this->db->where('id', $_POST['asset_name'][$i]);
+                        $query = $this->db->get('warehouse_details');
+                        $product = $query->row();
+                        $data = array(
+                            'available_qty' => ($product->quantity - $_POST['quantity'][$i])
+                        );
+                        $this->Crud_model->SaveData("warehouse_details", $data, "id='" . $_POST['asset_name'][$i] . "'");
+                    }
                     
                     if($finish != 'finish') {
                         return redirect('Warehouse_Dispatch/save_next/'.$last_id);
@@ -250,6 +264,7 @@ class Warehouse_Dispatch extends CI_Controller
                         redirect('Warehouse_Dispatch/index');
                     
                     }
+                /*
                 } else {
                     $this->session->set_flashdata('message', '<span class="label label-danger text-center" style="margin-bottom:0px">Please select available quantity!</span>');
                     if($did = $this->input->post('dispatch_id')){
@@ -258,7 +273,7 @@ class Warehouse_Dispatch extends CI_Controller
                     else{
                         return redirect('Warehouse_Dispatch/create/');
                     }
-                }
+                }*/
         } else {
             redirect('Warehouse_Dispatch/Create');
         }
@@ -412,13 +427,21 @@ class Warehouse_Dispatch extends CI_Controller
 
     public function getGST() {
         $product = $this->input->post('product_id');
-        $where = array('id'=> $product);
-        $select = $this->Crud_model->GetData("assets","",$where,"","","","1");
+        //$where = array('id'=> $product);
+        //$select = $this->Crud_model->GetData("warehouse_details","",$where,"","","","1");
+
+        $select = $this->Warehouse_model->getSingleDetails($product);
         
         if(!empty($select)) {
           $response['success'] = '1';
-          $response['gst_percent'] = $select->gst_percent;
-          $response['price'] = $select->product_mrp;
+          $response['gst_percent'] = $select[0]->gst_percent;
+          $response['price'] = $select[0]->product_mrp;
+          $response['title'] = $select[0]->title;
+          $response['type'] = $select[0]->type;
+          $response['size'] = $select[0]->size;
+          $response['color'] = $select[0]->color;
+          $response['fabric'] = $select[0]->fabric;
+          $response['craft'] = $select[0]->craft;
           //$response['hsn'] = $select->hsn;
         } else {
           $response['success'] = '0';

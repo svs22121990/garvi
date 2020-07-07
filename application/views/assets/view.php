@@ -107,11 +107,17 @@
                                          <th><?= "Rs. " . number_format($total, 2); ?></th>
                                          <td colspan="3"></td>
                                      </tr>
-
-                                     <tr>
-                                        <td colspan="5" >&nbsp;<span class="pull-right">Total GST Amount</span></td>
+                                    <tr>
+                                        <td colspan="5" >&nbsp;<span class="pull-right">Total CGST Amount</span></td>
                                         <th>
-                                            <?= "Rs. " . number_format($totalGST, 2); ?>
+                                            <?= "Rs. " . number_format(($totalGST/2), 2); ?>
+                                        </th>  
+                                        <th colspan="3"></th>            
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" >&nbsp;<span class="pull-right">Total SGST Amount</span></td>
+                                        <th>
+                                            <?= "Rs. " . number_format(($totalGST/2), 2); ?>
                                         </th>  
                                         <th colspan="3"></th>            
                                     </tr>

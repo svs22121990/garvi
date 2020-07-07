@@ -34,26 +34,25 @@
             <h4 style="text-align: center;">Warehouse Product Details</h4>
             <?php $qty=0; $product_mrp=0; $sr = 1; $data = array(); $allTotal = 0; ; $markup = 0; $totalGST = 0; $finalTotal = 0; ?>
             <?php foreach ($results as $result) { 
-                $total = $result->product_mrp * $result->total_quantity;
                 $data[] = array(
                     'no' => $sr++,
                     'title' =>$result->title,
                     'type' =>$result->type,
                     'asset_name' =>$result->asset_name,
-                    'quantity' =>$result->total_quantity,
+                    'quantity' =>$result->quantity,
                     'product_mrp' =>$result->product_mrp,
-                    'total' => $total,
+                    'total' => $result->sp_total,
                     'gst_percent' =>$result->gst_percent,  
                     'hsn' =>$result->hsn,
                     'markup_percent' =>$result->markup_percent,
                     //'hsn' =>$result->hsn; 
                     //'gst_percent' =>$result->gst_percent, 
                 );
-                $qty += $result->total_quantity;
+                $qty += $result->quantity;
                 $product_mrp += $result->product_mrp;
-                $allTotal += $total;
-                $totalGST += (($result->gst_percent/100) * ($total));
-                $markup += (($result->markup_percent/100) * ($total));
+                $allTotal += $result->sp_total;
+                $totalGST += (($result->gst_percent/100) * ($result->product_mrp));
+                $markup += (($result->markup_percent/100) * ($result->product_mrp));
              } 
 //             $data[] = array(
 //                    'no'  => '',
@@ -80,15 +79,16 @@
                     <div class="col-md-4">
                         Received From: <strong><?php echo !empty($results) ? $results[0]->employee_name : ""; ?></strong>
                     </div>
+                    <!--
                  <div class="col-md-4">
-                     Category Name: <strong><?php echo !empty($results) ? $results[0]->title : ""; ?></strong>
+                     Category Name: <strong><?php //echo !empty($results) ? $results[0]->title : ""; ?></strong>
                  </div>
                  <div class="col-md-4">
-                     Product Type Name: <strong><?php echo !empty($results) ? $results[0]->type : ""; ?></strong>
+                     Product Type Name: <strong><?php// echo !empty($results) ? $results[0]->type : ""; ?></strong>
                  </div>
                  <div class="col-md-4">
-                     Product Name: <strong><?php echo !empty($results) ? $results[0]->asset_name : ""; ?></strong>
-                 </div>
+                     Product Name: <strong><?php// echo !empty($results) ? $results[0]->asset_name : ""; ?></strong>
+                 </div>-->
 
 <!--                 <div class="col-md-4">-->
 <!--                     Quantity: <strong>--><?php //echo !empty($results) ? $results[0]->quantity : ""; ?><!--</strong>-->
@@ -99,9 +99,9 @@
             <thead>
                 <tr>    
                      <th>Sr. No.</th>
-<!--                    <th>Category Name</th>                    -->
-<!--                    <th>Product Type Name</th>-->
-<!--                    <th>Product Name</th>-->
+                    <th>Category Name</th>                  
+                    <th>Product Type Name</th>
+                    <th>Product Name</th>
                     <th>Quantity</th>
                     <th>Price</th>
 					<th>GST %</th>
@@ -116,9 +116,9 @@
                 <?php foreach ($data as $result) { ?>
                 <tr>
                     <td><?= $result['no']; ?></td>
-<!--                    <td>--><?//= $result['title']; ?><!--</td>-->
-<!--                    <td>--><?//= $result['type']; ?><!--</td>-->
-<!--                    <td>--><?//= $result['asset_name']; ?><!--</td>-->
+                    <td><?= $result['title']; ?></td>
+                    <td><?= $result['type']; ?></td>
+                    <td><?= $result['asset_name']; ?></td>
                     <td><?= $result['quantity']; ?></td>
                     <td><?= "Rs. ".number_format($result['product_mrp'],2); ?></td>
 					<td> <?= $result['gst_percent'];  ?></td>
@@ -131,23 +131,23 @@
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="6" style="text-align:right;">Total GST Amount</td>
+                <td colspan="9" style="text-align:right;">Total GST Amount</td>
                 <th>
                     <?= "Rs. " . number_format($totalGST, 2); ?>
                 </th>  
 
             </tr>
             <tr>
-                <td colspan="6" style="text-align:right;">Total Markup Amount</td>
+                <td colspan="9" style="text-align:right;">Total Markup Amount</td>
                 <th>
                     <?= "Rs. " . number_format($markup, 2); ?>
                 </th>
 
             </tr>
             <tr>
-                <td colspan="6" style="text-align:right;">Final Selling Amount</td>
+                <td colspan="9" style="text-align:right;">Final Selling Amount</td>
                 <th>
-                    <?= "Rs. " . number_format($markup+$totalGST + $allTotal, 2); ?>
+                    <?= "Rs. " . number_format($totalGST + $allTotal, 2); ?>
                 </th>              
 
             </tr>
@@ -168,13 +168,20 @@
             
             <tbody> 
                 <?php $sr = 1; ?>
-                <?php foreach ($barcodes as $barcode) { ?>
+                <?php foreach ($barcodes as $barcode) {
+                    $label = $barcode->asset_name.'-';
+                    $label .= number_format($barcode->product_mrp).'-';
+                    if($barcode->product_mrp == 7) 
+                        $label .= 'HL';
+                    else
+                        $label .= 'HC';
+                    ?>
                 <tr>
                     <td><?php echo $sr ?></td>
                     <td> <?= $barcode->barcode_number; ?></td>
                     <td style="padding: 10px; text-align: center">
                         <div>
-                            <div><?= $result['asset_name']; ?></div>
+                            <div><?= $label; ?></div>
                             <div><img src="<?php echo base_url(); ?>admin/assets/warehouse_barcode/<?php echo $barcode->barcode_image; ?>"></div>
                         </div>
                     </td>

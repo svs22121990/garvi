@@ -143,6 +143,10 @@ class Warehouse_Products extends CI_Controller {
           'dn_number' => $row->dn_number,
           'dispatch_date' => date('d-m-Y', strtotime($row->dispatch_date)),
           'sum_amount' => number_format($row->sum_amount,2),
+          'sum_quantity' => number_format($row->sum_quantity),
+          'gst_percent' => number_format($row->gst_percent),
+          'gst' => number_format((($row->sum_quantity * $row->sum_amount) * ($row->gst_percent/100)),2),
+          'total_sum' => number_format(($row->sum_quantity * $row->sum_amount),2),
           'employee_name' => $row->employee_name,
           'btn' => $btn,
         ); 
@@ -174,34 +178,49 @@ class Warehouse_Products extends CI_Controller {
       $this->Crud_model->SaveData("products", $data_array);
       $last_id = $this->db->insert_id();
 
-      $this->db->select('*');
-      $this->db->from("warehouse_dispatch_details d");
+      $this->db->select('w.category_id,
+                         w.asset_type_id,
+                         w.product_type_id,
+                         w.color_id,
+                         w.size_id,
+                         w.fabric_id,
+                         w.craft_id,
+                         w.asset_name,
+                         d.quantity,
+                         d.price,
+                         d.gst_percent,
+                         w.hsn,');
+      $this->db->from("warehouse_dispatch_details d");      
       $this->db->join("warehouse_details w","w.id = d.product_id");
       $this->db->where('d.dispatch_id',$id);
       $query = $this->db->get();
       $detail = $query->result();
 
-      $data = array(
-        'product_id' => $last_id,
-        'category_id' => $detail[0]->category_id,
-        'asset_type_id' => $detail[0]->asset_type_id,
-        'product_type_id' => $detail[0]->product_type_id,
-        'warranty_type' => 'No',
-        //'sku' => $_POST['sku'][0],
-        'asset_name' => $detail[0]->asset_name,
-        'quantity' => $detail[0]->quantity,
-        'total_quantity' => $detail[0]->total_quantity,
-        'product_mrp' => $detail[0]->product_mrp,
-        'gst_percent' => $detail[0]->gst_percent,
-        'hsn' => $detail[0]->hsn,
-        'lf_no' => $detail[0]->lf_no,
-        'purchase_date' => $detail[0]->purchase_date,
-        'created_by' => $_SESSION[SESSION_NAME]['id'],
-        'created' => date('Y-m-d H:i:s'),
-      );
-
-      $this->Crud_model->SaveData("assets", $data);
-
+      for ($i = 0; $i < count($detail); $i++) {
+        $data = array(
+          'product_id' => $last_id,
+          'category_id' => $detail[$i]->category_id,
+          'asset_type_id' => $detail[$i]->asset_type_id,
+          'product_type_id' => $detail[$i]->product_type_id,
+          'color_id' => $detail[$i]->color_id,
+          'size_id' => $detail[$i]->size_id,
+          'fabric_id' => $detail[$i]->fabric_id,
+          'craft_id' => $detail[$i]->craft_id,
+          'warranty_type' => 'No',
+          //'sku' => $_POST['sku'][0],
+          'asset_name' => $detail[$i]->asset_name,
+          'quantity' => $detail[$i]->quantity,
+          'total_quantity' => $detail[$i]->quantity,
+          'product_mrp' => $detail[$i]->price,
+          'gst_percent' => $detail[$i]->gst_percent,
+          'hsn' => $detail[$i]->hsn,
+          'purchase_date' => date('Y-m-d H:i:s'),
+          'created_by' => $_SESSION[SESSION_NAME]['id'],
+          'created' => date('Y-m-d H:i:s'),
+        );
+  
+        $this->Crud_model->SaveData("assets", $data);
+      }
       //$con = "id='" . $id . "'";
       //$delete = $this->Crud_model->DeleteData('dispatch',$con);
       //$con = "dispatch_id='" . $id . "'";

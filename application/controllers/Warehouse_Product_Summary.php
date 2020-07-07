@@ -30,7 +30,6 @@ class Warehouse_Product_Summary extends CI_Controller
     }
     public function index()
     {
-
         $this->common_view(site_url('Warehouse_Product_Summary/ajax_manage_page'));
     }
 
@@ -191,10 +190,19 @@ class Warehouse_Product_Summary extends CI_Controller
                 'title' => $row->title,
                 'type' => $row->type,
                 'hsn_code' => $row->hsn,
+                'price' => $row->price,
+                'cost_total' => $row->cost_total,
                 'product_mrp' => number_format($row->product_mrp, 2),
-                'total_quantity' => $row->total_quantity,
-                //'damage_qty' => $row->damage_qty,
+                'sp_total' => $row->sp_total,
+                'available_qty' => $row->available_qty,
                 'quantity' => $row->quantity,
+                'size' => $row->size,
+                'color' => $row->color,
+                'fabric' => $row->fabric,
+                'craft' => $row->craft,
+                'gst_percent' => $row->gst_percent,
+                'gst' => number_format($row->cost_total * ($row->gst_percent/100), 2),
+                'cost_total' => number_format($row->quantity * $row->price, 2),
                 'total' => number_format($row->quantity * $row->product_mrp, 2),
                 'purchase_date' => $row->purchase_date,
                 'product_purchase_date' => $row->product_purchase_date,

@@ -70,9 +70,10 @@ $this->load->view('common/left_panel');
                                         <th>GST %</th>
                                         <th>HSN</th>
                                         <th>Markup %</th>
-                                        <th>Total Amount</th>
-
-                                        <!-- <th>Image</th> -->
+                                        <th>Total Cost Amount</th>
+                                        <th>SP</th>
+                                        <th>Total SP Amount</th>
+                                        <th>Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -93,34 +94,42 @@ $this->load->view('common/left_panel');
                                             <td><?php echo $getData->size ?></td>
                                             <td><?php echo $getData->fabric ?></td>
                                             <td><?php echo $getData->craft ?></td>
-                                            <td><?php echo $getData->total_quantity ?></td>
-                                            <td><?php echo "Rs. " . number_format($getData->product_mrp, 2); ?></td>
+                                            <td><?php echo $getData->quantity ?></td>
+                                            <td><?php echo "Rs. " . number_format($getData->price, 2); ?></td>
                                             <td><?php echo $getData->gst_percent; ?></td>
                                             <td><?php echo $getData->hsn ?></td>
                                             <td>
                                                 <div class=scrollable><?php echo $getData->markup_percent ?></div>
                                             </td>
-                                            <td><?php echo "Rs. " . number_format($getData->total_quantity * $getData->product_mrp, 2); ?></td>
+                                            <td><?php echo "Rs. " . $getData->cost_total; ?></td>
+                                            <td><?php echo "Rs. " . $getData->product_mrp; ?></td>
+                                            <td><?php echo "Rs. " . $getData->sp_total; ?></td>
+                                            <td><a href="<?= site_url('Warehouse/export_single_pdf/' . $getData->id) ?>" title="PDF" target="_blank" class="btn btn-danger btn-circle btn-sm"><i class="fa fa-file-pdf-o"></i></a></td>
 
                                         </tr>
                                         <?php
-                                        $qty += $getData->total_quantity;
+                                        $qty += $getData->quantity;
                                         $product_mrp += $getData->product_mrp;
-                                        $total += $getData->total_quantity * $getData->product_mrp;
-                                        $totalGST += (($getData->gst_percent/100) * ($getData->total_quantity * $getData->product_mrp));
-                                        $totalmarkup += (($getData->markup_percent/100) * ($getData->total_quantity * $getData->product_mrp));
-                                        $selling += ($total+ $totalmarkup+ $totalGST);
+                                        $totalGST += (($getData->gst_percent/100) * ($getData->quantity * $getData->product_mrp));
+                                        $totalmarkup += ($getData->product_mrp - $getData->price);
+                                        $selling += $getData->sp_total;
                                        // print_r($totalmarkup);exit;
                                     }
                                     ?>
                                     </tbody>
                                     <tfoot>
 
-
                                     <tr>
-                                        <td colspan="13" >&nbsp;<span class="pull-right">Total GST Amount</span></td>
+                                        <td colspan="15" >&nbsp;<span class="pull-right">Total CGST Amount</span></td>
                                         <th>
-                                            <?= "Rs. " . number_format($totalGST, 2); ?>
+                                            <?= "Rs. " . number_format($totalGST/2, 2); ?>
+                                        </th>
+                                        <th colspan="2"></th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="15" >&nbsp;<span class="pull-right">Total SGST Amount</span></td>
+                                        <th>
+                                            <?= "Rs. " . number_format($totalGST/2, 2); ?>
                                         </th>
                                         <th colspan="2"></th>
                                     </tr>
@@ -132,14 +141,14 @@ $this->load->view('common/left_panel');
 <!--                                        <th colspan="2"></th>-->
 <!--                                    </tr>-->
                                     <tr>
-                                        <td colspan="13" >&nbsp;<span class="pull-right">Total Markup Amount</span></td>
+                                        <td colspan="15" >&nbsp;<span class="pull-right">Total Markup Amount</span></td>
                                         <th>
                                             <?= "Rs. " . number_format($totalmarkup, 2); ?>
                                         </th>
                                         <th colspan="2"></th>
                                     </tr>
                                     <tr>
-                                        <td colspan="13">&nbsp;<span class="pull-right">Final Selling Amount</span></td>
+                                        <td colspan="15">&nbsp;<span class="pull-right">Final Selling Amount</span></td>
                                         <th><?= "Rs. " . number_format($selling, 2); ?></th>
                                         <td colspan="3"></td>
                                     </tr>
