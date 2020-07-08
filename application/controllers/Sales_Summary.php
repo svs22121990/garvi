@@ -16,14 +16,27 @@ class Sales_Summary extends CI_Controller {
   {
     if($this->input->post())
     {
-      $date = $this->input->post('daterange'); 
-	  $date = str_replace("-","_",$date);
-	  $date = str_replace("/","-",$date);
-	  $date = str_replace(" ","",$date);
+      if($this->input->post('daterange') != "")
+      {
+          $date = $this->input->post('daterange');
+          $date = str_replace("-", "_", $date);
+          $date = str_replace("/", "-", $date);
+          $date = str_replace(" ", "", $date);
+      } else {
+          $date = 0;
+      }
+      if($this->input->post('type') != "")
+          $type = $this->input->post('type');
+      else
+          $type = 0;
+      if($this->input->post('type2') != "")
+          $type2 = $this->input->post('type2');
+      else
+          $type2 = 0;
       
       //$newDate = date("Y-m-d", strtotime($date));
-	  $strUrl = site_url('Sales_Summary/ajax_manage_page/'.$date);
-      $this->common_view($strUrl,$date); 
+	  $strUrl = site_url('Sales_Summary/ajax_manage_page/' . $date . '/'. $type . '/'. $type2);
+      $this->common_view($strUrl,$date,$type,$type2); 
 	  
     }
     else
@@ -37,7 +50,7 @@ class Sales_Summary extends CI_Controller {
     
     $this->common_view(site_url('Sales_Summary/ajax_manage_page'));
   }
-  public function common_view($action,$date=0)
+  public function common_view($action,$date=0,$type=0,$type2=0)
   {   
     // print_r($_SESSION[SESSION_NAME]);exit;
     $import = '';
@@ -73,7 +86,11 @@ class Sales_Summary extends CI_Controller {
       $salesTypes = $this->Crud_model->GetData("sales_type", "", "status='Active'");
       $paymentModes = $this->Crud_model->GetData("payment_types", "", "status='Active'");
 
+      $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
+      $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
+
 	    $data = array(
+        'types' => $types, 'product_types' => $product_types,'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2,
         'dateinfo'=>$date,
         'breadcrumbs' => $breadcrumbs ,
         'actioncolumn' => '5' ,
@@ -97,10 +114,13 @@ class Sales_Summary extends CI_Controller {
   	}
   }
 
-  public function ajax_manage_page($date=0)
+  public function ajax_manage_page($date=0, $type = 0, $type2 = 0)
   {
     $con="i.id<>''";
-    
+    if($type != 0)
+        $con .= "and a.asset_type_id ='". $type . "'";
+    if($type2 != 0)
+        $con .= "and a.product_type_id ='". $type2 . "'";
     $Data = $this->Sales_Summary_model->get_datatables($con,$date);
     
     $edit = ''; 

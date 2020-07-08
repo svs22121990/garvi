@@ -128,7 +128,7 @@
                 </select>
               </td>
               <td>
-                <input type="text" class="form-control quantity" name="quantity[]" placeholder="Enter Quantity" autocomplete="off">
+                <input type="text" class="form-control quantity" data-available="" name="quantity[]" placeholder="Enter Quantity" autocomplete="off">
                 <span style="color: red" class="quantity_error"></span>
               </td>
               <td>
@@ -238,7 +238,7 @@
                 <td><?= $product->craft; ?></td>
                 <td><?= date("d-m-Y", strtotime($product->purchase_date)); ?></td> 
                 <td><?= implode(" ",$arrTime); ?></td>  
-						    <td><button id="add_product" class="btn btn-success add_product" data-row="" data-name="<?= $product->asset_name; ?>" data-id="<?= $product->id; ?>"><i class="fa fa-plus"></i></button></td>
+						    <td><button id="add_product" class="btn btn-success add_product" data-row="" data-available="<?= $product->available_qty; ?>" data-name="<?= $product->asset_name; ?>" data-id="<?= $product->id; ?>"><i class="fa fa-plus"></i></button></td>
 						  </tr>
 					<?php } } ?>
 				</table>
@@ -261,9 +261,11 @@
 $(document).on('click','.add_product',function(){
 		var id = $(this).attr('data-id');
 		var name = $(this).attr('data-name');
+    var available_qty = $(this).attr('data-available');
     var index = $(this).attr('data-row');
 		//$('#asset_name1').html('<option value="'+id+'">'+name+'</option>');
     $('table .asset_name').slice(index, index + 1).html('<option value="'+id+'">'+name+'</option>');
+    $('table .quantity').slice(index, index + 1).attr('data-available', available_qty);
 		$('#myModal').modal('hide');
     getGST(id,index);
 });
@@ -670,7 +672,6 @@ function getGST(val,len) {
 
 <script type="text/javascript">
 function validateinfo() { 
-  //alert("hi");   
   var dn_no = $('#dn_no').val(); 
   var date = $('#date').val(); 
   var sent_to = $('#sent_to').val(); 
@@ -694,12 +695,17 @@ function validateinfo() {
       
       var product_name = $('.asset_name').eq(i).val();
       var quantity = $('.quantity').eq(i).val();
+      var available_qty = $('.quantity').eq(i).attr('data-available');
       var product_mrp = $('.product_mrp').eq(i).val();
       var gst_percent = $('.gst_percent').eq(i).val();
       var lf_no = $('.lf_no').eq(i).val();
       
       if(quantity=='') {
         $('.quantity_error').eq(i).html("Please enter Quantity").fadeIn();
+        setTimeout(function(){$(".quantity_error").eq(i).fadeOut()},5000);
+        return false;
+      } else if(quantity > available_qty){
+        $('.quantity_error').eq(i).html("Quantity cannot be more than Available Qty").fadeIn();
         setTimeout(function(){$(".quantity_error").eq(i).fadeOut()},5000);
         return false;
       }

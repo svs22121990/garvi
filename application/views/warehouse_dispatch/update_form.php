@@ -116,47 +116,51 @@
               <th> Price <span style="color: red">*</span><span id="error_price"></span></th>
               <th> GST % <span style="color: red">*</span><span id="error_gst_percent"></span></th>
               <th> Total GST <span style="color: red">*</span><span id="error_gst_total"></span></th>
-              <th class="text-center"> <a href="javascript:void(0)" class="btn btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>
             </tr>
           </thead>
 		  
           <tbody id="professorTableBody">  
+            <?php 
+                $priceTotal = 0;
+                $GSTTotal = 0;
+                for($i=0; $i<count($dispatch_details); $i++) { ?>
             <tr class="trRow">
               <td>
                 <select class="form-control asset_name" name="asset_name[]">
-                  <option value="0">Select Product</option>
+                  <option value="<?php echo $dispatch_details[$i]->product_id; ?>"><?php echo $dispatch_details[$i]->asset_name; ?></option>
                 </select>
               </td>
               <td>
-                <input type="text" class="form-control quantity" name="quantity[]" placeholder="Enter Quantity" autocomplete="off">
+                <input type="text" class="form-control quantity" name="quantity[]" data-available="<?php echo $dispatch_details[$i]->available_qty; ?>" value="<?php echo $dispatch_details[$i]->quantity; ?>" placeholder="Enter Quantity" autocomplete="off">
                 <span style="color: red" class="quantity_error"></span>
               </td>
               <td>
-                <div class="attribute_div">Attributes</div>
+                <div class="attribute_div"><b>Category : </b><?php echo $dispatch_details[$i]->title; ?></br><b>Type : </b><?php echo $dispatch_details[$i]->type; ?></br><b>Color : </b><?php echo $dispatch_details[$i]->color; ?></br><b>Size : </b><?php echo $dispatch_details[$i]->size; ?></br><b>Fabric : </b><?php echo $dispatch_details[$i]->fabric; ?></br><b>Craft : </b><?php echo $dispatch_details[$i]->craft; ?></br><b>Available Qty : </b><?php echo $dispatch_details[$i]->available_qty; ?></br><b>Barcode Number : </b><?php echo $dispatch_details[$i]->barcode_number; ?></div>
               </td>
               <td>
-                <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">
+                <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" value="<?php echo $dispatch_details[$i]->price; ?>" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">
                 <span style="color: red" class="price_error"></span>
               </td>
               <td>
-                <input type="text" class="form-control gst_percent" name="gst_percent[]" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
+                <input type="text" class="form-control gst_percent" name="gst_percent[]" readonly="readonly" value="<?php echo $dispatch_details[$i]->gst_percent; ?>" placeholder="Enter GST %" autocomplete="off">
                 <span style="color: red" class="gst_error"></span>
               </td>
               <td>
-                <input type="text" class="form-control gst_total" name="gst_total[]" readonly="readonly" placeholder="Enter GST" autocomplete="off">
+                <input type="text" class="form-control gst_total" name="gst_total[]" readonly="readonly" value="<?php echo (($dispatch_details[$i]->gst_percent/100) * $dispatch_details[$i]->price * $dispatch_details[$i]->quantity); ?>" placeholder="Enter GST" autocomplete="off">
                 <span style="color: red" class="gst_total_error"></span>
               </td>
-              <td class="text-center">
-                <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn btn-sm btn-danger"><i class="fa fa-minus"></i></a>
-              </td>
             </tr>
+            <?php 
+                $priceTotal += $dispatch_details[$i]->price;
+                $GSTTotal += (($dispatch_details[$i]->gst_percent/100) * $dispatch_details[$i]->price * $dispatch_details[$i]->quantity);
+            } ?>
           </tbody>
           <tfoot>                   
             <tr>
                 <th colspan="3" >&nbsp;<span class="pull-right">Total</span></th>
-                <th><input type="text" class="form-control" id="priceTotal" readonly="readonly" value="0"></th>
+                <th><input type="text" class="form-control" id="priceTotal" readonly="readonly" value="<?php echo $priceTotal; ?>"></th>
                 <th></th>
-                <th><input type="text" class="form-control" id="GSTTotal" readonly="readonly" value="0"></th>
+                <th><input type="text" class="form-control" id="GSTTotal" readonly="readonly" value="<?php echo $GSTTotal; ?>"></th>
             </tr>
             </tfoot>
 
@@ -280,12 +284,7 @@ jQuery(document).on('click','#save_next',function(){
     $( "#myForm" ).submit();
 });
 jQuery(document).on('click','#save_finish',function(){
-	//$('#save_finish_body').html('<input type="hidden" name="save_finish" value="save_finish">');
-    //
-	$("#myForm"). removeAttr("action");
-	$("#myForm").attr("action","<?= base_url(); ?>index.php/warehouse_dispatch/create_action/finish");
 	$( "#myForm" ).submit();
-	
 });
 //jQuery(document).on('click','#asset_name1',function(){
 //	$('#myModal').modal({backdrop: 'static', keyboard: false});
@@ -687,12 +686,17 @@ function validateinfo() {
       
       var product_name = $('.asset_name').eq(i).val();
       var quantity = $('.quantity').eq(i).val();
+      var available_qty = $('.quantity').eq(i).attr('data-available');
       var product_mrp = $('.product_mrp').eq(i).val();
       var gst_percent = $('.gst_percent').eq(i).val();
       var lf_no = $('.lf_no').eq(i).val();
       
       if(quantity=='') {
         $('.quantity_error').eq(i).html("Please enter Quantity").fadeIn();
+        setTimeout(function(){$(".quantity_error").eq(i).fadeOut()},5000);
+        return false;
+      } else if(quantity > available_qty){
+        $('.quantity_error').eq(i).html("Quantity cannot be more than Available Qty").fadeIn();
         setTimeout(function(){$(".quantity_error").eq(i).fadeOut()},5000);
         return false;
       }

@@ -21,19 +21,19 @@ $this->load->view('common/left_panel');
         <div class="form-group row" style="padding-top: 20px;">
           <div class="col-md-3">
             <!--<input type="text" name="purchase_date" id="purchase_date" class="form-control datepicker" placeholder="Purchase Date" required>-->
-            <input type="text" class="form-control" name="daterange" autocomplete="off" placeholder="Select Date" value="" />
+            <input type="text" class="form-control" name="daterange" placeholder="Select Date" autocomplete="off" value="<?php if($selected_date != 0)echo $selected_date; ?>" />
           </div>
           <div class="col-md-3">
               <select name="type" id="type" class="form-control">
                   <option value="">Select Type</option>
                   <?php
                   if(!empty($types)) {
-                      foreach ($types as $type) {
-                      ?>
-                      <option value="<?php echo $type->id; ?>" <?php //if($$type->id == $selected_type){ echo 'selected="selected"'; } ?>><?php echo $type->type; ?></option>
-                      <?php
-                      }
-                  }
+                    foreach ($types as $type) {
+                    ?>
+                    <option value="<?php echo $type->id; ?>" <?php if($type->id==$selected_type)echo "selected";?> ><?php echo $type->type; ?></option>
+                    <?php
+                    }
+                }
                   ?>
               </select>
           </div>
@@ -42,17 +42,18 @@ $this->load->view('common/left_panel');
                   <option value="">Select Type 2</option>
                   <?php
                   if(!empty($product_types)) {
-                      foreach ($product_types as $type) {
-                      ?>
-                      <option value="<?php echo $type->id; ?>"><?php echo $type->label; ?></option>
-                      <?php
-                      }
-                  }
+                    foreach ($product_types as $type) {
+                    ?>
+                    <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_type2)echo "selected";?> ><?php echo $type->label; ?></option>
+                    <?php
+                    }
+                }
                   ?>
               </select>
           </div>
           <div class="col-md-2">
             <button type="submit" class="btn btn-success">Search</button>
+            <a href="<?php site_url("Bank_Reconcillation/index/")?>" class="btn btn-danger">X</a>
           </div>
         </div>
         <?= form_close(); ?>
@@ -651,7 +652,7 @@ $this->load->view('common/left_panel');
 <script>
   $(function() {
     $('input[name="daterange"]').daterangepicker({
-      //autoUpdateInput: false,
+      autoUpdateInput: false,
       locale: {
         format: 'DD/MM/YYYY',
       },
@@ -660,14 +661,13 @@ $this->load->view('common/left_panel');
       var startDate = start.format('YYYY-MM-DD');
       var endDate = end.format('YYYY-MM-DD');
     });
-    /*
     $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
     });
 
     $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
         $(this).val('');
-    });*/
+    });
   });
 </script>
 <script type="text/javascript">

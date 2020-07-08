@@ -16,18 +16,28 @@ class Warehouse_Product_Summary extends CI_Controller
     public function search()
     {
         if ($this->input->post()) {
-            $date = $this->input->post('daterange');
-            $date = str_replace("-", "_", $date);
-            $date = str_replace("/", "-", $date);
-            $date = str_replace(" ", "", $date);
-
-            $type = $this->input->post('type');
-            $type2 = $this->input->post('type2');
+            if($this->input->post('daterange') != "")
+            {
+                $date = $this->input->post('daterange');
+                $date = str_replace("-", "_", $date);
+                $date = str_replace("/", "-", $date);
+                $date = str_replace(" ", "", $date);
+            } else {
+                $date = 0;
+            }
+            if($this->input->post('type') != "")
+                $type = $this->input->post('type');
+            else
+                $type = 0;
+            if($this->input->post('type2') != "")
+                $type2 = $this->input->post('type2');
+            else
+                $type2 = 0;
 
             //$newDate = date("Y-m-d", strtotime($date));
             $strUrl = site_url('Warehouse_Product_Summary/ajax_manage_page/' . $date . '/'. $type . '/'. $type2);
             //$strUrl = site_url('Warehouse_Product_Summary/ajax_manage_page/');
-            $this->common_view($strUrl, $date);
+            $this->common_view($strUrl, $date, $type, $type2);
         } else {
             return redirect('Warehouse_Product_Summary');
         }
@@ -37,7 +47,7 @@ class Warehouse_Product_Summary extends CI_Controller
         $this->common_view(site_url('Warehouse_Product_Summary/ajax_manage_page'));
     }
 
-    public function common_view($action, $date = 0)
+    public function common_view($action, $date = 0, $type=0, $type2=0)
     {
         // print_r($_SESSION[SESSION_NAME]);exit;
         $import = '';
@@ -81,28 +91,12 @@ class Warehouse_Product_Summary extends CI_Controller
             //exit();
             $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
             $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
-            $data = array('types' => $types, 'product_types' => $product_types, 'dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '9', 'ajax_manage_page' => $action, 'heading' => 'Manage Warehouse Product Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
+            $data = array('selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 'types' => $types, 'product_types' => $product_types, 'dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '9', 'ajax_manage_page' => $action, 'heading' => 'Manage Warehouse Product Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
             $this->load->view('warehouse_product_summary/list', $data);
         } else {
             redirect('Dashboard');
         }
     }
-//
-//'no' => $no,
-//'asset_name' => $row->asset_name,
-//'title' => $row->title,
-//'type' => $row->type,
-//'hsn' => $row->hsn,
-//'product_mrp' => number_format($row->product_mrp, 2),
-//'total_quantity' => $row->total_quantity,
-////                'damage_qty' => $row->damage_qty,
-//'quantity' => $row->quantity,
-//'total' => number_format($row->quantity * $row->product_mrp, 2),
-//'purchase_date' => $row->purchase_date,
-//'product_purchase_date' => $row->product_purchase_date,
-//'productType' => $row->product_type,
-
-
 
     public function ajax_manage_page($date = 0, $type = 0, $type2 = 0)
     {
@@ -202,7 +196,7 @@ class Warehouse_Product_Summary extends CI_Controller
                 'price' => $row->price,
                 'cost_total' => $row->cost_total,
                 'product_mrp' => number_format($row->product_mrp, 2),
-                'sp_total' => $row->sp_total,
+                'sp_total' => number_format(($row->product_mrp * $row->available_qty), 2),
                 'available_qty' => $row->available_qty,
                 'quantity' => $row->quantity,
                 'size' => $row->size,
@@ -220,8 +214,8 @@ class Warehouse_Product_Summary extends CI_Controller
                 'barcode_number' => $row->barcode_number,
                 'time' => implode(" ", $arrTime),
                 'btn' =>  "<a href='javascript:void(0)' onclick='addDamage(" . $product_id . ")' title='Add Damage' class='btn btn-danger btn-circle btn-sm edit-qty'><i class='fa fa-plus'></i></a>",
-                //'selected_type' => $type,
-                //'selected_type2' => $type2,
+                'selected_type' => $type,
+                'selected_type2' => $type2,
             );
         }
         //dd($data);

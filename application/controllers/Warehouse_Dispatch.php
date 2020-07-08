@@ -134,9 +134,9 @@ class Warehouse_Dispatch extends CI_Controller
             //if(!empty($view)){
             $btn .='<a href='.site_url("Warehouse_Dispatch/view/".$row->id).' title="Details" class="btn btn-primary btn-circle btn-sm"><i class="fa fa-eye"></i></a>';
             //}
-            //if(!empty($edit)){
-            //    $btn .= '&nbsp;|&nbsp;' .'<a href=' . site_url("Warehouse_Dispatch/update/" . $row->id) . ' title="Details" class="btn btn-primary btn-info btn-sm"><i class="fa fa-pencil bigger-130"></i></a>';
-            //}
+            if(!empty($edit)){
+                $btn .= '&nbsp;|&nbsp;' .'<a href=' . site_url("Warehouse_Dispatch/update/" . $row->id) . ' title="Details" class="btn btn-primary btn-info btn-sm"><i class="fa fa-pencil bigger-130"></i></a>';
+            }
             //if(!empty($delete)){
             //    $btn .='&nbsp;|&nbsp;'.'<a href="#deleteData" data-toggle="modal" title="Delete" class="btn btn-danger btn-circle btn-sm" onclick="checkStatus('.$row->id.')"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>';
             //}
@@ -335,10 +335,27 @@ class Warehouse_Dispatch extends CI_Controller
             $products = $query->result();
 
         $dispatch = $this->Crud_model->GetData('warehouse_dispatch', "", "id='" . $id . "'", '', '', '', 'row');
-        $dispatch_details = $this->Crud_model->GetData('warehouse_dispatch_details', "", "dispatch_id='" . $id . "'", '', '', '', 'row');
+            $query =  $this->db->select('a.*,w.asset_name,w.available_qty,w.barcode_number,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,
+                        siz.title as size,
+                        col.title as color,
+                        fab.title as fabric,
+                        cra.title as craft,
+                        cat.title,mat.type,pro.label')
+                    ->join("warehouse_details w","w.id = a.product_id","left")
+                    ->join("size siz","siz.id = w.size_id","left")
+                    ->join("color col","col.id = w.color_id","left")
+                    ->join("fabric fab","fab.id = w.fabric_id","left")
+                    ->join("craft cra","cra.id = w.craft_id","left")
+                    ->join("categories cat","cat.id = w.category_id","left")
+                    ->join("mst_asset_types mat","mat.id = w.asset_type_id","left")
+                    ->join("product_type pro","pro.id = w.product_type_id","left")
+                    ->from('warehouse_dispatch_details as a')
+                    ->where('a.dispatch_id='.$id)
+                    ->get();
+            $dispatch_details = $query->result();
         
         $users = $this->Crud_model->GetData("employees","","id!='".$_SESSION['ASSETSTRACKING']['id']."' and type='User'");           
-        $action =  site_url("Warehouse_Dispatch/update_action");    
+        $action =  site_url("Warehouse_Dispatch/update_action/" . $id);
 
         $data = array(
             'breadcrumbs' => $breadcrumbs,
@@ -355,6 +372,66 @@ class Warehouse_Dispatch extends CI_Controller
 
     public function update_action($id)
     {
+        if($_POST) {
+
+            $dispatchdate = str_replace('/', '-', $_POST['date']);
+            
+            $data_array = array(
+            'dispatch_date' => date('Y-m-d', strtotime($_POST['date'])),
+            'sent_to' => $_POST['sent_to'],
+            );
+            //print_r($data_array);exit;
+            $this->Crud_model->SaveData("warehouse_dispatch",$data_array, "id='" . $id . "'");
+            $last_id = $this->db->insert_id();
+
+            $this->db->select('*');
+            $this->db->from('warehouse_dispatch_details');
+            $this->db->where('dispatch_id=', $id);
+            $query = $this->db->get();
+            $details = $query->result();
+            foreach($details as $detail)
+            {
+                $this->db->select('available_qty');
+                $this->db->where('id', $detail->product_id);
+                $query = $this->db->get('warehouse_details');
+                $product = $query->row();
+                $data = array(
+                    'available_qty' => ($product->available_qty + $detail->quantity)
+                );
+                $this->Crud_model->SaveData("warehouse_details", $data, "id='" . $detail->product_id . "'");
+            }
+            $con = "dispatch_id='" . $id . "'";
+            $delete = $this->Crud_model->DeleteData('warehouse_dispatch_details',$con);
+
+            for ($i = 0; $i < count($_POST['asset_name']); $i++) {
+                $data = array(
+                    'dispatch_id' => $id,
+                    'product_id' => $_POST['asset_name'][$i],
+                    'quantity' => $_POST['quantity'][$i],
+                    'price'=>$_POST['product_mrp'][$i],
+                    'gst_percent'=>$_POST['gst_percent'][$i],
+                    'created_by'=>$_POST['sent_to'][$i],
+                    'status' => 'Active',
+                    'created'=>date('Y-m-d H:i:s'),
+                );
+                $this->Crud_model->SaveData("warehouse_dispatch_details",$data);
+
+                //Remaining Quantity in Warehouse Details
+                $this->db->select('quantity');
+                $this->db->where('id', $_POST['asset_name'][$i]);
+                $query = $this->db->get('warehouse_details');
+                $product = $query->row();
+                $data = array(
+                    'available_qty' => ($product->quantity - $_POST['quantity'][$i])
+                );
+                $this->Crud_model->SaveData("warehouse_details", $data, "id='" . $_POST['asset_name'][$i] . "'");
+            }
+                    
+            $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Dispatch Product has been updated successfully</span>');
+            redirect('Warehouse_Dispatch/index');
+        } else {
+            redirect('Warehouse_Dispatch/update/' . $id);
+        }
 
         //echo"<pre>"; print_r($_POST);exit();
         if ($_POST) {
@@ -399,7 +476,7 @@ class Warehouse_Dispatch extends CI_Controller
             $this->Crud_model->SaveData("warehouse_details", $data, "warehouse_id='" . $id . "'");
 
             $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Product has been updated successfully</span>');
-            redirect('Warehouse/index');
+            redirect('Warehouse_Dispatch/index');
         } else {
             $this->session->set_flashdata('message', '<span style="color:red;">Invalid</span>');
             redirect('Warehouse/update/' . $id);

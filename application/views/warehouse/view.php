@@ -108,9 +108,9 @@ $this->load->view('common/left_panel');
 
                                         </tr>
                                         <?php
-                                        $qty += $getData->quantity;
+                                        //$qty += $getData->quantity;
                                         $product_mrp += $getData->product_mrp;
-                                        $totalGST += (($getData->gst_percent/100) * ($getData->quantity * $getData->product_mrp));
+                                        $totalGST += (($getData->gst_percent/100) * $getData->cost_total);
                                         $totalmarkup += ($getData->product_mrp - $getData->price);
                                         $selling += $getData->sp_total;
                                        // print_r($totalmarkup);exit;

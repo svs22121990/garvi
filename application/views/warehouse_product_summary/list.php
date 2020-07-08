@@ -15,7 +15,7 @@ $this->load->view('common/left_panel');
 <!-- START DEFAULT DATATABLE -->
 <style>
     div.dataTables_wrapper {
-        width: 1300px;
+        width: 1500px;
         margin: 0 auto;
     }
 </style>
@@ -26,7 +26,7 @@ $this->load->view('common/left_panel');
                 <?= form_open('Warehouse_Product_Summary/search',['id'=>'serch_date']); ?>
                 <div class="form-group row" style="padding-top: 20px;" >
                     <div class="col-md-3">
-					  <input type="text" class="form-control" name="daterange" value="" />
+					  <input type="text" class="form-control" name="daterange" placeholder="Select Date" autocomplete="off" value="<?php if($selected_date != 0)echo $selected_date; ?>" />
                     </div>
                     <div class="col-md-3">
                         <select name="type" id="type" class="form-control">
@@ -35,7 +35,7 @@ $this->load->view('common/left_panel');
                             if(!empty($types)) {
                                 foreach ($types as $type) {
                                 ?>
-                                <option value="<?php echo $type->id; ?>" <?php //if($$type->id == $selected_type){ echo 'selected="selected"'; } ?>><?php echo $type->type; ?></option>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id==$selected_type)echo "selected";?> ><?php echo $type->type; ?></option>
                                 <?php
                                 }
                             }
@@ -49,7 +49,7 @@ $this->load->view('common/left_panel');
                             if(!empty($product_types)) {
                                 foreach ($product_types as $type) {
                                 ?>
-                                <option value="<?php echo $type->id; ?>"><?php echo $type->label; ?></option>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_type2)echo "selected";?> ><?php echo $type->label; ?></option>
                                 <?php
                                 }
                             }
@@ -58,7 +58,7 @@ $this->load->view('common/left_panel');
                     </div>
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-success">Search</button>
-                        <!--<a href="<?php//site_url("Warehouse_Product_Summary/index/")?>" class="btn btn-danger">X</a>-->
+                        <a href="<?php site_url("Warehouse_Product_Summary/index/")?>" class="btn btn-danger">X</a>
                     </div>
                     <div  class="col-md-4">
                     </div>
@@ -128,6 +128,8 @@ $this->load->view('common/left_panel');
                                         <th>Total Cost Amt</th>
                                         <th>GST %</th>
                                         <th>GST Amt</th>
+                                        <th>Selling Price</th>
+                                        <th>Total SP</th>
                                         <th>Barcode Number</th>
                                         <th>AGE</th>
                                         <!--<th>Selling Price</th>
@@ -140,6 +142,8 @@ $this->load->view('common/left_panel');
                                     <tfoot>
                                     <tr>
                                         <th colspan="14" style="text-align:right"></th>
+                                        <th></th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                         <th></th>
@@ -337,6 +341,18 @@ $this->load->view('common/left_panel');
                         return 'Rs. '+data;
                     }
                 },
+                {
+                    "data": "product_mrp",
+                    "render": function ( data, type, row, meta ) {
+                        return 'Rs. '+data;
+                    }
+                },
+                {
+                    "data": "sp_total",
+                    "render": function ( data, type, row, meta ) {
+                        return 'Rs. '+data;
+                    }
+                },
                 { "data": "barcode_number" },
                 { "data": "time" },
                 // { "data": "purchase_date" },
@@ -372,14 +388,6 @@ $this->load->view('common/left_panel');
                     }, 0 );
                 $( api.column( 14 ).footer() ).html('Rs. '+total3.toFixed(2));
 
-                //total = api
-                //    .column(15, {filter: 'applied'})
-                //    .data()
-                //    .reduce( function (a, b) {
-                //        return intVal(a) + intVal(b);
-                //    }, 0 );
-                //$( api.column( 15 ).footer() ).html('Rs. '+total.toFixed(2));
-
                 total1 = api
                     .column(17, {filter: 'applied'})
                     .data()
@@ -387,6 +395,20 @@ $this->load->view('common/left_panel');
                         return intVal(a) + intVal(b);
                     }, 0 );
                 $( api.column( 17 ).footer() ).html('Rs. '+total1);
+                total1 = api
+                    .column(18, {filter: 'applied'})
+                    .data()
+                    .reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+                $( api.column( 18 ).footer() ).html('Rs. '+total1);
+                total1 = api
+                    .column(19, {filter: 'applied'})
+                    .data()
+                    .reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+                $( api.column( 19 ).footer() ).html('Rs. '+total1);
 
             }
         });
@@ -416,6 +438,7 @@ $this->load->view('common/left_panel');
 <script>
     $(function() {
         $('input[name="daterange"]').daterangepicker({
+            autoUpdateInput: false,
             locale: {
                 format: 'DD/MM/YYYY'
             },
@@ -423,6 +446,14 @@ $this->load->view('common/left_panel');
         }, function(start, end, label) {
             var startDate = start.format('YYYY-MM-DD');
             var endDate = end.format('YYYY-MM-DD');
+        });
+
+        $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        });
+
+        $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
         });
     });
     function addDamage($product_id){

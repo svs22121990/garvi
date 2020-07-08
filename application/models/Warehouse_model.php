@@ -24,13 +24,12 @@ class Warehouse_model extends CI_Model
                 p.warehouse_date,
                 p.received_from,
                 e.name as employee_name,
-                d.gst_percent,
                 (select SUM(cost_total) from warehouse_details where warehouse_id=p.id) as cost_total,
                 (select SUM(sp_total) from warehouse_details as a where warehouse_id=p.id) as sp_total,
             ');
         $this->db->from("warehouse p");
         $this->db->join("employees e","e.id = p.received_from","left");
-        $this->db->join("warehouse_details d","d.warehouse_id = p.id","left");
+        //$this->db->join("warehouse_details d","d.warehouse_id = p.id");
 //        $this->db->where('warehouse_details.created_by',$_SESSION[SESSION_NAME]['id']);
         $this->db->where($con);
         $this->db->distinct();
@@ -51,6 +50,7 @@ class Warehouse_model extends CI_Model
             $this->db->where('p.warehouse_date <=', $date2);
         }
         $query = $this->db->get();
+
         return $query->result();
     }
 

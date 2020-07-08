@@ -31,7 +31,7 @@ $this->load->view('common/left_panel');
                     <h3 class="panel-title">Disptach Details</h3>
                     <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
                     <ul class="panel-controls">
-                        <li><a href="<?= site_url('Warehouse/index') ?>"><span class="fa fa-arrow-left"></span></a></li>
+                        <li><a href="<?= site_url('Warehouse_Dispatch/index') ?>"><span class="fa fa-arrow-left"></span></a></li>
                     </ul>
                 </div>
                 <div class="panel-body panel-body-table">
