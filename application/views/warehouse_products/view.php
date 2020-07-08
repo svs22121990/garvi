@@ -72,13 +72,13 @@ $this->load->view('common/left_panel');
                                                                 <td><?php echo $getData->color; ?></td>
                                                                 <td><?php echo $getData->fabric; ?></td>
                                                                 <td><?php echo $getData->craft; ?></td>
-                                                                <td><?php echo 'Rs. '.$getData->price; ?></td>
+                                                                <td><?php echo 'Rs. '.$getData->product_mrp; ?></td>
                                                                 <td><?php echo $getData->gst_percent ?></td>
-                                                                <td><?php echo 'Rs. '.(($getData->price * $getData->quantity) * ($getData->gst_percent/100)) ?></td>
+                                                                <td><?php echo 'Rs. '.(($getData->product_mrp * $getData->quantity) * ($getData->gst_percent/100)) ?></td>
                                                             </tr>  
                                                             <?php 
-                                                            $totalGST += (($getData->price * $getData->quantity) * ($getData->gst_percent/100));
-                                                            $totalSP += ($getData->price * $getData->quantity);
+                                                            $totalGST += (($getData->product_mrp * $getData->quantity) * ($getData->gst_percent/100));
+                                                            $totalSP += ($getData->product_mrp * $getData->quantity);
                                                             }
                                                             ?>     
                                                         </tbody>

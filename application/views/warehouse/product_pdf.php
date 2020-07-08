@@ -162,7 +162,7 @@
                     <th style="width: 10%;">Sr. No.</th>
                     <th style="width: 30%;">Barcode Number</th>
                     <th style="width: 30%;">Barcode Image</th>
-					<th style="width: 30%;">Status</th>
+					<!--<th style="width: 30%;">Status</th>-->
                 </tr>
             </thead>
             
@@ -185,7 +185,6 @@
                             <div><img src="<?php echo base_url(); ?>admin/assets/warehouse_barcode/<?php echo $barcode->barcode_image; ?>"></div>
                         </div>
                     </td>
-                    <td> <?= $barcode->status; ?></td>
                 </tr>    
                 <?php $sr++; } ?>                  
             </tbody>

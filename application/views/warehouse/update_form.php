@@ -14,7 +14,7 @@ $this->load->view('common/left_panel'); ?>
                             <li><a href="<?= site_url('Warehouse/index')?>" ><span class="fa fa-arrow-left"></span></a></li>
                         </ul>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body" style="overflow-x: auto;">
                         <div class="row">
                             <div class="col-md-12" style="padding: 0;">
 
@@ -62,8 +62,8 @@ $this->load->view('common/left_panel'); ?>
 
                         </div>
                         <div class="col-md-12" style="padding: 0;">
-                            <div class="">
-                                <table class="table table-striped table-bordered">
+                            <div style="width: 1600px; margin: 0 auto;">
+                                <table class="table table-striped table-bordered" style="width: 100%;">
                                     <thead>
                                     <tr>
                                         <th> Purchase Date <span style="color: red">*</span><span style="color: red"></span></th>

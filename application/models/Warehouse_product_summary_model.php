@@ -35,11 +35,15 @@ class Warehouse_product_summary_model extends CI_Model
             fab.title as fabric,
             cra.title as craft,
             p.purchase_date as product_purchase_date,
+            p.barcode_number,
             (select label from product_type where id=p.product_type_id) as product_type,
+            e.name,
             c.title,
             t.type
             ');
         $this->db->from("warehouse_details p");
+        $this->db->join("warehouse w","w.id = p.warehouse_id","left");
+        $this->db->join("employees e","e.id = w.received_from","left");
         $this->db->join("categories c","p.category_id = c.id","left");
         $this->db->join("mst_asset_types t","t.id = p.asset_type_id","left");
         $this->db->join("size siz","siz.id = p.size_id","left");

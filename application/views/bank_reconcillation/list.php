@@ -19,18 +19,40 @@ $this->load->view('common/left_panel');
       <div class="panel panel-default">
         <?= form_open('Bank_Reconcillation/search', ['id' => 'serch_date']); ?>
         <div class="form-group row" style="padding-top: 20px;">
-          <label class="col-md-2"> select Date<span style="color: red">*</span> <span id="purchase_date_error" style="color: red"></span></label>
           <div class="col-md-3">
             <!--<input type="text" name="purchase_date" id="purchase_date" class="form-control datepicker" placeholder="Purchase Date" required>-->
-            <input type="text" class="form-control" name="daterange" value="" />
+            <input type="text" class="form-control" name="daterange" autocomplete="off" placeholder="Select Date" value="" />
+          </div>
+          <div class="col-md-3">
+              <select name="type" id="type" class="form-control">
+                  <option value="">Select Type</option>
+                  <?php
+                  if(!empty($types)) {
+                      foreach ($types as $type) {
+                      ?>
+                      <option value="<?php echo $type->id; ?>" <?php //if($$type->id == $selected_type){ echo 'selected="selected"'; } ?>><?php echo $type->type; ?></option>
+                      <?php
+                      }
+                  }
+                  ?>
+              </select>
+          </div>
+          <div class="col-md-3">
+              <select name="type2" id="type2" class="form-control">
+                  <option value="">Select Type 2</option>
+                  <?php
+                  if(!empty($product_types)) {
+                      foreach ($product_types as $type) {
+                      ?>
+                      <option value="<?php echo $type->id; ?>"><?php echo $type->label; ?></option>
+                      <?php
+                      }
+                  }
+                  ?>
+              </select>
           </div>
           <div class="col-md-2">
             <button type="submit" class="btn btn-success">Search</button>
-          </div>
-          <div class="col-md-4">
-
-
-
           </div>
         </div>
         <?= form_close(); ?>
@@ -629,14 +651,23 @@ $this->load->view('common/left_panel');
 <script>
   $(function() {
     $('input[name="daterange"]').daterangepicker({
+      //autoUpdateInput: false,
       locale: {
-        format: 'DD/MM/YYYY'
+        format: 'DD/MM/YYYY',
       },
       opens: 'right'
     }, function(start, end, label) {
       var startDate = start.format('YYYY-MM-DD');
       var endDate = end.format('YYYY-MM-DD');
     });
+    /*
+    $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+    });
+
+    $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });*/
   });
 </script>
 <script type="text/javascript">

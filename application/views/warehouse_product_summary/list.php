@@ -13,26 +13,56 @@ $this->load->view('common/left_panel');
 <!-- END PAGE TITLE -->
 <!-- PAGE CONTENT WRAPPER -->
 <!-- START DEFAULT DATATABLE -->
+<style>
+    div.dataTables_wrapper {
+        width: 1300px;
+        margin: 0 auto;
+    }
+</style>
 <div class="page-content-wrap">
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <?= form_open('Product_Summary/search',['id'=>'serch_date']); ?>
-<!--                <div class="form-group row" style="padding-top: 20px;" >-->
-<!--                    <label class="col-md-2"> select Date<span style="color: red">*</span> <span  id="purchase_date_error" style="color: red"></span></label>-->
-<!--                    <div class="col-md-3">-->
-<!--                        <!--<input type="text" name="purchase_date" id="purchase_date" class="form-control datepicker" placeholder="Purchase Date" required>-->
-<!--                        <input type="text" class="form-control" name="daterange" value="" />-->
-<!--                    </div>-->
-<!--                    <div class="col-md-2">-->
-<!--                        <button type="submit" class="btn btn-success">Search</button>-->
-<!--                    </div>-->
-<!--                    <div  class="col-md-4">-->
-<!---->
-<!---->
-<!---->
-<!--                    </div>-->
-<!--                </div>-->
+                <?= form_open('Warehouse_Product_Summary/search',['id'=>'serch_date']); ?>
+                <div class="form-group row" style="padding-top: 20px;" >
+                    <div class="col-md-3">
+					  <input type="text" class="form-control" name="daterange" value="" />
+                    </div>
+                    <div class="col-md-3">
+                        <select name="type" id="type" class="form-control">
+                            <option value="">Select Type</option>
+                            <?php
+                            if(!empty($types)) {
+                                foreach ($types as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php //if($$type->id == $selected_type){ echo 'selected="selected"'; } ?>><?php echo $type->type; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="type2" id="type2" class="form-control">
+                            <option value="">Select Type 2</option>
+                            <?php
+                            if(!empty($product_types)) {
+                                foreach ($product_types as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>"><?php echo $type->label; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success">Search</button>
+                        <!--<a href="<?php//site_url("Warehouse_Product_Summary/index/")?>" class="btn btn-danger">X</a>-->
+                    </div>
+                    <div  class="col-md-4">
+                    </div>
+                </div>
                 <?= form_close(); ?>
                 <?php if($dateinfo!= 0 ){ ?>
                 <form method="post" action="<?=site_url("Product_Summary/export_product_summary/$dateinfo")?>">
@@ -75,14 +105,15 @@ $this->load->view('common/left_panel');
                                 <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li> -->
                             </ul>
                         </div>
-                        <div class="panel-body ">
+                        <div class="panel-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-actions example_datatable2">
+                                <table class="table table-bordered table-striped table-actions example_datatable2" style="width:100%">
                                     <thead>
                                     <tr>
                                         <th>Sr No</th>
                                         <th>Purchase Date</th>
                                         <th>Name</th>
+                                        <th>Received From</th>
                                         <th>Category</th>
                                         <th>Type</th>
                                         <th>Type 2</th>
@@ -97,6 +128,8 @@ $this->load->view('common/left_panel');
                                         <th>Total Cost Amt</th>
                                         <th>GST %</th>
                                         <th>GST Amt</th>
+                                        <th>Barcode Number</th>
+                                        <th>AGE</th>
                                         <!--<th>Selling Price</th>
                                         <th>Total Selling Amt</th>-->
                                         <!-- <th>Purchase Date</th> -->
@@ -106,7 +139,9 @@ $this->load->view('common/left_panel');
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th colspan="13" style="text-align:right"></th>
+                                        <th colspan="14" style="text-align:right"></th>
+                                        <th></th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                         <th></th>
@@ -266,6 +301,7 @@ $this->load->view('common/left_panel');
                 { "data": "no" },
                 { "data": "product_purchase_date" },
                 { "data": "asset_name" },
+                { "data": "name" },
                 { "data": "title" },
                 { "data": "type" },
                 { "data": "productType" },
@@ -301,6 +337,8 @@ $this->load->view('common/left_panel');
                         return 'Rs. '+data;
                     }
                 },
+                { "data": "barcode_number" },
+                { "data": "time" },
                 // { "data": "purchase_date" },
                 //{ "data": "time" },
                 //{ "data": "btn" }
@@ -319,12 +357,12 @@ $this->load->view('common/left_panel');
                 };
 
                 total2 = api
-                    .column(13, {filter: 'applied'})
+                    .column(15, {filter: 'applied'})
                     .data()
                     .reduce( function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0 );
-                $( api.column( 13 ).footer() ).html('Rs. '+total2.toFixed(2));
+                $( api.column( 15 ).footer() ).html('Rs. '+total2.toFixed(2));
 
                 total3 = api
                     .column(14, {filter: 'applied'})
@@ -343,12 +381,12 @@ $this->load->view('common/left_panel');
                 //$( api.column( 15 ).footer() ).html('Rs. '+total.toFixed(2));
 
                 total1 = api
-                    .column(16, {filter: 'applied'})
+                    .column(17, {filter: 'applied'})
                     .data()
                     .reduce( function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0 );
-                $( api.column( 16 ).footer() ).html('Rs. '+total1);
+                $( api.column( 17 ).footer() ).html('Rs. '+total1);
 
             }
         });

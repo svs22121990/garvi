@@ -84,6 +84,8 @@ $this->load->view('common/left_panel');
                                 <th class="text-center">Received from</th>
                                 <th class="text-center">Total Cost Amount</th>
                                 <th class="text-center">Total SP Amount</th>
+                                <th class="text-center">GST %</th>
+                                <th class="text-center">GST</th>
                                 <th class="text-center">Action</th>
                             </tr>
                             </thead>
@@ -92,6 +94,8 @@ $this->load->view('common/left_panel');
                             <tfoot>
                             <tr>
                                 <th colspan="4" style="text-align:right">TOTAL</th>
+                                <th class="text-center"></th>
+                                <th class="text-center"></th>
                                 <th class="text-center"></th>
                                 <th class="text-center"></th>
                             </tr>
@@ -235,6 +239,13 @@ $this->load->view('common/left_panel');
                         return 'Rs. '+data;
                     }
                 },
+                { "data": "gst_percent" },
+                {
+                    "data": "gst",
+                    "render": function ( data, type, row, meta ) {
+                        return 'Rs. '+data;
+                    }
+                },
                 { "data": "btn" }
             ],
             "ordering": false,
@@ -270,7 +281,17 @@ $this->load->view('common/left_panel');
                     }, 0 );
 
                 // Update footer
-                $( api.column( 5).footer() ).html('Rs. '+total.toFixed(2));
+                $( api.column(5).footer() ).html('Rs. '+total.toFixed(2));
+                
+                total = api
+                    .column(7, {filter: 'applied'})
+                    .data()
+                    .reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+
+                // Update footer
+                $( api.column(7).footer() ).html('Rs. '+total.toFixed(2));
             }
         });
     });

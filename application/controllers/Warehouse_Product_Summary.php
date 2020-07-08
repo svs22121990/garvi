@@ -21,8 +21,12 @@ class Warehouse_Product_Summary extends CI_Controller
             $date = str_replace("/", "-", $date);
             $date = str_replace(" ", "", $date);
 
+            $type = $this->input->post('type');
+            $type2 = $this->input->post('type2');
+
             //$newDate = date("Y-m-d", strtotime($date));
-            $strUrl = site_url('Warehouse_Product_Summary/ajax_manage_page/' . $date);
+            $strUrl = site_url('Warehouse_Product_Summary/ajax_manage_page/' . $date . '/'. $type . '/'. $type2);
+            //$strUrl = site_url('Warehouse_Product_Summary/ajax_manage_page/');
             $this->common_view($strUrl, $date);
         } else {
             return redirect('Warehouse_Product_Summary');
@@ -75,7 +79,9 @@ class Warehouse_Product_Summary extends CI_Controller
             $download = ''; //'<a download="assets.xls" style="color:black;" title="Download Format" href="'. base_url('uploads/assets_demo_excel/assets.xls').'"><span class="fa fa-download"></span></a>';
             //echo $date;
             //exit();
-            $data = array('dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '9', 'ajax_manage_page' => $action, 'heading' => 'Manage Warehouse Product Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
+            $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
+            $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
+            $data = array('types' => $types, 'product_types' => $product_types, 'dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '9', 'ajax_manage_page' => $action, 'heading' => 'Manage Warehouse Product Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
             $this->load->view('warehouse_product_summary/list', $data);
         } else {
             redirect('Dashboard');
@@ -98,13 +104,16 @@ class Warehouse_Product_Summary extends CI_Controller
 
 
 
-    public function ajax_manage_page($date = 0)
+    public function ajax_manage_page($date = 0, $type = 0, $type2 = 0)
     {
         $con = "p.id<>''";
+        if($type != 0)
+            $con .= "and p.asset_type_id ='". $type . "'";
+        if($type2 != 0)
+            $con .= "and p.product_type_id ='". $type2 . "'";
         if (!empty($_SESSION[SESSION_NAME]['branch_id'])) {
             $con .= " and ast.id in (select asset_id from asset_branch_mappings where branch_id='" . $_SESSION[SESSION_NAME]['branch_id'] . "')";
         }
-
         $Data = $this->Warehouse_product_summary_model->get_datatables($con, $date);
         //print_r($this->db->last_query());exit;
         $edit = '';
@@ -202,13 +211,17 @@ class Warehouse_Product_Summary extends CI_Controller
                 'craft' => $row->craft,
                 'gst_percent' => $row->gst_percent,
                 'gst' => number_format($row->cost_total * ($row->gst_percent/100), 2),
-                'cost_total' => number_format($row->quantity * $row->price, 2),
+                'cost_total' => number_format($row->available_qty * $row->price, 2),
                 'total' => number_format($row->quantity * $row->product_mrp, 2),
                 'purchase_date' => $row->purchase_date,
                 'product_purchase_date' => $row->product_purchase_date,
                 'productType' => $row->product_type,
+                'name' => $row->name,
+                'barcode_number' => $row->barcode_number,
                 'time' => implode(" ", $arrTime),
                 'btn' =>  "<a href='javascript:void(0)' onclick='addDamage(" . $product_id . ")' title='Add Damage' class='btn btn-danger btn-circle btn-sm edit-qty'><i class='fa fa-plus'></i></a>",
+                //'selected_type' => $type,
+                //'selected_type2' => $type2,
             );
         }
         //dd($data);

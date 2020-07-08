@@ -134,13 +134,12 @@ class Warehouse_Dispatch extends CI_Controller
             //if(!empty($view)){
             $btn .='<a href='.site_url("Warehouse_Dispatch/view/".$row->id).' title="Details" class="btn btn-primary btn-circle btn-sm"><i class="fa fa-eye"></i></a>';
             //}
-
-            if(!empty($delete)){
-            $btn .='&nbsp;|&nbsp;'.'<a href="#deleteData" data-toggle="modal" title="Delete" class="btn btn-danger btn-circle btn-sm" onclick="checkStatus('.$row->id.')"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>';
-            }
-            if(!empty($edit)){
-                $btn = ('<a href="#myModaledit" title="Edit" class="btn btn-info btn-circle btn-sm" data-toggle="modal"  onclick="getEditvalue('.$row->id.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>');
-            }
+            //if(!empty($edit)){
+            //    $btn .= '&nbsp;|&nbsp;' .'<a href=' . site_url("Warehouse_Dispatch/update/" . $row->id) . ' title="Details" class="btn btn-primary btn-info btn-sm"><i class="fa fa-pencil bigger-130"></i></a>';
+            //}
+            //if(!empty($delete)){
+            //    $btn .='&nbsp;|&nbsp;'.'<a href="#deleteData" data-toggle="modal" title="Delete" class="btn btn-danger btn-circle btn-sm" onclick="checkStatus('.$row->id.')"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>';
+            //}
             if(!empty($avlquantity)){
                 $avl_quantity = $avlquantity;
             }else{
@@ -175,7 +174,7 @@ class Warehouse_Dispatch extends CI_Controller
 	  $where = array('created_by'=>$_SESSION[SESSION_NAME]['id']);
       //$products = $this->Crud_model->GetData("assets","",$where); 
       //$this->load->model('Invoice_model');
-        $query =  $this->db->select('a.asset_name,a.quantity,a.available_qty,a.product_mrp,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
+        $query =  $this->db->select('a.asset_name,a.barcode_number,a.quantity,a.available_qty,a.product_mrp,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
                 ->join("size siz","siz.id = a.size_id","left")
                 ->join("color col","col.id = a.color_id","left")
                 ->join("fabric fab","fab.id = a.fabric_id","left")
@@ -316,46 +315,42 @@ class Warehouse_Dispatch extends CI_Controller
         $breadcrumbs = "<ul class='breadcrumb'>
                     <li>
                         <i class='ace-icon fa fa-home home-icon'></i>
-                        <a href='" . site_url('Dashboard') . "'>Dashboard</a>
+                        <a href='".site_url('Dashboard')."'>Dashboard</a>
                     </li>
-                    <li class=''> <a href='" . site_url('Products') . "'>Manage Warehouse</a></li>
-                    <li class='active'>Update Warehouse</li>
+                    <li class=''> <a href='".site_url('Warehouse')."'>Manage Warehouse</a></li>
+                    <li class='active'>Update Dispatch</li>
                     </ul>";
-        $products = $this->Crud_model->GetData('warehouse', "", "id='" . $id . "'", '', '', '', 'row');
-        $category_data = $this->Crud_model->GetData('categories', "", "status='Active'", '', 'title asc');
-        $size = $this->Crud_model->GetData('size', "", "status='Active'", '', 'title asc');
-        $fabric = $this->Crud_model->GetData('fabric', "", "status='Active'", '', 'title asc');
-        $color = $this->Crud_model->GetData('color', "", "status='Active'", '', 'title asc');
-        $craft= $this->Crud_model->GetData('craft', "", "status='Active'", '', 'title asc');
-        $asset_type_data = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", '', 'type asc');
-        $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
-        $getAssetData = $this->Crud_model->GetData("warehouse_details", "", "warehouse_id='" . $id . "'", "", "", "", "1");
-        $users = $this->Crud_model->GetData('employees', "", "status='Active'", '', 'name asc');
-     //   $users=$products->received_from;
-        // echo"<pre>"; print_r($users);exit();
-//         print_r($users);exit;
-        $action =  site_url("Warehouse/update_action/" . $id);
+        $where = array('created_by'=>$_SESSION[SESSION_NAME]['id']);
+        //$products = $this->Crud_model->GetData("assets","",$where); 
+        //$this->load->model('Invoice_model');
+            $query =  $this->db->select('a.asset_name,a.barcode_number,a.quantity,a.available_qty,a.product_mrp,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
+                    ->join("size siz","siz.id = a.size_id","left")
+                    ->join("color col","col.id = a.color_id","left")
+                    ->join("fabric fab","fab.id = a.fabric_id","left")
+                    ->join("craft cra","cra.id = a.craft_id","left")
+                    ->join("categories cat","cat.id = a.category_id","left")
+                    ->from('warehouse_details as a')
+                    ->where('a.available_qty>',0)
+                    ->get();
+            $products = $query->result();
+
+        $dispatch = $this->Crud_model->GetData('warehouse_dispatch', "", "id='" . $id . "'", '', '', '', 'row');
+        $dispatch_details = $this->Crud_model->GetData('warehouse_dispatch_details', "", "dispatch_id='" . $id . "'", '', '', '', 'row');
+        
+        $users = $this->Crud_model->GetData("employees","","id!='".$_SESSION['ASSETSTRACKING']['id']."' and type='User'");           
+        $action =  site_url("Warehouse_Dispatch/update_action");    
 
         $data = array(
             'breadcrumbs' => $breadcrumbs,
-            'id' => $id,
-            'heading' => 'Update Warehouse',
-            'button' => 'Update',
-            'category_data' => $category_data,
-            'asset_type_data' => $asset_type_data,
-            'action' => $action,
-            'getAssetData' => $getAssetData,
-            'users' => $users,
-            'productTypes' => $product_types,
+            'heading' => 'Update Dispatch',
+            'button'=>'Update',                       
             'products' => $products,
-            'size' => $size,
-            'fabric' => $fabric,
-            'color' => $color,
-            'craft' => $craft,
-
+            'dispatch' => $dispatch,
+            'dispatch_details' => $dispatch_details, 
+            'users' => $users,
+            'action'=>$action, 
         );
-
-        $this->load->view('warehouse/update_form', $data);
+        $this->load->view('warehouse_dispatch/update_form',$data);
     }
 
     public function update_action($id)
@@ -442,6 +437,8 @@ class Warehouse_Dispatch extends CI_Controller
           $response['color'] = $select[0]->color;
           $response['fabric'] = $select[0]->fabric;
           $response['craft'] = $select[0]->craft;
+          $response['available_qty'] = $select[0]->available_qty;
+          $response['barcode_number'] = $select[0]->barcode_number;
           //$response['hsn'] = $select->hsn;
         } else {
           $response['success'] = '0';

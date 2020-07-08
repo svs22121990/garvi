@@ -147,7 +147,7 @@
                 <span style="color: red" class="gst_total_error"></span>
               </td>
               <td class="text-center">
-              <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn btn-sm btn-danger"><i class="fa fa-minus"></i></a>
+                <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn btn-sm btn-danger"><i class="fa fa-minus"></i></a>
               </td>
             </tr>
           </tbody>
@@ -195,6 +195,7 @@
 				<table id="myTable" style="max-height:600px;overflow-x:scroll">
 				  <tr class="header"> 
             <th>Name</th>
+            <th>Barcode</th>
             <th>Total Quantity</th>
 				    <th>Available Quantity</th>
 				    <th>Price</th>
@@ -226,6 +227,7 @@
 		              ?>
 						  <tr>
 						    <td><?= $product->asset_name; ?></td>
+                <td><?= $product->barcode_number; ?></td>
                 <td><?= $product->quantity; ?></td>
                 <td><?= $product->available_qty; ?></td>
                 <td><?= $product->product_mrp; ?></td>
@@ -446,7 +448,7 @@ function getGST(val,len) {
       $('table .product_mrp').slice(len, len + 1).val(obj.price);
 
       $('table .attribute_div').slice(len, len + 1).empty();
-      $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft);
+      $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
       //$('#gst_percent1').val(obj.gst_percent);
 			//$('#product_mrp1').val(obj.price);
 			//$('#hsn'+(len+1)).val(obj.hsn);

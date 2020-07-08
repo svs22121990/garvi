@@ -187,12 +187,11 @@
   <script type="text/javascript">
     function saveData()
     {
-      
       var category_id = $("#category_id").val();
       var code = $("#code").val();  
       var hsn = $("#hsn").val();
       var gst_percent = $("#gst_percent").val();
-        var markup_percent = $("#markup_percent").val();
+      var markup_percent = $("#markup_percent").val();
       //var city_name1 = /^[a-zA-Z -]+$/;
 
       if($.trim(category_id) == "")
@@ -216,12 +215,10 @@
             cache: false,       
             success: function(result)
             {
-              if(result == "1")
+              if(result == 1)
               {
-                alert(result);
                 $("#codeError").fadeIn().html("Code Already in use.");
                 setTimeout(function(){$("#codeError").fadeOut();},2000);
-                $("#code").focus();
                 return false;
               }
             }             
@@ -241,14 +238,13 @@
         $("#gst_percent").focus();
         return false;
       }
-
-        if($.trim(markup_percent) == "")
-        {
-            $("#city_nameError2").fadeIn().html("Please enter Markup %");
-            setTimeout(function(){$("#city_nameError2").fadeOut();},2000);
-            $("#markup_percent").focus();
-            return false;
-        }
+      if($.trim(markup_percent) == "")
+      {
+          $("#city_nameError2").fadeIn().html("Please enter Markup %");
+          setTimeout(function(){$("#city_nameError2").fadeOut();},2000);
+          $("#markup_percent").focus();
+          return false;
+      }
       var datastring  = "category_id="+category_id+"&code="+code+"&hsn="+hsn+"&gst_percent="+gst_percent+"&markup_percent="+markup_percent;
       var table = $('.example_datatable').DataTable();
       $.ajax({
@@ -263,12 +259,20 @@
             $("#city_nameError").fadeIn().html("GST % already exist");
             setTimeout(function(){$("#city_nameError").fadeOut();},2000);
           }
-          else
+          else if(response == 3)
           {
+            $("#codeError").fadeIn().html("Code Already in use.");
+            setTimeout(function(){$("#codeError").fadeOut();},2000);
+          } else {
           $(".close").click(); 
           $("#successStateEntry").fadeIn().html("<span class='label label-success'> GST has been Added successfully</span>");
             setTimeout(function(){$("#successStateEntry").fadeOut();},2000);
-           $("#myModal").modal("hide"); 
+            $("#myModal").modal("hide"); 
+            $("#category_id").val("");
+            $("#code").val("");  
+            $("#hsn").val("");
+            $("#gst_percent").val("");
+            $("#markup_percent").val("");
             table.ajax.reload();
             //setTimeout(function(){ window.location.reload(); },1000); 
          }
@@ -292,7 +296,6 @@
           cache: false,       
           success: function(result)
           { 
-            
             $("#getEditForm").html(result);
           }             
         });

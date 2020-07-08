@@ -164,7 +164,12 @@ class GST extends CI_Controller {
     
 
      public function addData()
-      {       
+      {     
+        $con = "code='" . strtoupper($_POST['code']) . "'";
+        $chkdupliasset = $this->Crud_model->GetData('mst_gst', "", $con);
+        if (count($chkdupliasset) > 0) {
+          echo "3";
+        } else {
           $condDuplication = "category_id='".$this->input->post('category_id')."' && hsn='".$this->input->post('hsn')."' && gst_percent='".$this->input->post('gst_percent')."'&& markup_percent='".$this->input->post('markup_percent')."'";
           $duplication = $this->Crud_model->GetData('mst_gst','', $condDuplication);
 
@@ -189,6 +194,7 @@ class GST extends CI_Controller {
 
               echo "2";
           }  
+        }
           
       }
        public function updateData()
@@ -278,7 +284,7 @@ class GST extends CI_Controller {
         } else {
           $con = "code='" . strtoupper($_POST['code']) . "'";
         }
-        $chkdupliasset = $this->Crud_model->GetData('assets', "", $con);
+        $chkdupliasset = $this->Crud_model->GetData('mst_gst', "", $con);
         if (count($chkdupliasset) > 0) {
           echo "1";
         }

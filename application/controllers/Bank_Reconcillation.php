@@ -21,8 +21,11 @@ class Bank_Reconcillation extends CI_Controller
       $date = str_replace("/", "-", $date);
       $date = str_replace(" ", "", $date);
 
+      $type = $this->input->post('type');
+      $type2 = $this->input->post('type2');
+
       //$newDate = date("Y-m-d", strtotime($date));
-      $strUrl = site_url('Bank_Reconcillation/ajax_manage_page/' . $date);
+      $strUrl = site_url('Bank_Reconcillation/ajax_manage_page/' . $date . '/'. $type . '/'. $type2);
       $this->common_view($strUrl, $date);
     } else {
       return redirect('Bank_Reconcillation');
@@ -73,8 +76,10 @@ class Bank_Reconcillation extends CI_Controller
       $importaction = ''; //'<a data-target="#uploadData" style="cursor:pointer;color:black;" title="Upload Excel" data-backdrop="static" data-keyboard="false" data-toggle="modal" ><span class="fa fa-file-excel-o"></span></a>';
       $export = '<a href="javascript:void(0)" onclick="return clickSubmit()"><span title="Export" class="fa fa-file-excel-o"></span></a>';
       $download = ''; //'<a download="assets.xls" style="color:black;" title="Download Format" href="'. base_url('uploads/assets_demo_excel/assets.xls').'"><span class="fa fa-download"></span></a>'; 
+      $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
+      $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
 
-      $data = array('dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '17', 'ajax_manage_page' => $action, 'heading' => 'Bank Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
+      $data = array('types' => $types, 'product_types' => $product_types, 'dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '17', 'ajax_manage_page' => $action, 'heading' => 'Bank Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
 
       $this->load->view('bank_reconcillation/list', $data);
     } else {
@@ -82,9 +87,13 @@ class Bank_Reconcillation extends CI_Controller
     }
   }
 
-  public function ajax_manage_page($date = 0)
+  public function ajax_manage_page($date = 0, $type = 0, $type2 = 0)
   {
     $con = "i.id<>''";
+    if($type != 0)
+      $con .= "and a.asset_type_id ='". $type . "'";
+    if($type2 != 0)
+      $con .= "and a.product_type_id ='". $type2 . "'";
 
     $Data = $this->Bank_Reconcillation_model->get_datatables($con, $date);
     $edit = '';

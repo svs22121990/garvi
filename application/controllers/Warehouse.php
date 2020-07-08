@@ -183,6 +183,8 @@ class Warehouse extends CI_Controller
                 'employee_name' => $row->employee_name,
                 'cost_total' => $row->cost_total,
                 'sp_total' => $row->sp_total,
+                'gst_percent' => $row->gst_percent,
+                'gst' => (($row->sp_total) * ($row->gst_percent/100)),
                 'btn' => $btn,
 
             );
@@ -277,6 +279,42 @@ class Warehouse extends CI_Controller
 
             if (count($_POST['asset_name']) > 1) {
                 for ($i = 0; $i < count($_POST['asset_name']); $i++) {
+
+                    $barcode = 'G';
+                    $barcode .= $_POST['received_from'][0];
+                    $this->db->select('code');
+                    $this->db->where('category_id',$_POST['category_id'][$i]);
+                    $query = $this->db->get('mst_gst');
+                    $code = $query->row();
+                    $barcode .= $code->code;
+                    $barcode .= date('m');
+                    $barcode .= date('y');
+
+                    $this->db->select('barcode');
+                    $this->db->where('category_id',$_POST['category_id'][$i]);
+                    $this->db->where('asset_type_id',$_POST['asset_type_id'][$i]);
+                    $this->db->where('product_type_id',$_POST['asset_type_2_id'][$i]);
+                    $this->db->where('size_id',$_POST['size_id'][$i]);
+                    $this->db->where('fabric_id',$_POST['fabric_id'][$i]);
+                    $this->db->where('craft_id',$_POST['craft_id'][$i]);
+                    $this->db->where('color_id',$_POST['color_id'][$i]);
+                    $query = $this->db->get('warehouse_details');
+                    $code = $query->row();
+                    if($code == '') {
+                        $this->db->select('barcode');
+                        $this->db->order_by("barcode desc");
+                        $query = $this->db->get('warehouse_details');
+                        $code = $query->row();
+                        if($code == '') {
+                            $code = '01';
+                        } else {
+                            $code = str_pad(($code->barcode + 1), 2, '0', STR_PAD_LEFT);
+                        }
+                    } else {
+                        $code = str_pad(($code->barcode + 1), 2, '0', STR_PAD_LEFT);
+                    }
+                    $barcode .= $code;
+
                     $purchase_date = date("Y-m-d");
                     $data = array(
                         'warehouse_id' => $last_id,
@@ -298,6 +336,9 @@ class Warehouse extends CI_Controller
                         'fabric_id' =>$_POST['fabric_id'][$i],
                         'craft_id' =>$_POST['craft_id'][$i],
                         'color_id' =>$_POST['color_id'][$i],
+                        'barcode' => $code,
+                        'barcode_number' => $barcode,
+                        'barcode_image' => $this->set_barcode($barcode),
         //                    'purchase_date' => $product_purchase_date,
         //                    'created_by' => $_SESSION[SESSION_NAME]['id'],
                     );
@@ -305,16 +346,7 @@ class Warehouse extends CI_Controller
                     $this->Crud_model->SaveData("warehouse_details", $data);
                     $last_detail_id = $this->db->insert_id();
 
-                    $barcode = 'G';
-                    $barcode .= $_POST['received_from'][0];
-                    $this->db->select('code');
-                    $this->db->where('category_id',$_POST['category_id'][$i]);
-                    $query = $this->db->get('mst_gst');
-                    $code = $query->row();
-                    $barcode .= $code->code;
-                    $barcode .= date('m');
-                    $barcode .= date('y');
-
+                    /*
                     for ($j=0; $j < $_POST['quantity'][$i]; $j++) 
                     { 
                         $barcodeData = array(
@@ -332,9 +364,44 @@ class Warehouse extends CI_Controller
                         );
         
                         $this->Crud_model->SaveData('warehouse_barcodes',$barcodeData,"id='".$barcodeId."'");
-                    }
+                    }*/
                 }
             } else {
+
+                $barcode = 'G';
+                $barcode .= $_POST['received_from'][0];
+                $this->db->select('code');
+                $this->db->where('category_id',$_POST['category_id'][0]);
+                $query = $this->db->get('mst_gst');
+                $code = $query->row();
+                $barcode .= $code->code;
+                $barcode .= date('m');
+                $barcode .= date('y');
+
+                $this->db->select('barcode');
+                $this->db->where('category_id',$_POST['category_id'][0]);
+                $this->db->where('asset_type_id',$_POST['asset_type_id'][0]);
+                $this->db->where('product_type_id',$_POST['asset_type_2_id'][0]);
+                $this->db->where('size_id',$_POST['size_id'][0]);
+                $this->db->where('fabric_id',$_POST['fabric_id'][0]);
+                $this->db->where('craft_id',$_POST['craft_id'][0]);
+                $this->db->where('color_id',$_POST['color_id'][0]);
+                $query = $this->db->get('warehouse_details');
+                $code = $query->row();
+                if($code == '') {
+                    $this->db->select('barcode');
+                    $this->db->order_by("barcode desc");
+                    $query = $this->db->get('warehouse_details');
+                    $code = $query->row();
+                    if($code == '') {
+                        $code = '01';
+                    } else {
+                        $code = str_pad(($code->barcode + 1), 2, '0', STR_PAD_LEFT);
+                    }
+                } else {
+                    $code = str_pad(($code->barcode + 1), 2, '0', STR_PAD_LEFT);
+                }
+                $barcode .= $code;
 
                 $purchase_date = date("Y-m-d");
                 $data = array(
@@ -357,6 +424,9 @@ class Warehouse extends CI_Controller
                         'fabric_id' =>$_POST['fabric_id'][0],
                         'craft_id' =>$_POST['craft_id'][0],
                         'color_id' =>$_POST['color_id'][0],
+                        'barcode' => $code,
+                        'barcode_number' => $barcode,
+                        'barcode_image' => $this->set_barcode($barcode),
 //                    'purchase_date' => $product_purchase_date,
 //                    'created_by' => $_SESSION[SESSION_NAME]['id'],
                 );
@@ -373,7 +443,7 @@ class Warehouse extends CI_Controller
                 $barcode .= $code->code;
                 $barcode .= date('m');
                 $barcode .= date('y');
-
+                /*
                 for ($j=0; $j < $_POST['quantity'][0]; $j++) 
                 { 
                     $barcodeData = array(
@@ -391,7 +461,7 @@ class Warehouse extends CI_Controller
                     );
     
                     $this->Crud_model->SaveData('warehouse_barcodes',$barcodeData,"id='".$barcodeId."'");
-                }
+                }*/
             }
 
 //            $code= $this->set_barcode('23');
@@ -647,16 +717,16 @@ class Warehouse extends CI_Controller
         $this->db->select('
             b.barcode_number,
             b.barcode_image,
-            b.status,
-            d.asset_name,
-            d.product_mrp,
-            d.sp_total,
-            d.asset_type_id'
+            b.available_qty,
+            b.asset_name,
+            b.product_mrp,
+            b.sp_total,
+            b.asset_type_id'
         );
-        $this->db->join("warehouse_details d","d.id = b.warehouse_detail_id","left");
+        //$this->db->join("warehouse_details d","d.id = b.warehouse_detail_id","left");
         //$this->db->join("mast_asset_types m","m.id = d.asset_type_id","left");
         $this->db->where("b.warehouse_id='".$id."'");
-        $data['barcodes'] = $this->db->get('warehouse_barcodes b')->result();
+        $data['barcodes'] = $this->db->get('warehouse_details b')->result();
 
         $html = $this->load->view('warehouse/product_pdf', $data, TRUE);
         $mpdf = new \Mpdf\Mpdf();
@@ -671,15 +741,16 @@ class Warehouse extends CI_Controller
         $this->db->select('
             b.barcode_number,
             b.barcode_image,
-            b.status,
-            d.asset_name,
-            d.product_mrp,
-            d.asset_type_id'
+            b.available_qty,
+            b.asset_name,
+            b.product_mrp,
+            b.sp_total,
+            b.asset_type_id'
         );
-        $this->db->join("warehouse_details d","d.id = b.warehouse_detail_id","left");
+        //$this->db->join("warehouse_details d","d.id = b.warehouse_detail_id","left");
         //$this->db->join("mast_asset_types m","m.id = d.asset_type_id","left");
-        $this->db->where("b.warehouse_detail_id='".$id."'");
-        $data['barcodes'] = $this->db->get('warehouse_barcodes b')->result();
+        $this->db->where("b.id='".$id."'");
+        $data['barcodes'] = $this->db->get('warehouse_details b')->result();
 
         $html = $this->load->view('warehouse/product_pdf', $data, TRUE);
         $mpdf = new \Mpdf\Mpdf();
