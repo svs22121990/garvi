@@ -33,11 +33,27 @@ class Warehouse_Product_Summary extends CI_Controller
                 $type2 = $this->input->post('type2');
             else
                 $type2 = 0;
+            if($this->input->post('color') != "")
+                $color = $this->input->post('color');
+            else
+                $color = 0;
+            if($this->input->post('size') != "")
+                $size = $this->input->post('size');
+            else
+                $size = 0;
+            if($this->input->post('fabric') != "")
+                $fabric = $this->input->post('fabric');
+            else
+                $fabric = 0;
+            if($this->input->post('craft') != "")
+                $craft = $this->input->post('craft');
+            else
+                $craft = 0;
 
             //$newDate = date("Y-m-d", strtotime($date));
-            $strUrl = site_url('Warehouse_Product_Summary/ajax_manage_page/' . $date . '/'. $type . '/'. $type2);
+            $strUrl = site_url('Warehouse_Product_Summary/ajax_manage_page/' . $date . '/'. $type . '/'. $type2. '/'. $color . '/'. $size . '/'. $fabric . '/'. $craft);
             //$strUrl = site_url('Warehouse_Product_Summary/ajax_manage_page/');
-            $this->common_view($strUrl, $date, $type, $type2);
+            $this->common_view($strUrl, $date, $type, $type2, $color, $size, $fabric, $craft);
         } else {
             return redirect('Warehouse_Product_Summary');
         }
@@ -47,7 +63,7 @@ class Warehouse_Product_Summary extends CI_Controller
         $this->common_view(site_url('Warehouse_Product_Summary/ajax_manage_page'));
     }
 
-    public function common_view($action, $date = 0, $type=0, $type2=0)
+    public function common_view($action, $date = 0, $type=0, $type2=0, $color = 0, $size=0, $fabric=0, $craft=0)
     {
         // print_r($_SESSION[SESSION_NAME]);exit;
         $import = '';
@@ -91,20 +107,35 @@ class Warehouse_Product_Summary extends CI_Controller
             //exit();
             $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
             $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
-            $data = array('selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 'types' => $types, 'product_types' => $product_types, 'dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '9', 'ajax_manage_page' => $action, 'heading' => 'Manage Warehouse Product Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
+            $sizes = $this->Crud_model->GetData('size', "", "status='Active'", '', 'title asc');
+            $fabrics = $this->Crud_model->GetData('fabric', "", "status='Active'", '', 'title asc');
+            $colors = $this->Crud_model->GetData('color', "", "status='Active'", '', 'title asc');
+            $crafts = $this->Crud_model->GetData('craft', "", "status='Active'", '', 'title asc');
+        
+            $data = array('sizes' => $sizes,'fabrics' => $fabrics,'colors' => $colors,'crafts' => $crafts, 'selected_size' => $size,'selected_fabric' => $fabric, 'selected_color' => $color, 'selected_craft' => $craft,
+            'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 
+            'types' => $types, 'product_types' => $product_types, 'dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '9', 'ajax_manage_page' => $action, 'heading' => 'Manage Warehouse Product Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
             $this->load->view('warehouse_product_summary/list', $data);
         } else {
             redirect('Dashboard');
         }
     }
 
-    public function ajax_manage_page($date = 0, $type = 0, $type2 = 0)
+    public function ajax_manage_page($date = 0, $type = 0, $type2 = 0, $color = 0, $size=0, $fabric=0, $craft=0)
     {
         $con = "p.id<>''";
         if($type != 0)
             $con .= "and p.asset_type_id ='". $type . "'";
         if($type2 != 0)
             $con .= "and p.product_type_id ='". $type2 . "'";
+        if($color != 0)
+            $con .= "and p.color_id ='". $color . "'";
+        if($size != 0)
+            $con .= "and p.size_id ='". $size . "'";
+        if($fabric != 0)
+            $con .= "and p.fabric_id ='". $fabric . "'";
+        if($craft != 0)
+            $con .= "and p.craft_id ='". $craft . "'";
         if (!empty($_SESSION[SESSION_NAME]['branch_id'])) {
             $con .= " and ast.id in (select asset_id from asset_branch_mappings where branch_id='" . $_SESSION[SESSION_NAME]['branch_id'] . "')";
         }

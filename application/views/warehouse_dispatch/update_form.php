@@ -690,12 +690,12 @@ function validateinfo() {
       var product_mrp = $('.product_mrp').eq(i).val();
       var gst_percent = $('.gst_percent').eq(i).val();
       var lf_no = $('.lf_no').eq(i).val();
-      
+
       if(quantity=='') {
         $('.quantity_error').eq(i).html("Please enter Quantity").fadeIn();
         setTimeout(function(){$(".quantity_error").eq(i).fadeOut()},5000);
         return false;
-      } else if(quantity > available_qty){
+      } else if((quantity * 1) > (available_qty * 1)){
         $('.quantity_error').eq(i).html("Quantity cannot be more than Available Qty").fadeIn();
         setTimeout(function(){$(".quantity_error").eq(i).fadeOut()},5000);
         return false;

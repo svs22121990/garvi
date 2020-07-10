@@ -95,6 +95,7 @@
 <!--                 </div>-->
 
                 </div>
+        <!--
         <table id="customers">
             <thead>
                 <tr>    
@@ -112,49 +113,49 @@
             </thead>
             
             <tbody> 
-                <?php $sr = 1; ?>
-                <?php foreach ($data as $result) { ?>
+                <?php// $sr = 1; ?>
+                <?php// foreach ($data as $result) { ?>
                 <tr>
-                    <td><?= $result['no']; ?></td>
-                    <td><?= $result['title']; ?></td>
-                    <td><?= $result['type']; ?></td>
-                    <td><?= $result['asset_name']; ?></td>
-                    <td><?= $result['quantity']; ?></td>
-                    <td><?= "Rs. ".number_format($result['product_mrp'],2); ?></td>
-					<td> <?= $result['gst_percent'];  ?></td>
-					<td> <?= $result['hsn']; ?></td>
-					<td> <?= $result['markup_percent']; ?></td>
-                    <td> <?= "Rs. ".number_format($result['total'],2); ?></td>
+                    <td><?php //$result['no']; ?></td>
+                    <td><?php// $result['title']; ?></td>
+                    <td><?php// $result['type']; ?></td>
+                    <td><?php// $result['asset_name']; ?></td>
+                    <td><?php// $result['quantity']; ?></td>
+                    <td><?php// "Rs. ".number_format($result['product_mrp'],2); ?></td>
+					<td> <?php// $result['gst_percent'];  ?></td>
+					<td> <?php// $result['hsn']; ?></td>
+					<td> <?php// $result['markup_percent']; ?></td>
+                    <td> <?php// "Rs. ".number_format($result['total'],2); ?></td>
 
                 </tr>    
-                <?php } ?>                  
+                <?php //} ?>                  
             </tbody>
             <tfoot>
             <tr>
                 <td colspan="9" style="text-align:right;">Total GST Amount</td>
                 <th>
-                    <?= "Rs. " . number_format($totalGST, 2); ?>
+                    <?php //"Rs. " . number_format($totalGST, 2); ?>
                 </th>  
 
             </tr>
             <tr>
                 <td colspan="9" style="text-align:right;">Total Markup Amount</td>
                 <th>
-                    <?= "Rs. " . number_format($markup, 2); ?>
+                    <?php //"Rs. " . number_format($markup, 2); ?>
                 </th>
 
             </tr>
             <tr>
                 <td colspan="9" style="text-align:right;">Final Selling Amount</td>
                 <th>
-                    <?= "Rs. " . number_format($totalGST + $allTotal, 2); ?>
+                    <?php// "Rs. " . number_format($totalGST + $allTotal, 2); ?>
                 </th>              
 
             </tr>
             
             </tfoot>
         </table>
-        </br>
+        </br>-->
         <h4 style="text-align: center;">Barcode Details</h4>
         <table id="barcode" border=1 style="width: 100%;">
             <thead>
@@ -170,8 +171,8 @@
                 <?php $sr = 1; ?>
                 <?php foreach ($barcodes as $barcode) {
                     $label = $barcode->asset_name.'-';
-                    $label .= number_format($barcode->product_mrp).'-';
-                    if($barcode->product_mrp == 7) 
+                    $label .= number_format($barcode->product_mrp, 2).'-';
+                    if($barcode->asset_type_id == 7) 
                         $label .= 'HL';
                     else
                         $label .= 'HC';

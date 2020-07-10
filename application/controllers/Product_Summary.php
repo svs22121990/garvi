@@ -16,14 +16,43 @@ class Product_Summary extends CI_Controller
   public function search()
   {
     if ($this->input->post()) {
-        $date = $this->input->post('daterange');
-        $date = str_replace("-", "_", $date);
-        $date = str_replace("/", "-", $date);
-        $date = str_replace(" ", "", $date);
+        if($this->input->post('daterange') != "")
+        {
+            $date = $this->input->post('daterange');
+            $date = str_replace("-", "_", $date);
+            $date = str_replace("/", "-", $date);
+            $date = str_replace(" ", "", $date);
+        } else {
+            $date = 0;
+        }
+        if($this->input->post('type') != "")
+            $type = $this->input->post('type');
+        else
+            $type = 0;
+        if($this->input->post('type2') != "")
+            $type2 = $this->input->post('type2');
+        else
+            $type2 = 0;
+        if($this->input->post('color') != "")
+            $color = $this->input->post('color');
+        else
+            $color = 0;
+        if($this->input->post('size') != "")
+            $size = $this->input->post('size');
+        else
+            $size = 0;
+        if($this->input->post('fabric') != "")
+            $fabric = $this->input->post('fabric');
+        else
+            $fabric = 0;
+        if($this->input->post('craft') != "")
+            $craft = $this->input->post('craft');
+        else
+            $craft = 0;
 
         //$newDate = date("Y-m-d", strtotime($date));
-        $strUrl = site_url('Product_Summary/ajax_manage_page/' . $date);
-        $this->common_view($strUrl, $date);
+        $strUrl = site_url('Product_Summary/ajax_manage_page/' . $date . '/'. $type . '/'. $type2. '/'. $color . '/'. $size . '/'. $fabric . '/'. $craft);
+        $this->common_view($strUrl, $date, $type, $type2, $color, $size, $fabric, $craft);
       } else {
         return redirect('Product_Summary');
       }
@@ -34,7 +63,7 @@ class Product_Summary extends CI_Controller
     $this->common_view(site_url('Product_Summary/ajax_manage_page'));
   }
 
-  public function common_view($action, $date = 0)
+  public function common_view($action, $date = 0, $type=0, $type2=0, $color = 0, $size=0, $fabric=0, $craft=0)
   {
     // print_r($_SESSION[SESSION_NAME]);exit;
     $import = '';
@@ -74,19 +103,41 @@ class Product_Summary extends CI_Controller
         $importaction = ''; //'<a data-target="#uploadData" style="cursor:pointer;color:black;" title="Upload Excel" data-backdrop="static" data-keyboard="false" data-toggle="modal" ><span class="fa fa-file-excel-o"></span></a>';
         $export = '<a href="javascript:void(0)" onclick="return clickSubmit()"><span title="Export" class="fa fa-file-excel-o"></span></a>';
         $download = ''; //'<a download="assets.xls" style="color:black;" title="Download Format" href="'. base_url('uploads/assets_demo_excel/assets.xls').'"><span class="fa fa-download"></span></a>'; 
+        
+        $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
+        $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
+        $sizes = $this->Crud_model->GetData('size', "", "status='Active'", '', 'title asc');
+        $fabrics = $this->Crud_model->GetData('fabric', "", "status='Active'", '', 'title asc');
+        $colors = $this->Crud_model->GetData('color', "", "status='Active'", '', 'title asc');
+        $crafts = $this->Crud_model->GetData('craft', "", "status='Active'", '', 'title asc');
+        
         //echo $date;
         //exit();
-        $data = array('dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '9', 'ajax_manage_page' => $action, 'heading' => 'Manage Product Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
+        $data = array('sizes' => $sizes,'fabrics' => $fabrics,'colors' => $colors,'crafts' => $crafts, 'selected_size' => $size,'selected_fabric' => $fabric, 'selected_color' => $color, 'selected_craft' => $craft,
+        'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 
+        'types' => $types, 'product_types' => $product_types, 'dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '9', 'ajax_manage_page' => $action, 'heading' => 'Manage Product Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
         $this->load->view('product_summary/list', $data);
       } else {
         redirect('Dashboard');
       }
   }
 
-  public function ajax_manage_page($date = 0)
+  public function ajax_manage_page($date = 0, $type = 0, $type2 = 0, $color = 0, $size=0, $fabric=0, $craft=0)
   {
 
     $con = "p.id<>''";
+    if($type != 0)
+        $con .= "and a.asset_type_id ='". $type . "'";
+    if($type2 != 0)
+        $con .= "and a.product_type_id ='". $type2 . "'";
+    if($color != 0)
+        $con .= "and a.color_id ='". $color . "'";
+    if($size != 0)
+        $con .= "and a.size_id ='". $size . "'";
+    if($fabric != 0)
+        $con .= "and a.fabric_id ='". $fabric . "'";
+    if($craft != 0)
+        $con .= "and a.craft_id ='". $craft . "'";
     if (!empty($_SESSION[SESSION_NAME]['branch_id'])) {
       $con .= " and ast.id in (select asset_id from asset_branch_mappings where branch_id='" . $_SESSION[SESSION_NAME]['branch_id'] . "')";
     }

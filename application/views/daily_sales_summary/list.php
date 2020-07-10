@@ -17,35 +17,14 @@ $this->load->view('common/left_panel');
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-			<?= form_open('Warehouse_Dispatch/search',['id'=>'serch_date']); ?>
-                  <div class="form-group row" style="padding-top: 20px;" >
-                    <label class="col-md-2"> Select Date<span style="color: red">*</span> <span  id="purchase_date_error" style="color: red"></span></label>
-                    <div class="col-md-3">
-                      <!--<input type="text" name="purchase_date" id="purchase_date" class="form-control datepicker" placeholder="Purchase Date" required>-->
-					  <input type="text" class="form-control" name="daterange" value="" />
-                    </div>
-                    <div class="col-md-2">
-                      <button type="submit" class="btn btn-success">Search</button>
-                    </div>
-					<div  class="col-md-4">
-					
-
-
-					</div>
-                  </div>
-                  <?= form_close(); ?>
-			  <?php if($dateinfo!=0){ ?>
-              <form method="post" action="<?=site_url("Warehouse_Dispatch/export_dispatch1/$dateinfo")?>">
-			  <?php }else{ ?>
-			  <form method="post" action="<?=site_url('Warehouse_Dispatch/export_dispatch1')?>">
-			  <?php } ?>
+              <form method="post" action="<?=site_url("Daily_Sales/export_daily_sales/$dateinfo")?>">
                 <div class="panel-heading">                                
                     <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                      <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
                     <ul class="panel-controls">
                         
                         <?php 
-                        //print_r($exportPermission);
+                       // print_r($import);
                         if($import=='1'){ ?>
                         <li><?php if($download=='1') { ?>  
                                <?php  echo  $download; ?>
@@ -57,19 +36,14 @@ $this->load->view('common/left_panel');
                         </li>
                         <?php } ?>
                         <?php if($exportPermission=='1'){?>
-						  <li>
-						    <?php if($dateinfo!=0){ ?>
-							<a href="<?= base_url(); ?>index.php/Warehouse_Dispatch/listpdf/<?= $dateinfo; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
-							<?php } else { ?>
-                            <a href="<?= base_url(); ?>index.php/Warehouse_Dispatch/listpdf" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
-							<?php } ?>
+						<li>
+                            <a href="<?= base_url(); ?>index.php/Daily_Sales/listpdf/<?= $dateinfo ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
                           </li>
                           <li><?=$export; ?></li>
                           <button type="submit" style="display: none" id="subbtn"></button>
                           <?php }?>
                         <?php if($addPermission=='1'){?>
-                         <li><a href="<?php echo site_url("Warehouse_Dispatch/create")?>" ><span class="fa fa-plus"></span></a></li>
-
+                         <li><a href="<?php echo site_url("Daily_Sales/create")?>" ><span class="fa fa-plus"></span></a></li>
                         <?php }?>
                        
                         <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
@@ -78,19 +52,27 @@ $this->load->view('common/left_panel');
                     </ul>                                
                 </div>
                 <div class="panel-body ">
+                <div class="row">
+                
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-actions example_datatable2">
+                    <table class="table table-bordered table-striped table-actions example_datatable2" >
                         <thead>
                              <tr>
                                 <th>Sr No</th>
-                                <th>DN No</th>
                                 <th>Date</th>
-                                <th>User</th>
-                                <th>Quantity</th>
-                                <th>Amount</th>
-                                <th>Total</th>
-                                <th>GST</th>
-                                <th>Action</th>
+                                <th>Invoice No.</th>
+                                <th>Sale Price</th>
+                                <th>Qty</th>
+                                <th>Total Amt</th>
+                                <th>Discount 1</th>
+                                <th>Discount 2</th>
+                                <th>Discount 3</th>
+                                <th>Total Discount</th>
+                                <th>Amt After Disc.</th>
+                                <th>CGST</th>
+                                <th>SGST</th>
+                                <th>Total GST</th>
+                                <th>Total Amount</th>
                             </tr>
                         </thead>
                         <tbody>                           
@@ -98,11 +80,12 @@ $this->load->view('common/left_panel');
                         <tfoot>
                              <tr>
                                 <th colspan="4"></th>
-                                <th>Amount</th>
-                                <th colspan="1"></th>
-                                <th colspan="1"></th>
-                                <th colspan="1"></th>
-                                <th colspan="1"></th>
+                                <th >Quantity</th>
+                                <th colspan="6"></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -110,108 +93,6 @@ $this->load->view('common/left_panel');
                 </div>
               </form>
             </div>
-        </div>
-    </div>
-</div>
-
-  <div class="modal inmodal" id="checkStatus" data-modal-color="lightblue" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content animated bounceInRight">   
-            <form method="post" action="<?= site_url('Branches/changeStatus') ?>">       
-                <div class="modal-body" style="height: 100px;padding-top: 10%">
-                    <center>
-                        <input type="hidden" name="id" id="statusId" style="display: none;">
-                        <span style="font-size: 16px">Are you sure to change the status?</span>
-                    </center>
-                </div>
-                <div class="modal-footer" >
-                    <button type="submit" class="btn btn-primary btn-sm">Ok</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div> 
-
-<div class="modal fade" id="deleteData" data-modal-color="lightblue" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">   
-            <form method="post" action="<?= site_url('Products/delete') ?>">       
-                <div class="modal-body" style="height: 120px;padding-top: 3%">
-                    <center>
-                        <input type="hidden" name="id" id="deleteId" style="display: none;">
-                        <span style="font-size: 16px"> 
-                          You want to delete this record. 
-                        <br>Are you sure? </span>
-                    </center>
-                </div>
-                <div class="modal-footer">
-                    
-                    <button type="submit" class="btn btn-primary btn-sm">Ok</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="transferData" data-modal-color="lightblue" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">   
-            <form method="post" action="<?= site_url('Products/transferAssetsAction') ?>">     
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Transfer against <strong> <span id="assetName"></span>  (Remaining Asset Stock  <span id="quantity_count_show"></span>)</strong></h4>
-                </div>  
-                <div class="modal-body" style="height: 120px;padding-top: 3%">
-                        <input type="text" name="assettransid" id="assetId" style="display: none;">            
-                       <div class="col-md-6">
-                         <label>Branch:</label> <span style="color: red">*</span><br>
-                         <select class="form-control select" data-live-search="true" name="branch_id" id="branch_id">
-                           <option value="">--Select Branch--</option>
-                           <?php foreach($branch_data as $branch_dataRow) { ?>
-                                <option value="<?php echo $branch_dataRow->id ?>"><?php echo $branch_dataRow->branch_title ?></option>
-                           <?php }?>
-                          
-                         </select><!-- <br> -->
-                         <span style="color:red" id="branchError"></span>
-                       </div>               
-                       <div class="col-md-6">
-                            <label>Quantity:</label> <span style="color: red">*</span> <br>
-                          <input type="text" name="quantity" id="quantity" class="form-control numbers" maxlength="10"><!-- <br> -->
-                          <span style="color:red" id="QuantityError"></span>
-                          <input type="hidden" name="quantity_count" id="quantity_count">
-                       </div>                                                                        
-                </div>
-                <div class="modal-footer">                    
-                    <button type="submit" class="btn btn-primary btn-sm" onclick="return savetransfer()">Submit</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">Cancel </button>
-                   
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="modal inmodal" id="uploadData" data-modal-color="lightblue" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content animated bounceInRight">   
-            <form method="post" action="<?= site_url('Products/import')?>" method="post" enctype="multipart/form-data" onsubmit="return checkXcel()">  
-                <div class="modal-header">
-                        <span style="font-size:20px">Upload Products</span>
-                    </div>     
-                <div class="modal-body" style="padding-top: 3%">
-                    <input type="file" name="excel_file" id="excel_file" class="form-control">
-                        &nbsp;<span style="color:red" id="errorexcel_file"></span>&nbsp;
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="return validation();">Ok</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">Cancel
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
@@ -226,33 +107,47 @@ $this->load->view('common/left_panel');
 <?php $this->load->view('common/footer');?>
 <script type="text/javascript">
   $(document).ready(function() {
-    $('.example_datatable2').DataTable({ 
+    // checkbox filtering dataTable
+    // @rohanOnly @tSe
+    $.fn.dataTableExt.afnFiltering.push(function(oSettings, aData, iDataIndex) {
+        var dtFiltersCal = $('.dtFiltersCal');
+        // we want to show all rows when no filter is applied
+        if (!dtFiltersCal.is(':checked')) {
+            return true;
+        }
+        var status = false;
+        dtFiltersCal.each(function(index) {
+            var filterEl = $(this);
+            var dataIndex = filterEl.data('type') === 'salesType' ? 3 : 5;
+            if (filterEl.is(':checked') && filterEl.data('label') === aData[dataIndex]) {
+                status = true;
+            }
+        });
+        return status;
+    });
+    var oTable = $('.example_datatable2').DataTable({ 
       "ajax" : url,
       "columns": [
             { "data": "no" },
-            { "data": "dn_number" },
-            { "data": "dispatch_date" },
-            { "data": "employee_name" },
-            { "data": "sum_quantity" },
+            { "data": "date_of_invoice" },
+            { "data": "invoice_no" },
+            { "data": "rate_per_item" },
+            { "data": "quantity" },
+            { "data": "total" },
+            { "data": "discount_1" },
+            { "data": "discount_2" },
+            { "data": "discount_3" },
+            { "data": "discount_amount" },
+            { "data": "taxable" },
+            { "data": "cgst_amount" },
+            { "data": "sgst_amount" },
+            { "data": "gst_amount" },
             {
-                "data": "sum_amount",
+                "data": "net_amount",
                 "render": function ( data, type, row, meta ) {
                   return 'Rs. '+data;
                 }
             },
-            {
-                "data": "total_sum",
-                "render": function ( data, type, row, meta ) {
-                  return 'Rs. '+data;
-                }
-            },
-            {
-                "data": "gst",
-                "render": function ( data, type, row, meta ) {
-                  return 'Rs. '+data;
-                }
-            },
-            { "data": "btn" }
         ],
       "ordering": false,
       
@@ -267,30 +162,42 @@ $this->load->view('common/left_panel');
                         i : 0;
             };
             total = api
-                .column( 5 )
+                .column(6, {filter: 'applied'})
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
-            $( api.column( 5 ).footer() ).html('Rs. '+total.toFixed(2));
+            $( api.column( 6 ).footer() ).html(total);
 
-            total = api
-                .column( 6 )
+            total1 = api
+                .column(7, {filter: 'applied'})
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
-            $( api.column( 6 ).footer() ).html('Rs. '+total.toFixed(2));
+            $( api.column( 7 ).footer() ).html('Rs. '+total1.toFixed(2));
+
+            total2 = api
+                .column(14, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            var additionalDOM = 'Rs.'+total2.toFixed(2)+'</div>';
+            $( api.column( 14 ).footer() ).html(additionalDOM);
         }
     });
   });
 </script>
+<!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.js"></script>-->
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
 
 <script>
 $(function() {
   $('input[name="daterange"]').daterangepicker({
+    autoUpdateInput: false,
 	  locale: {
             format: 'DD/MM/YYYY'
         },
@@ -299,9 +206,19 @@ $(function() {
     var startDate = start.format('YYYY-MM-DD');
 	var endDate = end.format('YYYY-MM-DD');
   });
+  $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+    $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+  });
+
+    $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
 });
 </script>
+
+
     <script type="text/javascript">
+
       function checkStatus(id)
       {
         $("#statusId").val(id);
@@ -369,7 +286,7 @@ $(function() {
 
 
 <script type="text/javascript">
-    var url="<?= $ajax_manage_page; ?>";
+    var url2="<?= $ajax_manage_page; ?>";
     var actioncolumn="<?= $actioncolumn; ?>";
 </script>
  
@@ -464,11 +381,9 @@ function getEditvalue(rowid)
           }
         });
     }
-
 function clickSubmit(){
     $('#subbtn').click();
   }
-
 </script>
 
 

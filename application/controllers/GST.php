@@ -199,7 +199,11 @@ class GST extends CI_Controller {
       }
        public function updateData()
       {
-        //print_r($_POST);exit;
+        $con = "code='" . strtoupper($_POST['code']) . "' and id!='" . $_POST['id'] . "'";
+        $chkdupliasset = $this->Crud_model->GetData('mst_gst', "", $con);
+        if (count($chkdupliasset) > 0) {
+          echo "3";
+        } else {
           $condDuplication = "category_id='".$this->input->post('category_id')."' and hsn='".$this->input->post('hsn')."' and gst_percent='".$this->input->post('gst_percent')."' and markup_percent='".$this->input->post('markup_percent')."' and id !='".$this->input->post('id')."'";
           $duplication = $this->Crud_model->GetData('mst_gst','',$condDuplication);
           //print_r($this->db->last_query());exit();
@@ -214,7 +218,7 @@ class GST extends CI_Controller {
                 'code' => strtoupper($this->input->post('code')),  
                 'hsn' => $this->input->post('hsn'),           
                 'gst_percent' => $this->input->post('gst_percent'),
-                  'markup_percent' => $this->input->post('markup_percent'),
+                'markup_percent' => $this->input->post('markup_percent'),
                 'modified' => date('Y-m-d H:i:s'),                   
               );
                // print_r($data);exit;
@@ -223,7 +227,7 @@ class GST extends CI_Controller {
 
               echo "2";
           }  
-          
+        } 
       }
 
 

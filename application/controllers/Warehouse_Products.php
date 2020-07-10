@@ -83,6 +83,7 @@ class Warehouse_Products extends CI_Controller {
   public function ajax_manage_page($date = 0)
   {
     $con="p.id<>''";
+    $con.="and p.sent_to=".$_SESSION[SESSION_NAME]['id'];
     if(!empty($_SESSION[SESSION_NAME]['branch_id'])){
       $con.=" and ast.id in (select asset_id from asset_branch_mappings where branch_id='".$_SESSION[SESSION_NAME]['branch_id']."')";
     }

@@ -320,8 +320,8 @@ function updateData()
   }
   if($.trim(code) == "")
   {
-    $("#codeError").fadeIn().html("Please enter Code");
-    setTimeout(function(){$("#codeError").fadeOut();},2000);
+    $("#codeErrorEdit").fadeIn().html("Please enter Code");
+    setTimeout(function(){$("#codeErrorEdit").fadeOut();},2000);
     $("#code1").focus();
     return false;
   }
@@ -359,7 +359,11 @@ function updateData()
       {
         $("#EdittitleError").fadeIn().html("GST % already exist");
         setTimeout(function(){$("#titleError").fadeOut();},2000);
-      }
+      } else if(response == 3)
+      {
+        $("#codeErrorEdit").fadeIn().html("Code Already in use.");
+        setTimeout(function(){$("#codeErrorEdit").fadeOut();},2000);
+      } 
       else
       {
       $(".close").click(); 

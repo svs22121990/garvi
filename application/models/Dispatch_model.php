@@ -90,7 +90,7 @@ class Dispatch_model extends CI_Model
 
     private function warehouse_get_datatables_query($con)
     {
-        $this->db->select('p.id,p.dn_number,p.dispatch_date,p.sent_to,p.status,e.name as employee_name,(select SUM(price) from warehouse_dispatch_details where dispatch_id=p.id) as sum_amount, (select SUM(quantity) from warehouse_dispatch_details where dispatch_id=p.id) as sum_quantity');
+        $this->db->select('p.id,p.dn_number,p.dispatch_date,p.sent_to,p.status,e.name as employee_name,(select SUM(price) from warehouse_dispatch_details where dispatch_id=p.id) as sum_amount, (select SUM(quantity) from warehouse_dispatch_details where dispatch_id=p.id) as sum_quantity, (select SUM(quantity * price * gst_percent) from warehouse_dispatch_details where dispatch_id=p.id) as gst');
         $this->db->from("warehouse_dispatch p");
         $this->db->join("employees e","e.id = p.sent_to","left");
         //$this->db->join("warehouse_dispatch_details de","de.dispatch_id = p.id","right");

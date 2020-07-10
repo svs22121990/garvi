@@ -17,23 +17,103 @@ $this->load->view('common/left_panel');
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-				<?= form_open('Product_Summary/search',['id'=>'serch_date']); ?>
-                  <div class="form-group row" style="padding-top: 20px;" >
-                    <label class="col-md-2"> select Date<span style="color: red">*</span> <span  id="purchase_date_error" style="color: red"></span></label>
+            <?= form_open('Product_Summary/search',['id'=>'serch_date']); ?>
+                <div class="form-group row" style="padding-top: 20px;" >
                     <div class="col-md-3">
-                      <!--<input type="text" name="purchase_date" id="purchase_date" class="form-control datepicker" placeholder="Purchase Date" required>-->
-					  <input type="text" class="form-control" name="daterange" value="" />
+					            <input type="text" class="form-control" name="daterange" placeholder="Select Date" autocomplete="off" value="<?php if($selected_date != 0)echo $selected_date; ?>" />
                     </div>
-                    <div class="col-md-2">
-                      <button type="submit" class="btn btn-success">Search</button>
+                    <div class="col-md-3">
+                        <select name="type" id="type" class="form-control">
+                            <option value="">Select Type</option>
+                            <?php
+                            if(!empty($types)) {
+                                foreach ($types as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id==$selected_type)echo "selected";?> ><?php echo $type->type; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
                     </div>
-					<div  class="col-md-4">
-					
-
-
-					</div>
-                  </div>
-                  <?= form_close(); ?>
+                    <div class="col-md-3">
+                        <select name="type2" id="type2" class="form-control">
+                            <option value="">Select Type 2</option>
+                            <?php
+                            if(!empty($product_types)) {
+                                foreach ($product_types as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_type2)echo "selected";?> ><?php echo $type->label; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-success">Search</button>
+                        <a href="<?php site_url("Warehouse_Product_Summary/index/")?>" class="btn btn-danger">X</a>
+                    </div>
+                </div>
+                <div class="form-group row" style="padding-top: 10px;" >
+                    <div class="col-md-3">
+                        <select name="color" id="color" class="form-control">
+                            <option value="">Select Color</option>
+                            <?php
+                            if(!empty($colors)) {
+                                foreach ($colors as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id==$selected_color)echo "selected";?> ><?php echo $type->title; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="size" id="size" class="form-control">
+                            <option value="">Select Size</option>
+                            <?php
+                            if(!empty($sizes)) {
+                                foreach ($sizes as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_size)echo "selected";?> ><?php echo $type->title; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="fabric" id="fabric" class="form-control">
+                            <option value="">Select Fabric</option>
+                            <?php
+                            if(!empty($fabrics)) {
+                                foreach ($fabrics as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id==$selected_fabric)echo "selected";?> ><?php echo $type->title; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="craft" id="craft" class="form-control">
+                            <option value="">Select Craft</option>
+                            <?php
+                            if(!empty($crafts)) {
+                                foreach ($crafts as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_craft)echo "selected";?> ><?php echo $type->title; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <?= form_close(); ?>
 				  <?php if($dateinfo!= 0 ){ ?>
 				  <form method="post" action="<?=site_url("Product_Summary/export_product_summary/$dateinfo")?>">
 				  <?php }else{ ?>
@@ -368,13 +448,22 @@ $this->load->view('common/left_panel');
 <script>
 $(function() {
   $('input[name="daterange"]').daterangepicker({
+    autoUpdateInput: false,
 	  locale: {
             format: 'DD/MM/YYYY'
         },
     opens: 'right'
   }, function(start, end, label) {
     var startDate = start.format('YYYY-MM-DD');
-	var endDate = end.format('YYYY-MM-DD');
+	  var endDate = end.format('YYYY-MM-DD');
+  });
+
+  $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+  });
+
+  $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
   });
 });
 function addDamage($product_id){

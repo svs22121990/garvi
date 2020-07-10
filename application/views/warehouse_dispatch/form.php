@@ -110,6 +110,7 @@
         <table class="table table-striped table-bordered" id="thetable">
           <thead>
             <tr>
+              <th> Barcode <span style="color: red">*</span><span id="error_barcode"></span></th>
               <th> Product Name <span style="color: red">*</span><span id="error_asset_name"></span></th>
               <th> Quantity <span style="color: red">*</span><span id="error_quantity"></span></th>
               <th> Attributes </th>
@@ -122,6 +123,10 @@
 		  
           <tbody id="professorTableBody">  
             <tr class="trRow">
+              <td>
+                  <input type="text" class="form-control barcode" name="barcode[]" placeholder="Enter Barcode No." autocomplete="off">
+                  <span style="color: red" class="barcode_error"></span>
+              </td>
               <td>
                 <select class="form-control asset_name" name="asset_name[]">
                   <option value="0">Select Product</option>
@@ -153,7 +158,7 @@
           </tbody>
           <tfoot>                   
             <tr>
-                <th colspan="3" >&nbsp;<span class="pull-right">Total</span></th>
+                <th colspan="4" >&nbsp;<span class="pull-right">Total</span></th>
                 <th><input type="text" class="form-control" id="priceTotal" readonly="readonly" value="0"></th>
                 <th></th>
                 <th><input type="text" class="form-control" id="GSTTotal" readonly="readonly" value="0"></th>
@@ -258,6 +263,7 @@
 <?php $this->load->view('common/footer');?>
 
 <script>
+
 $(document).on('click','.add_product',function(){
 		var id = $(this).attr('data-id');
 		var name = $(this).attr('data-name');
@@ -320,6 +326,42 @@ function myFunction() {
 
 
     $(document).ready(function(e){
+      
+      $(document).on('keyup','.barcode',function(e){
+          /* ENTER PRESSED*/
+          if (e.keyCode == 13) {
+
+            var dataString = "barcode="+this.value;
+            var index = $(this).closest('td').parent()[0].sectionRowIndex;
+
+            var url = "<?php echo site_url('Warehouse_Dispatch/checkBarcode'); ?>";
+            $.post(url, dataString, function(returndata){
+              //alert(returndata);
+              var obj = jQuery.parseJSON(returndata);
+              
+              if(obj.success == "1")
+              {
+                $('table .asset_name').slice(index, index + 1).html('<option value="'+obj.id+'">'+obj.name+'</option>');
+                $('table .quantity').slice(index, index + 1).attr('data-available', obj.available_qty);
+
+                $('table .gst_percent').slice(index, index+1).val(obj.gst_percent);
+                $('table .product_mrp').slice(index, index+1).val(obj.price);
+
+                $('table .attribute_div').slice(index, index+1).empty();
+                $('table .attribute_div').slice(index, index+1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
+                //$('#gst_percent1').val(obj.gst_percent);
+                //$('#product_mrp1').val(obj.price);
+                //$('#hsn'+(len+1)).val(obj.hsn);
+                price();
+              } else {
+                $('.barcode_error').eq(index).html("Invalid Barcode").fadeIn();
+                setTimeout(function(){$(".barcode_error").eq(i).fadeOut()},5000);
+              }
+
+            });
+          }
+      });
+
       src = '<?= site_url('Products/getSubcategory'); ?>';
       $("#subcategory_id").autocomplete({
         appendTo: "#searchbox",
@@ -382,19 +424,13 @@ function addrow() {
   var new_row = y.rows[0].cloneNode(true); 
   var len = y.rows.length; 
   
-  var inp2 = new_row.cells[0].getElementsByTagName('select')[0];
-  inp2.value = '';
-  //inp2.id = 'asset_name'+(len+1);
-
-  var inp3 = new_row.cells[1].getElementsByTagName('input')[0];
+  var inp3 = new_row.cells[0].getElementsByTagName('input')[0];
   inp3.value = '';
-  //inp3.id = 'quantity'+(len+1);
 
-  //var inp4 = new_row.cells[2].getElementsByClassName('attribute_div')[0];
-  //inp4.html = 'Attributes';
-  //inp4.id = 'product_mrp'+(len+1);
+  var inp2 = new_row.cells[1].getElementsByTagName('select')[0];
+  inp2.value = '';
 
-  var inp5 = new_row.cells[3].getElementsByTagName('input')[0];
+  var inp5 = new_row.cells[2].getElementsByTagName('input')[0];
   inp5.value = '';
   //inp5.id = 'gst_percent'+(len+1);
 
@@ -704,7 +740,7 @@ function validateinfo() {
         $('.quantity_error').eq(i).html("Please enter Quantity").fadeIn();
         setTimeout(function(){$(".quantity_error").eq(i).fadeOut()},5000);
         return false;
-      } else if(quantity > available_qty){
+      } else if((quantity * 1) > (available_qty * 1)){
         $('.quantity_error').eq(i).html("Quantity cannot be more than Available Qty").fadeIn();
         setTimeout(function(){$(".quantity_error").eq(i).fadeOut()},5000);
         return false;

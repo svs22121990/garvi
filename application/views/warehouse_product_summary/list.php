@@ -56,11 +56,67 @@ $this->load->view('common/left_panel');
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <button type="submit" class="btn btn-success">Search</button>
                         <a href="<?php site_url("Warehouse_Product_Summary/index/")?>" class="btn btn-danger">X</a>
                     </div>
-                    <div  class="col-md-4">
+                </div>
+                <div class="form-group row" style="padding-top: 10px;" >
+                    <div class="col-md-3">
+                        <select name="color" id="color" class="form-control">
+                            <option value="">Select Color</option>
+                            <?php
+                            if(!empty($colors)) {
+                                foreach ($colors as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id==$selected_color)echo "selected";?> ><?php echo $type->title; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="size" id="size" class="form-control">
+                            <option value="">Select Size</option>
+                            <?php
+                            if(!empty($sizes)) {
+                                foreach ($sizes as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_size)echo "selected";?> ><?php echo $type->title; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="fabric" id="fabric" class="form-control">
+                            <option value="">Select Fabric</option>
+                            <?php
+                            if(!empty($fabrics)) {
+                                foreach ($fabrics as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id==$selected_fabric)echo "selected";?> ><?php echo $type->title; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="craft" id="craft" class="form-control">
+                            <option value="">Select Craft</option>
+                            <?php
+                            if(!empty($crafts)) {
+                                foreach ($crafts as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_craft)echo "selected";?> ><?php echo $type->title; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
                     </div>
                 </div>
                 <?= form_close(); ?>

@@ -80,6 +80,8 @@ $this->load->view('common/left_panel');
                                     $total = 0;
                                     $totalGST = 0;
                                     $finalTotal = 0;
+                                    $selling = 0;
+                                    $final_sp = 0;
                                     foreach ($getAssetData as $getData) {
                                         ?>
                                         <tr>
@@ -98,17 +100,18 @@ $this->load->view('common/left_panel');
                                             <td>
                                                 <div class=scrollable><?php echo $getData->markup_percent ?></div>
                                             </td>
-                                            <td><?php echo "Rs. " . $getData->cost_total; ?></td>
+                                            <td><?php echo "Rs. " . number_format(($getData->price * $getData->quantity), 2); ?></td>
                                             <td><?php echo "Rs. " . $getData->product_mrp; ?></td>
-                                            <td><?php echo "Rs. " . $getData->sp_total; ?></td>
+                                            <td><?php echo "Rs. " . number_format(($getData->product_mrp * $getData->quantity), 2); ?></td>
 
                                         </tr>
                                         <?php
+                                        $final_sp += ($getData->product_mrp * $getData->quantity);
                                         $qty += $getData->quantity;
                                         $product_mrp += $getData->product_mrp;
                                         $totalGST += (($getData->gst_percent/100) * ($getData->quantity * $getData->product_mrp));
                                         $totalmarkup += ($getData->quantity * ($getData->product_mrp - $getData->price));
-                                        $selling += $getData->sp_total;
+                                        $selling += number_format(($getData->product_mrp * $getData->quantity), 2);
                                        // print_r($totalmarkup);exit;
                                     }
                                     ?>
@@ -142,7 +145,7 @@ $this->load->view('common/left_panel');
                                     </tr>
                                     <tr>
                                         <td colspan="14">&nbsp;<span class="pull-right">Final Selling Amount</span></td>
-                                        <th colspan="2"><?= "Rs. " . number_format($selling, 2); ?></th>
+                                        <th colspan="2"><?= "Rs. " . number_format($final_sp, 2); ?></th>
                                     </tr>
 
                                     </tfoot>
