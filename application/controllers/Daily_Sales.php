@@ -33,10 +33,14 @@ class Daily_Sales extends CI_Controller {
           $type2 = $this->input->post('type2');
       else
           $type2 = 0;
+      if($this->input->post('type3') != "")
+          $type3 = $this->input->post('type3');
+      else
+          $type3 = 0;
       
       //$newDate = date("Y-m-d", strtotime($date));
-	  $strUrl = site_url('Daily_Sales/ajax_manage_page/' . $date . '/'. $type . '/'. $type2);
-      $this->common_view($strUrl,$date,$type,$type2); 
+	    $strUrl = site_url('Daily_Sales/ajax_manage_page/' . $date . '/'. $type . '/'. $type2 . '/'. $type3);
+      $this->common_view($strUrl,$date,$type,$type2,$type3); 
 	  
     }
     else
@@ -50,7 +54,7 @@ class Daily_Sales extends CI_Controller {
     
     $this->common_view(site_url('Daily_Sales/ajax_manage_page'));
   }
-  public function common_view($action,$date=0,$type=0,$type2=0)
+  public function common_view($action,$date=0,$type=0,$type2=0,$type3=0)
   {   
     // print_r($_SESSION[SESSION_NAME]);exit;
     $import = '';
@@ -85,13 +89,12 @@ class Daily_Sales extends CI_Controller {
 	    $download = '';//'<a download="assets.xls" style="color:black;" title="Download Format" href="'. base_url('uploads/assets_demo_excel/assets.xls').'"><span class="fa fa-download"></span></a>'; 
 
       $salesTypes = $this->Crud_model->GetData("sales_type", "", "status='Active'");
-      $paymentModes = $this->Crud_model->GetData("payment_types", "", "status='Active'");
 
       $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
       $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
 
 	    $data = array(
-        'types' => $types, 'product_types' => $product_types,'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2,
+        'types' => $types, 'product_types' => $product_types,'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 'selected_type3' => $type3,
         'dateinfo'=>$date,
         'breadcrumbs' => $breadcrumbs ,
         'actioncolumn' => '5' ,
@@ -104,7 +107,6 @@ class Daily_Sales extends CI_Controller {
         'export' =>$export,
         'exportPermission'=>$exportbutton,
         'salesTypes' => $salesTypes,
-        'paymentModes' => $paymentModes,
       );
 
 	    $this->load->view('daily_sales/list',$data);
@@ -115,13 +117,15 @@ class Daily_Sales extends CI_Controller {
   	}
   }
 
-  public function ajax_manage_page($date=0, $type = 0, $type2 = 0)
+  public function ajax_manage_page($date=0, $type = 0, $type2 = 0, $type3 = 0)
   {
     $con="i.id<>''";
     if($type != 0)
-        $con .= "and a.asset_type_id ='". $type . "'";
+      $con .= "and a.asset_type_id ='". $type . "'";
     if($type2 != 0)
-        $con .= "and a.product_type_id ='". $type2 . "'";
+      $con .= "and a.product_type_id ='". $type2 . "'";
+    if($type3 != 0)
+      $con .= "and i.invoice_sales_type ='". $type3 . "'";
     $Data = $this->Daily_Sales_model->get_datatables($con,$date);
     
     $edit = ''; 
@@ -202,13 +206,19 @@ class Daily_Sales extends CI_Controller {
   }
   
   //============================export pdf ============================
-  public function listpdf($date=0)
+  public function listpdf($date=0, $type = 0, $type2 = 0, $type3 = 0)
   {
       $con="i.id<>''";
+      if($type != 0)
+        $con .= "and a.asset_type_id ='". $type . "'";
+      if($type2 != 0)
+        $con .= "and a.product_type_id ='". $type2 . "'";
+      if($type3 != 0)
+        $con .= "and i.invoice_sales_type ='". $type3 . "'";
     
       $data['results'] = $this->Daily_Sales_model->get_datatables($con,$date);
 
-      $html = $this->load->view('sales_summary/pdf_summary',$data,true);
+      $html = $this->load->view('daily_sales/pdf_summary',$data,true);
       $mpdf = new \Mpdf\Mpdf();
       $mpdf->WriteHTML($html);
       $mpdf->Output('Sales_Summary_Report','I');
@@ -217,13 +227,19 @@ class Daily_Sales extends CI_Controller {
 
 
   /* ----- Export functionality start ----- */
-    public function export_sales_summary($date=0)
+    public function export_daily_sales($date=0, $type = 0, $type2 = 0, $type3 = 0)
     {
       $con="i.id<>''";
+      if($type != 0)
+        $con .= "and a.asset_type_id ='". $type . "'";
+      if($type2 != 0)
+        $con .= "and a.product_type_id ='". $type2 . "'";
+      if($type3 != 0)
+        $con .= "and i.invoice_sales_type ='". $type3 . "'";
       
       $results = $this->Daily_Sales_model->get_datatables($con,$date);
       //$results = $this->Daily_Sales_model->ExportCSV($con);
-      $FileTitle='Sales Summary Report';
+      $FileTitle='Daily Sales Report';
                 
         $this->load->library('excel');
         //activate worksheet number 1
@@ -231,19 +247,24 @@ class Daily_Sales extends CI_Controller {
         //name the worksheet
         $this->excel->getActiveSheet()->setTitle('Report Sheet');
         //set cell A1 content with some text
-        $this->excel->getActiveSheet()->setCellValue('A1', 'Sales Summary Details ');
+        $this->excel->getActiveSheet()->setCellValue('A1', 'Daily Sales Details ');
 
         $this->excel->getActiveSheet()->setCellValue('A3', 'Sr. No');
-        $this->excel->getActiveSheet()->setCellValue('B3', 'Invoice No.');
-        $this->excel->getActiveSheet()->setCellValue('C3', 'Date');
-        $this->excel->getActiveSheet()->setCellValue('D3', 'Type of Sales');
-        $this->excel->getActiveSheet()->setCellValue('E3', 'Product Name');
-        $this->excel->getActiveSheet()->setCellValue('F3', 'Payment Mode');
+        $this->excel->getActiveSheet()->setCellValue('B3', 'Date');
+        $this->excel->getActiveSheet()->setCellValue('C3', 'Invoice No.');
+        $this->excel->getActiveSheet()->setCellValue('D3', 'Description of Goods');
+        $this->excel->getActiveSheet()->setCellValue('E3', 'HSN');
+        $this->excel->getActiveSheet()->setCellValue('F3', 'Sale Price');
         $this->excel->getActiveSheet()->setCellValue('G3', 'Quantity');
-        $this->excel->getActiveSheet()->setCellValue('H3', 'Type 1');
-        $this->excel->getActiveSheet()->setCellValue('I3', ' Type 2');
-        $this->excel->getActiveSheet()->setCellValue('J3', 'Sub-Total');
-        $this->excel->getActiveSheet()->setCellValue('K3', 'Total Amount');
+        $this->excel->getActiveSheet()->setCellValue('H3', 'Total Amount');
+        $this->excel->getActiveSheet()->setCellValue('I3', 'Discount 1');
+        $this->excel->getActiveSheet()->setCellValue('J3', 'Discount 2');
+        $this->excel->getActiveSheet()->setCellValue('K3', 'Discount 3');
+        $this->excel->getActiveSheet()->setCellValue('L3', 'Total Discount');
+        $this->excel->getActiveSheet()->setCellValue('M3', 'Amt After Dic.');
+        $this->excel->getActiveSheet()->setCellValue('N3', 'CGST');
+        $this->excel->getActiveSheet()->setCellValue('O3', 'SGST');
+        $this->excel->getActiveSheet()->setCellValue('P3', 'Total Amount');
             
         $a='4'; $sr = 1;    
         //print_r($results);exit;
@@ -255,42 +276,45 @@ class Daily_Sales extends CI_Controller {
         {    
           if(in_array($result->id, $arrId))
           {
-              $sums = '';
               $invoice ='';
               $no = '';
             }
           else
           {
               $arrId[] = $result->id;
-              $sums = "Rs. ".number_format($result->sumAmount,2);
-              $total_sum += $result->sumAmount;
               $invoice = $result->invoice_no;
               $no = $sr++;
           }   
             
             $this->excel->getActiveSheet()->setCellValue('A'.$a, $no);
-            $this->excel->getActiveSheet()->setCellValue('B'.$a, $invoice);
-            $this->excel->getActiveSheet()->setCellValue('C'.$a, date('d-m-Y', strtotime($result->date_of_invoice)));
+            $this->excel->getActiveSheet()->setCellValue('B'.$a, date('d-m-Y', strtotime($result->date_of_invoice)));
+            $this->excel->getActiveSheet()->setCellValue('C'.$a, $invoice);
             $this->excel->getActiveSheet()->setCellValue('D'.$a, $result->asset_name);
-            $this->excel->getActiveSheet()->setCellValue('E'.$a, $result->salesType);
-            $this->excel->getActiveSheet()->setCellValue('F'.$a, $result->paymentMode);                
+            $this->excel->getActiveSheet()->setCellValue('E'.$a, $result->hsn_code);
+            $this->excel->getActiveSheet()->setCellValue('F'.$a, $result->rate_per_item);                
             $this->excel->getActiveSheet()->setCellValue('G'.$a, $result->quantity);                
-            $this->excel->getActiveSheet()->setCellValue('H'.$a, $result->product_type);                
-            $this->excel->getActiveSheet()->setCellValue('I'.$a, $result->asset_type);                
-            $this->excel->getActiveSheet()->setCellValue('J'.$a, "Rs. ".number_format($result->net_amount,2));
+            $this->excel->getActiveSheet()->setCellValue('H'.$a, "Rs. ".number_format($result->total,2));                
+            $this->excel->getActiveSheet()->setCellValue('I'.$a, $result->discount_1);
+            $this->excel->getActiveSheet()->setCellValue('J'.$a, $result->discount_2);
+            $this->excel->getActiveSheet()->setCellValue('K'.$a, $result->discount_3);   
+            $this->excel->getActiveSheet()->setCellValue('L'.$a, $result->discount_amount);
+            $this->excel->getActiveSheet()->setCellValue('M'.$a, $result->taxable);
+            $this->excel->getActiveSheet()->setCellValue('N'.$a, $result->cgst_amount);
+            $this->excel->getActiveSheet()->setCellValue('O'.$a, $result->sgst_amount);             
+            $this->excel->getActiveSheet()->setCellValue('P'.$a, "Rs. ".number_format($result->net_amount,2));
             
-            $this->excel->getActiveSheet()->setCellValue('K'.$a, $sums);
              $a++;   
              $qty += $result->quantity; 
+             $total_sum += $result->total;   
              $net_amount += $result->net_amount;         
         }
         $this->excel->getActiveSheet()->setCellValue('G'.$a, $qty);                
-        $this->excel->getActiveSheet()->setCellValue('J'.$a, "Rs. ".number_format($net_amount,2));
-        $this->excel->getActiveSheet()->setCellValue('K'.$a, "Rs. ".number_format($total_sum,2));
+        $this->excel->getActiveSheet()->setCellValue('H'.$a, "Rs. ".number_format($total_sum,2));
+        $this->excel->getActiveSheet()->setCellValue('P'.$a, "Rs. ".number_format($net_amount,2));
         
         $this->excel->getActiveSheet()->getStyle('G'.$a)->getFont()->setBold(true);                
-        $this->excel->getActiveSheet()->getStyle('J'.$a)->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('K'.$a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('H'.$a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('P'.$a)->getFont()->setBold(true);
         
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);                
@@ -305,6 +329,11 @@ class Daily_Sales extends CI_Controller {
         $this->excel->getActiveSheet()->getStyle('I3')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('J3')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('K3')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('L3')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('M3')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('N3')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('O3')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('P3')->getFont()->setBold(true);
         
         //$this->excel->getActiveSheet()->mergeCells('A1:H1');
         $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);

@@ -17,10 +17,12 @@ class Daily_Sales_Summary_model extends CI_Model
 
      private function _get_datatables_query($con)
     {
-        $this->db->select('invoice_id');
+        $this->db->select('ide.invoice_id');
         $this->db->from("invoice_details ide");
         $this->db->join("assets a","a.id = ide.product_id","right");
+        $this->db->join("invoice i","i.id = ide.invoice_id","right");
         $this->db->where('a.created_by',$_SESSION[SESSION_NAME]['id']);
+        $this->db->where($con);
         $query = $this->db->get();
         $arr = array_column($query->result_array(),"invoice_id");
 
@@ -33,9 +35,9 @@ class Daily_Sales_Summary_model extends CI_Model
             (select sum(quantity) from invoice_details where invoice_id=i.id) as quantity,
             (select sum(rate_per_item) from invoice_details where invoice_id=i.id) as rate_per_item,
             (select sum(total) from invoice_details where invoice_id=i.id) as total,
-            (select sum(discount_1) from invoice_details where invoice_id=i.id) as discount_1,
-            (select sum(discount_2) from invoice_details where invoice_id=i.id) as discount_2,
-            (select sum(discount_3) from invoice_details where invoice_id=i.id) as discount_3,
+            (select sum(discount_1 * rate_per_item / 100) from invoice_details where invoice_id=i.id) as discount_1,
+            (select sum(discount_2 * rate_per_item / 100) from invoice_details where invoice_id=i.id) as discount_2,
+            (select sum(discount_3 * rate_per_item / 100) from invoice_details where invoice_id=i.id) as discount_3,
             (select sum(discount_amount) from invoice_details where invoice_id=i.id) as discount_amount,
             (select sum(taxable) from invoice_details where invoice_id=i.id) as taxable,
             (select sum(cgst_amount) from invoice_details where invoice_id=i.id) as cgst_amount,
@@ -48,9 +50,13 @@ class Daily_Sales_Summary_model extends CI_Model
         //$this->db->join("invoice_details ide","i.id = ide.invoice_id","right");
         //$this->db->join("assets a","a.id = ide.product_id","right");
         $this->db->order_by('i.id', "asc");
-        $this->db->where_in('i.id',$arr);
+        //$this->db->group_by('i.date_of_invoice');
+        if(count($arr) > 0)
+            $this->db->where_in('i.id',$arr);
+        else
+            $this->db->where('i.id',0);
         //$this->db->where('a.created_by',$_SESSION[SESSION_NAME]['id']);
-        $this->db->where($con);
+        
     }
  
     function get_datatables($con,$date)

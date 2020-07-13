@@ -22,7 +22,7 @@ $this->load->view('common/left_panel');
                     <div class="col-md-3">
                         <input type="text" class="form-control" name="daterange" placeholder="Select Date" autocomplete="off" value="<?php if($selected_date != 0)echo $selected_date; ?>" />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="type" id="type" class="form-control">
                             <option value="">Select Type</option>
                             <?php
@@ -36,7 +36,7 @@ $this->load->view('common/left_panel');
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="type2" id="type2" class="form-control">
                             <option value="">Select Type 2</option>
                             <?php
@@ -51,12 +51,26 @@ $this->load->view('common/left_panel');
                         </select>
                     </div>
                     <div class="col-md-2">
+                        <select name="type3" id="type3" class="form-control">
+                            <option value="">Select Sale Type</option>
+                            <?php
+                            if(!empty($salesTypes)) {
+                                foreach ($salesTypes as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_type3)echo "selected";?> ><?php echo $type->label; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
                       <button type="submit" class="btn btn-success">Search</button>
                       <a href="<?php site_url("Daily_Sales/index/")?>" class="btn btn-danger">X</a>
                     </div>
                   </div>
                   <?= form_close(); ?>
-              <form method="post" action="<?=site_url("Daily_Sales/export_daily_sales/$dateinfo")?>">
+              <form method="post" action="<?=site_url("Daily_Sales/export_daily_sales/$selected_date/$selected_type/$selected_type2/$selected_type3")?>">
                 <div class="panel-heading">                                
                     <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                      <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
@@ -75,8 +89,8 @@ $this->load->view('common/left_panel');
                         </li>
                         <?php } ?>
                         <?php if($exportPermission=='1'){?>
-						<li>
-                            <a href="<?= base_url(); ?>index.php/Daily_Sales/listpdf/<?= $dateinfo ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
+						              <li>
+                            <a href="<?= base_url(); ?>index.php/Daily_Sales/listpdf/<?= $selected_date ?>/<?= $selected_type ?>/<?= $selected_type2 ?>/<?= $selected_type3 ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
                           </li>
                           <li><?=$export; ?></li>
                           <button type="submit" style="display: none" id="subbtn"></button>
@@ -252,9 +266,9 @@ $(function() {
     $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
   });
 
-    $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
-        $(this).val('');
-    });
+  $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+      $(this).val('');
+  });
 });
 </script>
 

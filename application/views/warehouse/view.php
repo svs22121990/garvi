@@ -31,8 +31,8 @@ $this->load->view('common/left_panel');
                     <h3 class="panel-title">Warehouse Details</h3>
                     <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
                     <ul class="panel-controls">
-                        <li><a href="<?= site_url("Warehouse/export_pdf/$id") ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
-                        <li><a href="<?= site_url("Warehouse/export_summary/$id") ?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>
+                        <!--<li><a href="<?php //site_url("Warehouse/export_pdf/$id") ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
+                        <li><a href="<?php //site_url("Warehouse/export_summary/$id") ?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>-->
                         <li><a href="<?= site_url('Warehouse/index') ?>"><span class="fa fa-arrow-left"></span></a></li>
                     </ul>
                 </div>

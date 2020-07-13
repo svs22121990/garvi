@@ -38,11 +38,7 @@ class Bank_Reconcillation_model extends CI_Model
             a.asset_name as asset_name,
             a.hsn as hsn,
             (select label from product_type where id=a.product_type_id) as productType,
-
             (select type from mst_asset_types where id=a.asset_type_id) as assetType,
-
-            
-
             ide.cgst_rate,
             ide.cgst_amount,
             ide.sgst_rate,

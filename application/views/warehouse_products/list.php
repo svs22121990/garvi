@@ -82,11 +82,11 @@ $this->load->view('common/left_panel');
                                 <th>DN No</th>
                                 <th>Date</th>
                                 <th>User</th>
-                                <th>Quantity</th>
-                                <!--<th>GST %</th>
-                                <th>GST</th>-->
+                                <th>Qty</th>
                                 <th>Amount</th>
                                 <th>Total</th>
+                                <th>GST</th>
+                                <th>Grand Total</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -96,8 +96,9 @@ $this->load->view('common/left_panel');
                              <tr>
                               <th colspan="3"></th>
                               <th>Amount</th>
-                              <!--<th colspan="1"></th>
-                              <th colspan="1"></th>-->
+                              <th colspan="1"></th>
+                              <th colspan="1"></th>
+                              <th colspan="1"></th>
                               <th colspan="1"></th>
                               <th colspan="1"></th>
                               <th colspan="1"></th>
@@ -255,13 +256,6 @@ $this->load->view('common/left_panel');
             { "data": "dispatch_date" },
             { "data": "employee_name" },
             { "data": "sum_quantity" },
-            //{ "data": "gst_percent" },
-            //{
-            //    "data": "gst",
-            //    "render": function ( data, type, row, meta ) {
-            //      return 'Rs. '+data;
-            //    }
-            //},
             {
                 "data": "sum_amount",
                 "render": function ( data, type, row, meta ) {
@@ -270,6 +264,18 @@ $this->load->view('common/left_panel');
             },
             {
                 "data": "total_sum",
+                "render": function ( data, type, row, meta ) {
+                  return 'Rs. '+data;
+                }
+            },
+            {
+                "data": "gst",
+                "render": function ( data, type, row, meta ) {
+                  return 'Rs. '+data;
+                }
+            },
+            {
+                "data": "grand_total",
                 "render": function ( data, type, row, meta ) {
                   return 'Rs. '+data;
                 }
@@ -312,7 +318,22 @@ $this->load->view('common/left_panel');
                 }, 0 );
             $( api.column( 5 ).footer() ).html('Rs. '+total.toFixed(2));
 
-            
+            total = api
+                .column( 7 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 7 ).footer() ).html('Rs. '+total.toFixed(2));
+
+            total = api
+                .column( 8 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 8 ).footer() ).html('Rs. '+total.toFixed(2));
+
         }
     });
   });

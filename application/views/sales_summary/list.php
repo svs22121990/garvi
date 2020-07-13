@@ -22,7 +22,7 @@ $this->load->view('common/left_panel');
                     <div class="col-md-3">
                         <input type="text" class="form-control" name="daterange" placeholder="Select Date" autocomplete="off" value="<?php if($selected_date != 0)echo $selected_date; ?>" />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="type" id="type" class="form-control">
                             <option value="">Select Type</option>
                             <?php
@@ -36,7 +36,7 @@ $this->load->view('common/left_panel');
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="type2" id="type2" class="form-control">
                             <option value="">Select Type 2</option>
                             <?php
@@ -51,12 +51,26 @@ $this->load->view('common/left_panel');
                         </select>
                     </div>
                     <div class="col-md-2">
+                        <select name="type3" id="type3" class="form-control">
+                            <option value="">Select Sale Type</option>
+                            <?php
+                            if(!empty($salesTypes)) {
+                                foreach ($salesTypes as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_type3)echo "selected";?> ><?php echo $type->label; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
                       <button type="submit" class="btn btn-success">Search</button>
                       <a href="<?php site_url("Sales_Summary/index/")?>" class="btn btn-danger">X</a>
                     </div>
                   </div>
                   <?= form_close(); ?>
-              <form method="post" action="<?=site_url("Sales_Summary/export_sales_summary/$dateinfo")?>">
+              <form method="post" action="<?=site_url("Sales_Summary/export_sales_summary/$selected_date/$selected_type/$selected_type2/$selected_type3")?>">
                 <div class="panel-heading">                                
                     <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                      <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
@@ -76,7 +90,7 @@ $this->load->view('common/left_panel');
                         <?php } ?>
                         <?php if($exportPermission=='1'){?>
 						<li>
-                            <a href="<?= base_url(); ?>index.php/Sales_Summary/listpdf/<?= $dateinfo ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
+                            <a href="<?= base_url(); ?>index.php/Sales_Summary/listpdf/<?= $selected_date ?>/<?= $selected_type ?>/<?= $selected_type2 ?>/<?= $selected_type3 ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
                           </li>
                           <li><?=$export; ?></li>
                           <button type="submit" style="display: none" id="subbtn"></button>
@@ -92,23 +106,24 @@ $this->load->view('common/left_panel');
                 </div>
                 <div class="panel-body ">
                 <div class="row">
+                <!--
                 <div class="col-md-6 text-left">
                         <ul class="list-unstyled list-inline">
                             <?php
-                                foreach ($salesTypes as $salesType):
+                                //foreach ($salesTypes as $salesType):
                             ?>
                             <li>
                                 <div class="checkbox">
                                     <label>
-                                        <input class="salesTypeFilters dtFiltersCal" value="<?=$salesType->id?>" data-label="<?=$salesType->label?>" type="checkbox" data-type="salesType"> <?=$salesType->label?>
+                                        <input class="salesTypeFilters dtFiltersCal" value="<?php//$salesType->id?>" data-label="<?php//$salesType->label?>" type="checkbox" data-type="salesType"> <?php//$salesType->label?>
                                     </label>
                                 </div>
                             </li>
                             <?php
-                                endforeach;
+                                //endforeach;
                             ?>
                         </ul>
-                    </div>
+                    </div>-->
                     <div class="col-md-6 text-right">
                         <ul class="list-unstyled list-inline">
                             <?php

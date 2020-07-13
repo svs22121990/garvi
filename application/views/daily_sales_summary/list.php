@@ -17,7 +17,62 @@ $this->load->view('common/left_panel');
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-              <form method="post" action="<?=site_url("Daily_Sales/export_daily_sales/$dateinfo")?>">
+
+            <?= form_open('Daily_Sales_Summary/search',['id'=>'serch_date']); ?>
+                  <div class="form-group row" style="padding-top: 20px;" >
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" name="daterange" placeholder="Select Date" autocomplete="off" value="<?php if($selected_date != 0)echo $selected_date; ?>" />
+                    </div>
+                    <div class="col-md-2">
+                        <select name="type" id="type" class="form-control">
+                            <option value="">Select Type</option>
+                            <?php
+                            if(!empty($types)) {
+                                foreach ($types as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id==$selected_type)echo "selected";?> ><?php echo $type->type; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="type2" id="type2" class="form-control">
+                            <option value="">Select Type 2</option>
+                            <?php
+                            if(!empty($product_types)) {
+                                foreach ($product_types as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_type2)echo "selected";?> ><?php echo $type->label; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="type3" id="type3" class="form-control">
+                            <option value="">Select Sale Type</option>
+                            <?php
+                            if(!empty($salesTypes)) {
+                                foreach ($salesTypes as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_type3)echo "selected";?> ><?php echo $type->label; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                      <button type="submit" class="btn btn-success">Search</button>
+                      <a href="<?php site_url("Daily_Sales/index/")?>" class="btn btn-danger">X</a>
+                    </div>
+                  </div>
+                  <?= form_close(); ?>
+
+              <form method="post" action="<?=site_url("Daily_Sales_Summary/export_sales_summary/$selected_date/$selected_type/$selected_type2/$selected_type3")?>">
                 <div class="panel-heading">                                
                     <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                      <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
@@ -36,8 +91,8 @@ $this->load->view('common/left_panel');
                         </li>
                         <?php } ?>
                         <?php if($exportPermission=='1'){?>
-						<li>
-                            <a href="<?= base_url(); ?>index.php/Daily_Sales/listpdf/<?= $dateinfo ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
+						              <li>
+                            <a href="<?= base_url(); ?>index.php/Daily_Sales_Summary/listpdf/<?= $selected_date ?>/<?= $selected_type ?>/<?= $selected_type2 ?>/<?= $selected_type3 ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
                           </li>
                           <li><?=$export; ?></li>
                           <button type="submit" style="display: none" id="subbtn"></button>
@@ -60,9 +115,6 @@ $this->load->view('common/left_panel');
                              <tr>
                                 <th>Sr No</th>
                                 <th>Date</th>
-                                <th>Invoice No.</th>
-                                <th>Sale Price</th>
-                                <th>Qty</th>
                                 <th>Total Amt</th>
                                 <th>Discount 1</th>
                                 <th>Discount 2</th>
@@ -79,9 +131,13 @@ $this->load->view('common/left_panel');
                         </tbody>
                         <tfoot>
                              <tr>
-                                <th colspan="4"></th>
-                                <th >Quantity</th>
-                                <th colspan="6"></th>
+                                <th colspan="2"></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -130,18 +186,40 @@ $this->load->view('common/left_panel');
       "columns": [
             { "data": "no" },
             { "data": "date_of_invoice" },
-            { "data": "invoice_no" },
-            { "data": "rate_per_item" },
-            { "data": "quantity" },
             { "data": "total" },
             { "data": "discount_1" },
             { "data": "discount_2" },
             { "data": "discount_3" },
-            { "data": "discount_amount" },
-            { "data": "taxable" },
-            { "data": "cgst_amount" },
-            { "data": "sgst_amount" },
-            { "data": "gst_amount" },
+            {
+                "data": "discount_amount",
+                "render": function ( data, type, row, meta ) {
+                  return data.toString().match(/\d+(\.\d{1,2})?/g)[0];
+                }
+            },
+            {
+                "data": "taxable",
+                "render": function ( data, type, row, meta ) {
+                  return data.toString().match(/\d+(\.\d{1,2})?/g)[0];
+                }
+            },
+            {
+                "data": "cgst_amount",
+                "render": function ( data, type, row, meta ) {
+                  return data.toString().match(/\d+(\.\d{1,2})?/g)[0];
+                }
+            },
+            {
+                "data": "sgst_amount",
+                "render": function ( data, type, row, meta ) {
+                  return data.toString().match(/\d+(\.\d{1,2})?/g)[0];
+                }
+            },
+            {
+                "data": "gst_amount",
+                "render": function ( data, type, row, meta ) {
+                  return data.toString().match(/\d+(\.\d{1,2})?/g)[0];
+                }
+            },
             {
                 "data": "net_amount",
                 "render": function ( data, type, row, meta ) {
@@ -161,30 +239,63 @@ $this->load->view('common/left_panel');
                     typeof i === 'number' ?
                         i : 0;
             };
+
+            total1 = api
+                .column(2, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 2 ).footer() ).html('Rs. '+total1.toFixed(2));
+
+            total = api
+                .column(3, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 3 ).footer() ).html('Rs. '+total.toFixed(2));
+
+            total = api
+                .column(4, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 4 ).footer() ).html('Rs. '+total.toFixed(2));
+
+            total = api
+                .column(5, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 5 ).footer() ).html('Rs. '+total.toFixed(2));
+
             total = api
                 .column(6, {filter: 'applied'})
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
-            $( api.column( 6 ).footer() ).html(total);
+            $( api.column( 6 ).footer() ).html('Rs. '+total.toFixed(2));
 
-            total1 = api
+            total = api
                 .column(7, {filter: 'applied'})
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
-            $( api.column( 7 ).footer() ).html('Rs. '+total1.toFixed(2));
+            $( api.column( 7 ).footer() ).html('Rs. '+total.toFixed(2));
 
             total2 = api
-                .column(14, {filter: 'applied'})
+                .column(11, {filter: 'applied'})
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
             var additionalDOM = 'Rs.'+total2.toFixed(2)+'</div>';
-            $( api.column( 14 ).footer() ).html(additionalDOM);
+            $( api.column( 11 ).footer() ).html(additionalDOM);
         }
     });
   });

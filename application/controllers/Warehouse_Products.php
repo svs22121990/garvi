@@ -145,10 +145,10 @@ class Warehouse_Products extends CI_Controller {
           'dispatch_date' => date('d-m-Y', strtotime($row->dispatch_date)),
           'sum_amount' => number_format($row->sum_amount,2),
           'sum_quantity' => number_format($row->sum_quantity),
-          //'gst_percent' => number_format($row->gst_percent),
-          //'gst' => number_format((($row->sum_quantity * $row->sum_amount) * ($row->gst_percent/100)),2),
           'total_sum' => number_format(($row->sum_quantity * $row->sum_amount),2),
           'employee_name' => $row->employee_name,
+          'gst' => number_format(($row->gst/100),2),
+          'grand_total' => number_format(($row->sum_quantity * $row->sum_amount) + ($row->gst/100),2),
           'btn' => $btn,
         ); 
     }

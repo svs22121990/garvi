@@ -56,7 +56,21 @@ $this->load->view('common/left_panel');
                     </div>
                 </div>
                 <div class="form-group row" style="padding-top: 10px;" >
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <select name="cat" id="cat" class="form-control">
+                            <option value="">Select Category</option>
+                            <?php
+                            if(!empty($category)) {
+                                foreach ($category as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_cat)echo "selected";?> ><?php echo $type->title; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
                         <select name="color" id="color" class="form-control">
                             <option value="">Select Color</option>
                             <?php
@@ -70,7 +84,7 @@ $this->load->view('common/left_panel');
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="size" id="size" class="form-control">
                             <option value="">Select Size</option>
                             <?php
@@ -84,7 +98,7 @@ $this->load->view('common/left_panel');
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="fabric" id="fabric" class="form-control">
                             <option value="">Select Fabric</option>
                             <?php
@@ -98,7 +112,7 @@ $this->load->view('common/left_panel');
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="craft" id="craft" class="form-control">
                             <option value="">Select Craft</option>
                             <?php
@@ -115,7 +129,7 @@ $this->load->view('common/left_panel');
                 </div>
                 <?= form_close(); ?>
 				  <?php if($dateinfo!= 0 ){ ?>
-				  <form method="post" action="<?=site_url("Product_Summary/export_product_summary/$dateinfo")?>">
+				  <form method="post" action="<?=site_url("Product_Summary/export_product_summary/$selected_date/$selected_type/$selected_type2/$selected_color/$selected_size/$selected_fabric/$selected_craft/$selected_cat")?>">
 				  <?php }else{ ?>
 				  <form method="post" action="<?=site_url("Product_Summary/export_product_summary/")?>">
 				  <?php } ?>
@@ -138,11 +152,7 @@ $this->load->view('common/left_panel');
                         </li>
                         <?php } ?>
                         <?php if($exportPermission=='1'){?>
-						  <?php if(isset($dateinfo)){ ?>
-						   <li><a href="<?= base_url(); ?>index.php/Product_Summary/export_pdf_summary/<?= $dateinfo; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
-						   <?php } else { ?>
-						   <li><a href="<?= base_url(); ?>index.php/Product_Summary/export_pdf_summary" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
-						   <?php } ?>
+						 
                           <li><?=$export; ?></li>
                           <button type="submit" style="display: none" id="subbtn"></button>
                           <?php }?>

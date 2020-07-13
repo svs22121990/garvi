@@ -117,7 +117,7 @@ $this->load->view('common/left_panel');
                                     ?>
                                     </tbody>
                                     <tfoot>
-
+                                    <?php if($getData->state_id == 13) { ?>
                                     <tr>
                                         <td colspan="14" >&nbsp;<span class="pull-right">Total CGST Amount</span></td>
                                         <th colspan="2">
@@ -130,13 +130,14 @@ $this->load->view('common/left_panel');
                                             <?= "Rs. " . number_format($totalGST/2, 2); ?>
                                         </th>
                                     </tr>
-<!--                                    <tr>-->
-<!--                                        <td colspan="13" >&nbsp;<span class="pull-right">Final Total Amount</span></td>-->
-<!--                                        <th>-->
-<!--                                            --><?//= "Rs. " . number_format($totalGST + $total, 2); ?>
-<!--                                        </th>-->
-<!--                                        <th colspan="2"></th>-->
-<!--                                    </tr>-->
+                                    <?php } else { ?>
+                                    <tr>
+                                        <td colspan="14" >&nbsp;<span class="pull-right">Total IGST Amount</span></td>
+                                        <th colspan="2">
+                                            <?= "Rs. " . number_format($totalGST, 2); ?>
+                                        </th>
+                                    </tr>
+                                    <?php } ?>
                                     <tr>
                                         <td colspan="14" >&nbsp;<span class="pull-right">Total Markup Amount</span></td>
                                         <th colspan="2">

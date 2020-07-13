@@ -92,7 +92,7 @@
                       	if(!empty($users)) {
                       		foreach ($users as $user) {
                       	?>
-                      	<option <?php if(isset($dispatch)){ if($dispatch->sent_to == $user->id) { echo "selected"; } } ?> value="<?php echo $user->id; ?>"><?php echo $user->name; ?></option>
+                      	<option <?php if(isset($dispatch)){ if($dispatch->sent_to == $user->id) { echo "selected"; } } ?> data-state="<?php echo $user->state_id; ?>" value="<?php echo $user->id; ?>"><?php echo $user->name; ?></option>
                       	<?php 
                       		}
                       	}
@@ -115,6 +115,7 @@
               <th> Quantity <span style="color: red">*</span><span id="error_quantity"></span></th>
               <th> Attributes </th>
               <th> Price <span style="color: red">*</span><span id="error_price"></span></th>
+              <th> Amount <span style="color: red">*</span><span id="error_amt"></span></th>
               <th> GST % <span style="color: red">*</span><span id="error_gst_percent"></span></th>
               <th> Total GST <span style="color: red">*</span><span id="error_gst_total"></span></th>
               <th class="text-center"> <a href="javascript:void(0)" class="btn btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>
@@ -144,6 +145,10 @@
                 <span style="color: red" class="price_error"></span>
               </td>
               <td>
+                <input type="text" class="form-control amount" name="amount[]" readonly="readonly" placeholder="Enter Amount" autocomplete="off">
+                <span style="color: red" class="amount_error"></span>
+              </td>
+              <td>
                 <input type="text" class="form-control gst_percent" name="gst_percent[]" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
                 <span style="color: red" class="gst_error"></span>
               </td>
@@ -160,9 +165,19 @@
             <tr>
                 <th colspan="4" >&nbsp;<span class="pull-right">Total</span></th>
                 <th><input type="text" class="form-control" id="priceTotal" readonly="readonly" value="0"></th>
-                <th></th>
-                <th><input type="text" class="form-control" id="GSTTotal" readonly="readonly" value="0"></th>
+                <th><input type="text" class="form-control" id="amountTotal" readonly="readonly" value="0"></th>
+                <th>&nbsp;<span class="pull-right">Total CGST</span></th>
+                <th><input type="text" class="form-control" id="CGSTTotal" readonly="readonly" value="0"></th>
             </tr>
+            <tr>
+                <th colspan="7">&nbsp;<span class="pull-right">Total SGST</span></th>
+                <th><input type="text" class="form-control" id="SGSTTotal" readonly="readonly" value="0"></th>
+            </tr>
+            <tr>
+                <th colspan="7">&nbsp;<span class="pull-right">Total IGST</span></th>
+                <th><input type="text" class="form-control" id="IGSTTotal" readonly="readonly" value="0"></th>
+            </tr>
+            
             </tfoot>
 
         </table>
@@ -279,6 +294,9 @@ jQuery(document).on('click','#edit-action-button',function(){
 	$('#save_finish_body').html('');
     $( "#myForm" ).submit();
 
+});
+$('#sent_to').on('change', function() {
+  price();
 });
 jQuery(document).on('click','#save_next',function(){
 	$('#save_finish_body').html('');
@@ -454,6 +472,7 @@ function addrow() {
     {
       var GSTTotal = 0;
       var priceTotal = 0;
+      var amountTotal = 0;
       // for each row:
       $("tr.trRow").each(function () {
           // get the values from this row:
@@ -461,14 +480,27 @@ function addrow() {
           var $sp = $('.product_mrp', this).val();
           var $gst = $('.gst_percent', this).val();
           var $total = ($qty * 1) * ($sp * 1) * (($gst * 1) / 100);
+          var $amttotal = ($qty * 1) * ($sp * 1);
           // set total for the row
           $('.gst_total', this).val($total);
+          $('.amount', this).val($amttotal);
 
           GSTTotal += $total;
           priceTotal += ($sp * 1);
+          amountTotal += ($amttotal * 1);
       });
-      $("#GSTTotal").val(GSTTotal);
       $("#priceTotal").val(priceTotal);
+      $("#amountTotal").val(amountTotal);
+      if($('#sent_to').find(':selected').attr('data-state') != 13)
+      {
+        $("#IGSTTotal").val(GSTTotal);
+        $("#CGSTTotal").val(0);
+        $("#SGSTTotal").val(0);
+      } else {
+        $("#CGSTTotal").val(GSTTotal/2);
+        $("#SGSTTotal").val(GSTTotal/2);
+        $("#IGSTTotal").val(0);
+      }
       //$("#finalTotal").val(mult+totalGST+markup);
     }
 

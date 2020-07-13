@@ -62,7 +62,21 @@ $this->load->view('common/left_panel');
                     </div>
                 </div>
                 <div class="form-group row" style="padding-top: 10px;" >
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <select name="cat" id="cat" class="form-control">
+                            <option value="">Select Category</option>
+                            <?php
+                            if(!empty($category)) {
+                                foreach ($category as $type) {
+                                ?>
+                                <option value="<?php echo $type->id; ?>" <?php if($type->id == $selected_cat)echo "selected";?> ><?php echo $type->title; ?></option>
+                                <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
                         <select name="color" id="color" class="form-control">
                             <option value="">Select Color</option>
                             <?php
@@ -76,7 +90,7 @@ $this->load->view('common/left_panel');
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="size" id="size" class="form-control">
                             <option value="">Select Size</option>
                             <?php
@@ -90,7 +104,7 @@ $this->load->view('common/left_panel');
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="fabric" id="fabric" class="form-control">
                             <option value="">Select Fabric</option>
                             <?php
@@ -104,7 +118,7 @@ $this->load->view('common/left_panel');
                             ?>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <select name="craft" id="craft" class="form-control">
                             <option value="">Select Craft</option>
                             <?php
@@ -121,9 +135,9 @@ $this->load->view('common/left_panel');
                 </div>
                 <?= form_close(); ?>
                 <?php if($dateinfo!= 0 ){ ?>
-                <form method="post" action="<?=site_url("Product_Summary/export_product_summary/$dateinfo")?>">
+                <form method="post" action="<?=site_url("Warehouse_Product_Summary/export_product_summary/$selected_date/$selected_type/$selected_type2/$selected_color/$selected_size/$selected_fabric/$selected_craft/$selected_cat")?>">
                     <?php }else{ ?>
-                    <form method="post" action="<?=site_url("Product_Summary/export_product_summary/")?>">
+                    <form method="post" action="<?=site_url("Warehouse_Product_Summary/export_product_summary/")?>">
                         <?php } ?>
 
                         <div class="panel-heading">
@@ -197,7 +211,8 @@ $this->load->view('common/left_panel');
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th colspan="14" style="text-align:right"></th>
+                                        <th colspan="13" style="text-align:right"></th>
+                                        <th></th>
                                         <th></th>
                                         <th></th>
                                         <th></th>
@@ -428,13 +443,21 @@ $this->load->view('common/left_panel');
                             i : 0;
                 };
 
-                total2 = api
-                    .column(15, {filter: 'applied'})
+                total3 = api
+                    .column(12, {filter: 'applied'})
                     .data()
                     .reduce( function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0 );
-                $( api.column( 15 ).footer() ).html('Rs. '+total2.toFixed(2));
+                $( api.column( 12 ).footer() ).html(total3.toFixed(2));
+
+                total3 = api
+                    .column(13, {filter: 'applied'})
+                    .data()
+                    .reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+                $( api.column( 13 ).footer() ).html(total3.toFixed(2));
 
                 total3 = api
                     .column(14, {filter: 'applied'})
@@ -443,6 +466,14 @@ $this->load->view('common/left_panel');
                         return intVal(a) + intVal(b);
                     }, 0 );
                 $( api.column( 14 ).footer() ).html('Rs. '+total3.toFixed(2));
+
+                total2 = api
+                    .column(15, {filter: 'applied'})
+                    .data()
+                    .reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+                $( api.column( 15 ).footer() ).html('Rs. '+total2.toFixed(2));
 
                 total1 = api
                     .column(17, {filter: 'applied'})

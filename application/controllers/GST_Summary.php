@@ -14,14 +14,31 @@ class GST_Summary extends CI_Controller {
   {
     if($this->input->post())
     {
-      $date = $this->input->post('daterange'); 
-	  $date = str_replace("-","_",$date);
-	  $date = str_replace("/","-",$date);
-	  $date = str_replace(" ","",$date);
+      if($this->input->post('daterange') != "")
+      {
+          $date = $this->input->post('daterange');
+          $date = str_replace("-", "_", $date);
+          $date = str_replace("/", "-", $date);
+          $date = str_replace(" ", "", $date);
+      } else {
+          $date = 0;
+      }
+      if($this->input->post('type') != "")
+          $type = $this->input->post('type');
+      else
+          $type = 0;
+      if($this->input->post('type2') != "")
+          $type2 = $this->input->post('type2');
+      else
+          $type2 = 0;
+      if($this->input->post('type3') != "")
+          $type3 = $this->input->post('type3');
+      else
+          $type3 = 0;
       
       //$newDate = date("Y-m-d", strtotime($date));
-	  $strUrl = site_url('GST_Summary/ajax_manage_page/'.$date);
-      $this->common_view($strUrl,$date); 
+	    $strUrl = site_url('GST_Summary/ajax_manage_page/' . $date . '/'. $type . '/'. $type2 . '/'. $type3);
+      $this->common_view($strUrl,$date,$type,$type2,$type3); 
 	  
     }
     else
@@ -32,11 +49,10 @@ class GST_Summary extends CI_Controller {
   }
   public function index()
   {   
-    
     $this->common_view(site_url('GST_Summary/ajax_manage_page'));
   }
   
-  public function common_view($action,$date=0)
+  public function common_view($action,$date=0,$type=0,$type2=0,$type3=0)
   { 
     $delete= '';
     $actstatus= '';
@@ -76,13 +92,20 @@ class GST_Summary extends CI_Controller {
         /*$condUser ="status='Active'";
         $countries =  $this->Crud_model->GetData('mst_countries','',$condUser);
         $states =  $this->Crud_model->GetData('mst_states','',$condUser);*/
-        $data = array(
-		  'dateinfo' => $date,
+
+        $salesTypes = $this->Crud_model->GetData("sales_type", "", "status='Active'");
+
+        $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
+        $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
+
+      $data = array(
+          'types' => $types, 'product_types' => $product_types,'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 'selected_type3' => $type3,
+		      'dateinfo' => $date,
           'breadcrumbs' => $breadcrumbs ,
           'actioncolumn' => '9' ,
           'ajax_manage_page' => $action ,
           'heading' => 'GST Summary',
-          'addPermission'=>$add,'export' =>$export, 'exportPermission'=>$exportbutton
+          'addPermission'=>$add,'export' =>$export, 'exportPermission'=>$exportbutton, 'salesTypes' => $salesTypes
           );
     $this->load->view('gst_summary/list',$data);
   }
@@ -93,7 +116,7 @@ class GST_Summary extends CI_Controller {
   }
 
 
-    public function ajax_manage_page($date=0)
+    public function ajax_manage_page($date=0, $type = 0, $type2 = 0, $type3 = 0)
     {
         $delete= '';
         $actstatus= '';
@@ -103,12 +126,11 @@ class GST_Summary extends CI_Controller {
         $act_transfer = '';
         $edit = '';
         $view = '';
-        $results = $this->same_query($date);
+        $results = $this->same_query($date, $type, $type2, $type3);
         $no = 0;  
+        $data = array(); 
         foreach($results as $row) 
         {
-          
-
             $no++;  
             $data[] = array(
               'no' => $no,
@@ -129,9 +151,9 @@ class GST_Summary extends CI_Controller {
 	
 	 //===================================summery pdf=========================
 
-  public function listpdf($date=0)
+  public function listpdf($date=0, $type = 0, $type2 = 0, $type3 = 0)
   {
-      $data['results'] = $this->same_query($date);
+      $data['results'] = $this->same_query($date, $type, $type2, $type3);
        //dd($results);
       //$data['results'] = $this->GST_Summary_model->get_datatables(); 
       $html = $this->load->view('gst_summary/pdf_gst_list',$data,true);
@@ -139,7 +161,7 @@ class GST_Summary extends CI_Controller {
       $mpdf->WriteHTML($html);
       $mpdf->Output('GST_Summary','I');
   }
-  public function same_query($date){
+  public function same_query($date, $type, $type2, $type3){
       $Data =  $this->GST_Summary_model->get_datatables($date);
       $data = array();  
             $no =0;
@@ -149,6 +171,7 @@ class GST_Summary extends CI_Controller {
                 $this->db->select('ide.gst_rate, SUM(gst_amount) as sumgstam, SUM(cgst_amount) as sum_cgst_amount,SUM(sgst_amount) as sum_sgst_amount  ,SUM(igst_amount) as sum_igst_amount,SUM(taxable) as sumtaxable');
                 $this->db->from('invoice i');
                 $this->db->join('invoice_details ide', 'i.id=ide.invoice_id', 'inner');
+                $this->db->join("assets a","a.id = ide.product_id","left");
                 //$this->db->distinct();
                 //$this->db->order_by("i.id desc");
                 $this->db->where('i.created_by',$_SESSION[SESSION_NAME]['id']);
@@ -159,6 +182,15 @@ class GST_Summary extends CI_Controller {
                   $date2 = date("Y-m-d", strtotime($dates[1]));
                   $this->db->where('i.date_of_invoice >=', $date1);
                   $this->db->where('i.date_of_invoice <=', $date2);
+                }
+                if($type!=0){
+                  $this->db->where('a.asset_type_id =', $type);
+                }
+                if($type2!=0){
+                  $this->db->where('a.product_type_id =', $type2);
+                }
+                if($type3!=0){
+                  $this->db->where('i.invoice_sales_type =', $type3);
                 }
                 $query = $this->db->get();
                 $results2 = $query->row();
@@ -186,9 +218,9 @@ class GST_Summary extends CI_Controller {
   //===================================/summery pdf========================
    
    
-    public function export_gst_summary($date=0)
+    public function export_gst_summary($date=0, $type = 0, $type2 = 0, $type3 = 0)
     {
-        $results = $this->same_query($date);
+        $results = $this->same_query($date, $type, $type2, $type3);
         //dd($results);
         //$results = $query->result();
 
@@ -272,7 +304,7 @@ class GST_Summary extends CI_Controller {
         $this->excel->getActiveSheet()->getStyle('J3')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             
-        $filename=''.$FileTitle.'.xls'; //save our workbook as this file name
+        $filename=''.$FileTitle.'.xlsx'; //save our workbook as this file name
         header('Content-Type: application/vnd.ms-excel'); //mime type
         header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
         header('Cache-Control: max-age=0'); //no cache
@@ -280,7 +312,7 @@ class GST_Summary extends CI_Controller {
                     
         //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
         //if you want to save it as .XLSX Excel 2007 format
-        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');  
+        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');  
         //force user to download the Excel file without writing it to server's HD
         $objWriter->save('php://output');   
     }

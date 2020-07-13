@@ -33,10 +33,14 @@ class Sales_Summary extends CI_Controller {
           $type2 = $this->input->post('type2');
       else
           $type2 = 0;
+      if($this->input->post('type3') != "")
+          $type3 = $this->input->post('type3');
+      else
+          $type3 = 0;
       
       //$newDate = date("Y-m-d", strtotime($date));
-	  $strUrl = site_url('Sales_Summary/ajax_manage_page/' . $date . '/'. $type . '/'. $type2);
-      $this->common_view($strUrl,$date,$type,$type2); 
+	  $strUrl = site_url('Sales_Summary/ajax_manage_page/' . $date . '/'. $type . '/'. $type2 . '/'. $type3);
+      $this->common_view($strUrl,$date,$type,$type2,$type3); 
 	  
     }
     else
@@ -50,7 +54,7 @@ class Sales_Summary extends CI_Controller {
     
     $this->common_view(site_url('Sales_Summary/ajax_manage_page'));
   }
-  public function common_view($action,$date=0,$type=0,$type2=0)
+  public function common_view($action,$date=0,$type=0,$type2=0,$type3=0)
   {   
     // print_r($_SESSION[SESSION_NAME]);exit;
     $import = '';
@@ -90,7 +94,7 @@ class Sales_Summary extends CI_Controller {
       $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
 
 	    $data = array(
-        'types' => $types, 'product_types' => $product_types,'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2,
+        'types' => $types, 'product_types' => $product_types,'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 'selected_type3' => $type3,
         'dateinfo'=>$date,
         'breadcrumbs' => $breadcrumbs ,
         'actioncolumn' => '5' ,
@@ -114,13 +118,15 @@ class Sales_Summary extends CI_Controller {
   	}
   }
 
-  public function ajax_manage_page($date=0, $type = 0, $type2 = 0)
+  public function ajax_manage_page($date=0, $type = 0, $type2 = 0, $type3 = 0)
   {
     $con="i.id<>''";
     if($type != 0)
         $con .= "and a.asset_type_id ='". $type . "'";
     if($type2 != 0)
         $con .= "and a.product_type_id ='". $type2 . "'";
+    if($type3 != 0)
+        $con .= "and i.invoice_sales_type ='". $type3 . "'";
     $Data = $this->Sales_Summary_model->get_datatables($con,$date);
     
     $edit = ''; 
@@ -150,21 +156,7 @@ class Sales_Summary extends CI_Controller {
           }
       }
     }
-    /* $this->db->select('i.id,i.invoice_no,ide.net_amount,i.date_of_invoice,a.asset_name,ide.quantity,(select SUM(net_amount) from invoice_details where invoice_id=i.id) as sumAmount');
-        $this->db->from("invoice_details ide");
-        $this->db->join("invoice i","i.id = ide.invoice_id","left");
-        $this->db->join("assets a","a.id = ide.product_id","left");
 
-        $this->db->where('a.created_by',$_SESSION[SESSION_NAME]['id']);
-		if($date!=0){
-			$dates = explode("_",$date);
-			$date1 = date("Y-m-d", strtotime($dates[0]));
-			$date2 = date("Y-m-d", strtotime($dates[1]));
-			$this->db->where('p.purchase_date >=', $date1);
-			$this->db->where('p.purchase_date <=', $date2);
-		}
-        $query = $this->db->get();
-        $Data = $query->result();*/
     $data = array();       
     $no=0; 
     $arrId = array();
@@ -190,17 +182,12 @@ class Sales_Summary extends CI_Controller {
           'date_of_invoice' => date('d-m-Y', strtotime($row->date_of_invoice)),
           'invoice_sales_type' => $row->salesType,
           'asset_name' => $row->asset_name,
-          // 'asset_name' => $row->asset_name,
-          
-          // 'asset_name' => $row->asset_name,
-
           'paymentMode' => $row->paymentMode,
           'quantity' => $row->quantity,
           'net_amount' => number_format($row->net_amount,2),
           'sumAmount' => $sumAmount,
           'productType' => $row->product_type,
           'assetType' => $row->asset_type,
-          //'' => number_format($row->sumAmount,2),
         );
     }
     $output = array(
@@ -211,9 +198,15 @@ class Sales_Summary extends CI_Controller {
   }
   
   //============================export pdf ============================
-  public function listpdf($date=0)
+  public function listpdf($date=0, $type = 0, $type2 = 0, $type3 = 0)
   {
       $con="i.id<>''";
+      if($type != 0)
+        $con .= "and a.asset_type_id ='". $type . "'";
+      if($type2 != 0)
+        $con .= "and a.product_type_id ='". $type2 . "'";
+      if($type3 != 0)
+        $con .= "and i.invoice_sales_type ='". $type3 . "'";
     
       $data['results'] = $this->Sales_Summary_model->get_datatables($con,$date);
 
@@ -226,9 +219,15 @@ class Sales_Summary extends CI_Controller {
 
 
   /* ----- Export functionality start ----- */
-    public function export_sales_summary($date=0)
+    public function export_sales_summary($date=0, $type = 0, $type2 = 0, $type3 = 0)
     {
       $con="i.id<>''";
+      if($type != 0)
+        $con .= "and a.asset_type_id ='". $type . "'";
+      if($type2 != 0)
+        $con .= "and a.product_type_id ='". $type2 . "'";
+      if($type3 != 0)
+        $con .= "and i.invoice_sales_type ='". $type3 . "'";
       
       $results = $this->Sales_Summary_model->get_datatables($con,$date);
       //$results = $this->Sales_Summary_model->ExportCSV($con);

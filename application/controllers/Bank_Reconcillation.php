@@ -89,7 +89,7 @@ class Bank_Reconcillation extends CI_Controller
       $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
       $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
 
-      $data = array('selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 'types' => $types, 'product_types' => $product_types, 'dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '17', 'ajax_manage_page' => $action, 'heading' => 'Bank Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
+      $data = array('selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 'types' => $types, 'product_types' => $product_types, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '17', 'ajax_manage_page' => $action, 'heading' => 'Bank Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
 
       $this->load->view('bank_reconcillation/list', $data);
     } else {
@@ -283,7 +283,7 @@ class Bank_Reconcillation extends CI_Controller
   //===================================/print pdf==========================
 
   /* ----- Export functionality start ----- */
-  public function export1($date = 0)
+  public function export1($date = 0, $type = 0, $type2 = 0)
   {
     $this->db->select('
     i.*,
@@ -319,7 +319,6 @@ class Bank_Reconcillation extends CI_Controller
     $this->db->from("invoice i");
     $this->db->join("invoice_details ide", "i.id = ide.invoice_id", "left");
     $this->db->join("bank_reconcillation b", "b.invoice_id = i.id", "left");
-
     $this->db->join("assets a", "a.id = ide.product_id", "left");
     $this->db->join("mst_asset_types mat","mat.id = a.asset_type_id","left");
         $this->db->join("product_type prdt","prdt.id = a.product_type_id","left");

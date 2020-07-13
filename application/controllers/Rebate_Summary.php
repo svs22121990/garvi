@@ -16,14 +16,31 @@ class Rebate_Summary extends CI_Controller {
   {
     if($this->input->post())
     {
-      $date = $this->input->post('daterange'); 
-	  $date = str_replace("-","_",$date);
-	  $date = str_replace("/","-",$date);
-	  $date = str_replace(" ","",$date);
+      if($this->input->post('daterange') != "")
+      {
+          $date = $this->input->post('daterange');
+          $date = str_replace("-", "_", $date);
+          $date = str_replace("/", "-", $date);
+          $date = str_replace(" ", "", $date);
+      } else {
+          $date = 0;
+      }
+      if($this->input->post('type') != "")
+          $type = $this->input->post('type');
+      else
+          $type = 0;
+      if($this->input->post('type2') != "")
+          $type2 = $this->input->post('type2');
+      else
+          $type2 = 0;
+      if($this->input->post('type3') != "")
+          $type3 = $this->input->post('type3');
+      else
+          $type3 = 0;
       
       //$newDate = date("Y-m-d", strtotime($date));
-	  $strUrl = site_url('Rebate_Summary/ajax_manage_page/'.$date);
-      $this->common_view($strUrl,$date); 
+	  $strUrl = site_url('Rebate_Summary/ajax_manage_page/' . $date . '/'. $type . '/'. $type2 . '/'. $type3);
+      $this->common_view($strUrl,$date,$type,$type2,$type3); 
 	  
     }
     else
@@ -38,9 +55,9 @@ class Rebate_Summary extends CI_Controller {
     $this->common_view(site_url('Rebate_Summary/ajax_manage_page'));
   }
   
-  public function common_view($action,$date=0)
+  public function common_view($action,$date=0,$type=0,$type2=0,$type3=0)
   {   
-    $userdata = $this->commonData($date);
+    $userdata = $this->commonData($date, $type, $type2, $type3);
     $import = '';
     $add = '';
   	if(!empty($_SESSION[SESSION_NAME]['getMenus']))
@@ -71,7 +88,13 @@ class Rebate_Summary extends CI_Controller {
       $export ='<a href="javascript:void(0)" onclick="return clickSubmit()"><span title="Export" class="fa fa-file-excel-o"></span></a>'; 
 	    $download = '';//'<a download="assets.xls" style="color:black;" title="Download Format" href="'. base_url('uploads/assets_demo_excel/assets.xls').'"><span class="fa fa-download"></span></a>'; 
 
-	    $data = array('gstarray'=>$userdata['gstArray'],'dateinfo'=>$date,'breadcrumbs' => $breadcrumbs ,'actioncolumn' => '16' ,'ajax_manage_page' => $action, 'heading' => 'Rebate Summary', 'addPermission'=>$add, 'importaction' => $importaction, 'download' => $download, 'import' => $import,'export' =>$export, 'exportPermission'=>$exportbutton,'view'=>$userdata['rebateData']);
+      $salesTypes = $this->Crud_model->GetData("sales_type", "", "status='Active'");
+
+      $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
+      $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
+
+      $data = array('types' => $types, 'product_types' => $product_types,'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 'selected_type3' => $type3,'salesTypes' => $salesTypes,
+      'gstarray'=>$userdata['gstArray'],'dateinfo'=>$date,'breadcrumbs' => $breadcrumbs ,'actioncolumn' => '16' ,'ajax_manage_page' => $action, 'heading' => 'Rebate Summary', 'addPermission'=>$add, 'importaction' => $importaction, 'download' => $download, 'import' => $import,'export' =>$export, 'exportPermission'=>$exportbutton,'view'=>$userdata['rebateData']);
 
 	    $this->load->view('rebate_summary/list',$data);
   	}
@@ -81,9 +104,14 @@ class Rebate_Summary extends CI_Controller {
   	}
   }
 
-  public function commonData($date){
+  public function commonData($date=0, $type = 0, $type2 = 0, $type3 = 0){
     $con="i.id<>''";
-    
+    if($type != 0)
+      $con .= "and a.asset_type_id ='". $type . "'";
+    if($type2 != 0)
+      $con .= "and a.product_type_id ='". $type2 . "'";
+    if($type3 != 0)
+      $con .= "and i.invoice_sales_type ='". $type3 . "'";
     $Data = $this->Rebate_Summary_model->get_datatables($con,$date);
     //dd($Data);
     $data = array();       
@@ -124,9 +152,6 @@ class Rebate_Summary extends CI_Controller {
           $total_amount = $net_amount;
       }
     
- 
-
-
         $rebateData[] = array(
           'no' => $sr_no,
           'invoice_no' => $invoice_no,
@@ -161,10 +186,15 @@ class Rebate_Summary extends CI_Controller {
     return array('rebateData'=>$rebateData,'gstArray'=>$gstArray);
   }
 
-  public function ajax_manage_page($date=0)
+  public function ajax_manage_page($date=0, $type = 0, $type2 = 0, $type3 = 0)
   {
     $con="i.id<>''";
-    
+    if($type != 0)
+      $con .= "and a.asset_type_id ='". $type . "'";
+    if($type2 != 0)
+      $con .= "and a.product_type_id ='". $type2 . "'";
+    if($type3 != 0)
+      $con .= "and i.invoice_sales_type ='". $type3 . "'";
     $Data = $this->Rebate_Summary_model->get_datatables($con,$date);
 	  //echo"<pre>";
     //print_r($Data);exit;
@@ -268,9 +298,9 @@ class Rebate_Summary extends CI_Controller {
   
   //===================================summery pdf=========================
 
-  public function listpdf($date=0)
+  public function listpdf($date=0, $type = 0, $type2 = 0, $type3 = 0)
   {
-      $userdata = $this->commonData($date);   
+      $userdata = $this->commonData($date, $type, $type2, $type3);   
       $data['view'] = $userdata['rebateData'];
       $data['gstarray'] = $userdata['gstArray'];
       $html = $this->load->view('rebate_summary/pdf_rebate_list',$data,true);
@@ -283,9 +313,15 @@ class Rebate_Summary extends CI_Controller {
 
 
   /* ----- Export functionality start ----- */
-    public function export_rebate_summary($date=0)
+    public function export_rebate_summary($date=0, $type = 0, $type2 = 0, $type3 = 0)
     {
       $con="i.id<>''";    
+      if($type != 0)
+        $con .= "and a.asset_type_id ='". $type . "'";
+      if($type2 != 0)
+        $con .= "and a.product_type_id ='". $type2 . "'";
+      if($type3 != 0)
+        $con .= "and i.invoice_sales_type ='". $type3 . "'";
       $results = $this->Rebate_Summary_model->get_datatables($con,$date);
       //$results = $query->result();
         
@@ -330,15 +366,15 @@ class Rebate_Summary extends CI_Controller {
         //print_r($results);exit;
         foreach ($results as $result) 
         {    
-            if(in_array($result->invoice_id, $arrId))
-            {
+            //if(in_array($result->invoice_id, $arrId))
+            //{
                 //$sumAmount = '';
-                $invoice_no = '';
-                $sr_no = '';
-                $total_amount = '';
-            }
-              else
-              {
+            //    $invoice_no = '';
+            //    $sr_no = '';
+            //    $total_amount = '';
+            //}
+            //  else
+            //  {
                 $no++;
                       $arrId[] = $result->invoice_id;
                       //$sumAmount = "Rs ".number_format($row->sumAmount,2);
@@ -352,7 +388,7 @@ class Rebate_Summary extends CI_Controller {
                   $net_amount += $r->net_amount;
                 }
                 $total_amount = "Rs. ".number_format($net_amount,2);
-              }   
+              //}   
             
             /*$total = $result->sum + $result->transport ;
             $returnAmt = $this->Crud_model->GetData('purchase_returns','sum(return_amount) as return_amount',"purchase_order_id='".$result->id."'",'','','','single');
@@ -388,7 +424,8 @@ class Rebate_Summary extends CI_Controller {
             //$this->excel->getActiveSheet()->setCellValue('R'.$a, $row->shipping_charges);
             //$this->excel->getActiveSheet()->setCellValue('G'.$a, $result->status);
             //$this->excel->getActiveSheet()->setCellValue('H'.$a, $total);
-            $sr++; $a++;                
+            //$sr++;
+            $a++;
         }
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);                

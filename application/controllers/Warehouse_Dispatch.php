@@ -155,6 +155,7 @@ class Warehouse_Dispatch extends CI_Controller
             'total_sum' => number_format(($row->sum_quantity * $row->sum_amount),2),
             'employee_name' => $row->employee_name,
             'gst' => number_format(($row->gst/100),2),
+            'grand_total' => number_format(($row->sum_quantity * $row->sum_amount) + ($row->gst/100),2),
             'btn' => $btn,
             ); 
         }
@@ -373,7 +374,7 @@ class Warehouse_Dispatch extends CI_Controller
             $products = $query->result();
 
         $dispatch = $this->Crud_model->GetData('warehouse_dispatch', "", "id='" . $id . "'", '', '', '', 'row');
-            $query =  $this->db->select('a.*,w.asset_name,w.available_qty,w.barcode_number,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,
+            $query =  $this->db->select('a.*,w.asset_name,w.available_qty,w.barcode_number,e.state_id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,
                         siz.title as size,
                         col.title as color,
                         fab.title as fabric,
@@ -387,6 +388,8 @@ class Warehouse_Dispatch extends CI_Controller
                     ->join("categories cat","cat.id = w.category_id","left")
                     ->join("mst_asset_types mat","mat.id = w.asset_type_id","left")
                     ->join("product_type pro","pro.id = w.product_type_id","left")
+                    ->join("warehouse_dispatch d","d.id = a.dispatch_id","left")
+                    ->join("employees e","e.id = d.sent_to","left")
                     ->from('warehouse_dispatch_details as a')
                     ->where('a.dispatch_id='.$id)
                     ->get();

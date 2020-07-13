@@ -92,7 +92,7 @@
                       	if(!empty($users)) {
                       		foreach ($users as $user) {
                       	?>
-                      	<option <?php if(isset($dispatch)){ if($dispatch->sent_to == $user->id) { echo "selected"; } } ?> value="<?php echo $user->id; ?>"><?php echo $user->name; ?></option>
+                      	<option <?php if(isset($dispatch)){ if($dispatch->sent_to == $user->id) { echo "selected"; } } ?> data-state="<?php echo $user->state_id; ?>"  value="<?php echo $user->id; ?>"><?php echo $user->name; ?></option>
                       	<?php 
                       		}
                       	}
@@ -159,8 +159,16 @@
             <tr>
                 <th colspan="3" >&nbsp;<span class="pull-right">Total</span></th>
                 <th><input type="text" class="form-control" id="priceTotal" readonly="readonly" value="<?php echo $priceTotal; ?>"></th>
-                <th></th>
-                <th><input type="text" class="form-control" id="GSTTotal" readonly="readonly" value="<?php echo $GSTTotal; ?>"></th>
+                <th>&nbsp;<span class="pull-right">Total CGST</span></th>
+                <th><input type="text" class="form-control" id="CGSTTotal" readonly="readonly" value="<?php if($dispatch_details[0]->state_id == 13) echo ($GSTTotal/2); else echo 0; ?>"></th>
+            </tr>
+            <tr>
+                <th colspan="5">&nbsp;<span class="pull-right">Total SGST</span></th>
+                <th><input type="text" class="form-control" id="SGSTTotal" readonly="readonly" value="<?php if($dispatch_details[0]->state_id == 13) echo ($GSTTotal/2); else echo 0; ?>"></th>
+            </tr>
+            <tr>
+                <th colspan="5">&nbsp;<span class="pull-right">Total IGST</span></th>
+                <th><input type="text" class="form-control" id="IGSTTotal" readonly="readonly" value="<?php if($dispatch_details[0]->state_id != 13) echo ($GSTTotal); else echo 0; ?>"></th>
             </tr>
             </tfoot>
 
@@ -285,6 +293,9 @@ jQuery(document).on('click','#save_next',function(){
 });
 jQuery(document).on('click','#save_finish',function(){
 	$( "#myForm" ).submit();
+});
+$('#sent_to').on('change', function() {
+  price();
 });
 //jQuery(document).on('click','#asset_name1',function(){
 //	$('#myModal').modal({backdrop: 'static', keyboard: false});
@@ -421,8 +432,17 @@ function addrow() {
           GSTTotal += $total;
           priceTotal += ($sp * 1);
       });
-      $("#GSTTotal").val(GSTTotal);
       $("#priceTotal").val(priceTotal);
+      if($('#sent_to').find(':selected').attr('data-state') != 13)
+      {
+        $("#IGSTTotal").val(GSTTotal);
+        $("#CGSTTotal").val(0);
+        $("#SGSTTotal").val(0);
+      } else {
+        $("#CGSTTotal").val(GSTTotal/2);
+        $("#SGSTTotal").val(GSTTotal/2);
+        $("#IGSTTotal").val(0);
+      }
       //$("#finalTotal").val(mult+totalGST+markup);
     }
 
