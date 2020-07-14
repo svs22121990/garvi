@@ -19,7 +19,7 @@ class Audit_Report extends CI_Controller {
       {
           $date = $this->input->post('date');
       } else {
-          $date = 0;
+          $date = 2020;
       }
       
       //$newDate = date("Y-m-d", strtotime($date));
@@ -37,7 +37,7 @@ class Audit_Report extends CI_Controller {
   {   
     $this->common_view(site_url('Audit_Report/ajax_manage_page'));
   }
-  public function common_view($action,$date=0)
+  public function common_view($action,$date=2020)
   {   
     // print_r($_SESSION[SESSION_NAME]);exit;
     $import = '';
@@ -73,14 +73,25 @@ class Audit_Report extends CI_Controller {
 
       $this->db->select('YEAR(min(purchase_date)) as min_date, YEAR(max(purchase_date)) as max_date');
       $this->db->from("assets");
-      $this->db->where('created_by',$_SESSION[SESSION_NAME]['id']);
+      if($_SESSION[SESSION_NAME]['type'] != 'SuperAdmin')
+        $this->db->where('created_by',$_SESSION[SESSION_NAME]['id']);
+      
       $query = $this->db->get();
-      $date = $query->result();
-      $min_year = $date[0]->min_date;
-      $max_year = $date[0]->max_date;
+      $dateRange = $query->result();
+      $min_year = 2015;
+      $max_year = $dateRange[0]->max_date;
+
+      $dateCheck = new DateTime();
+      $openingStockDate = $dateCheck->setDate($date, 3, 31)->format('Y-m-d');
+
+      if(file_exists('admin/assets/audit_report/Audit Report'.'-'.$date.'-'.($date+1).'.xlsx'))
+        $download = 1; 
+      else
+        $download = 0;
 
 	    $data = array(
-        'selected_year' => ($max_year-1),
+        'selected_year' => $date,
+        'openingStockDate' => $openingStockDate,
         'min_year'=>$min_year,'max_year'=>$max_year,
         'dateinfo'=>$date,
         'breadcrumbs' => $breadcrumbs ,
@@ -93,6 +104,9 @@ class Audit_Report extends CI_Controller {
         'import' => $import,
         'export' =>$export,
         'exportPermission'=>$exportbutton,
+        'download' =>$download,
+        'fileName' =>'Audit Report'.'-'.$date.'-'.($date+1).'.xlsx',
+        'filePath' =>base_url('admin/assets/audit_report/Audit Report'.'-'.$date.'-'.($date+1).'.xlsx'),
       );
 
 	    $this->load->view('audit_report/list',$data);
@@ -103,25 +117,32 @@ class Audit_Report extends CI_Controller {
   	}
   }
 
-  public function ajax_manage_page($date=2019)
+  public function ajax_manage_page($date=2020)
   {
+    $dateCheck = new DateTime();
+    $purchaseDate = $dateCheck->setDate($date, 3, 31)->format('Y-m-d');
+    $purchaseDateUpper = $dateCheck->setDate(($date+1), 4, 1)->format('Y-m-d');
+    $purchaseDateLower = $dateCheck->setDate(($date-1), 4, 1)->format('Y-m-d');
+
     $this->db->select(
-    'a.id,a.asset_name,a.product_mrp,a.quantity,a.total_quantity,a.lf_no,a.purchase_date,a.physical_qty,a.damage_qty
+    'a.id,a.asset_name,a.product_mrp,a.quantity,a.total_quantity,a.lf_no,a.purchase_date,a.physical_qty,a.damage_qty,
+     a.physical_status,a.qty_before_physical
     ');
     $this->db->from("assets a");
-    $this->db->where('a.created_by',$_SESSION[SESSION_NAME]['id']);
+    if($_SESSION[SESSION_NAME]['type'] != 'SuperAdmin')
+      $this->db->where('a.created_by',$_SESSION[SESSION_NAME]['id']);
+      $this->db->where('a.quantity >', 0);
+    //$this->db->where('a.purchase_date >', $purchaseDate);
+      $this->db->where('a.purchase_date <', $purchaseDateUpper);
     $this->db->order_by('id', "desc");
     $query = $this->db->get();
     $Data = $query->result();
 
     $data = array();       
     $no=0; 
-
-    $dateCheck = new DateTime();
-    $dateCheck->setDate($date, 3, 31);
     
   foreach($Data as $row) 
-  {  
+  { 
     $no++;
     $sr_no = $no;
 
@@ -229,19 +250,22 @@ class Audit_Report extends CI_Controller {
       $array['sales_return_total'] = "";
     }
 
-    if($row->purchase_date > $dateCheck->format('Y-m-d'))
+    if($row->purchase_date > $purchaseDate)
     {
       $array['quantity'] = "";
       $array['total'] = "";
-      $array['received_quantity'] = $row->total_quantity;
-      $array['received_total'] = $row->product_mrp * $row->total_quantity;
+      $array['received_quantity'] = $row->quantity;
+      $array['received_total'] = $row->product_mrp * $row->quantity;
     } else {
-      $array['quantity'] = $row->total_quantity;
-      $array['total'] = $row->product_mrp * $row->total_quantity;
+      $array['quantity'] = $row->quantity;
+      $array['total'] = $row->product_mrp * $row->quantity;
       $array['received_quantity'] = "";
       $array['received_total'] = "";
     }
-    $btn = ('<a href="#myModaledit" title="Edit" class="btn btn-info btn-circle btn-sm" data-toggle="modal"  onclick="getEditvalue('.$row->id.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>');
+    if($row->physical_status == 0)
+      $btn = ('<a href="#myModaledit" title="Edit" class="btn btn-info btn-circle btn-sm" data-toggle="modal"  onclick="getEditvalue('.$row->id.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>');
+    else
+      $btn = "";
     $array['btn'] = $btn;
     $data[] = $array;
     
@@ -273,15 +297,61 @@ class Audit_Report extends CI_Controller {
       echo "1"; 
     }
 
+  public function submit_physical_stock()
+  {
+    $date = $this->input->post('dateYear');
+
+    $this->export_audit_report($date);
+
+    $dateCheck = new DateTime();
+    $purchaseDate = $dateCheck->setDate($date, 3, 31)->format('Y-m-d');
+    $purchaseDateLimit = $dateCheck->setDate(($date+1), 4, 1)->format('Y-m-d');
+
+    $this->db->select(
+    'a.id,a.asset_name,a.product_mrp,a.quantity,a.total_quantity,a.lf_no,a.purchase_date,a.physical_qty,a.damage_qty
+    ');
+    $this->db->from("assets a");
+    if($_SESSION[SESSION_NAME]['type'] != 'SuperAdmin')
+      $this->db->where('a.created_by',$_SESSION[SESSION_NAME]['id']);
+    $this->db->where('a.purchase_date >', $purchaseDate);
+    $this->db->where('a.purchase_date <', $purchaseDateLimit);
+    $this->db->where('a.physical_status =', 0);
+    $this->db->where('a.physical_qty !=', NULL);
+    $this->db->order_by('id', "desc");
+    $query = $this->db->get();
+    $Data = $query->result();
+
+    foreach($Data as $row) 
+    {  
+
+      $data_array = array(
+        'qty_before_physical' => $row->quantity,
+        'quantity' => $row->physical_qty,
+        'physical_status' => 1
+      );
+
+      $this->Crud_model->SaveData("assets", $data_array, "id='" . $row->id . "'");
+
+    }
+    $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Physical Stock Updated successfully</span>');
+    redirect('Audit_Report/index');
+  }
 
   /* ----- Export functionality start ----- */
-    public function export_audit_report($date=0)
+    public function export_audit_report($date=2020)
     {
+      $dateCheck = new DateTime();
+      $purchaseDate = $dateCheck->setDate($date, 3, 31)->format('Y-m-d');
+      $purchaseDateLimit = $dateCheck->setDate(($date+1), 4, 1)->format('Y-m-d');
+
       $this->db->select(
         'a.id,a.asset_name,a.product_mrp,a.quantity,a.total_quantity,a.lf_no,a.purchase_date,a.physical_qty,a.damage_qty
         ');
         $this->db->from("assets a");
-        $this->db->where('a.created_by',$_SESSION[SESSION_NAME]['id']);
+        if($_SESSION[SESSION_NAME]['type'] != 'SuperAdmin')
+          $this->db->where('a.created_by',$_SESSION[SESSION_NAME]['id']);
+        $this->db->where('a.purchase_date >', $purchaseDate);
+        $this->db->where('a.purchase_date <', $purchaseDateLimit);
         $this->db->order_by('id', "desc");
         $query = $this->db->get();
         $Data = $query->result();
@@ -289,8 +359,6 @@ class Audit_Report extends CI_Controller {
         $data = array();       
         $no=0; 
     
-        $dateCheck = new DateTime();
-        $dateCheck->setDate($date, 3, 31);
         
       foreach($Data as $row) 
       {  
@@ -543,7 +611,7 @@ class Audit_Report extends CI_Controller {
         //$this->excel->getActiveSheet()->mergeCells('A1:H1');
         $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         
-        $filename=''.$FileTitle.'.xlsx'; //save our workbook as this file name
+        $filename=''.$FileTitle.'-'.$date.'-'.($date+1).'.xlsx'; //save our workbook as this file name
         header('Content-Type: application/vnd.ms-excel'); //mime type
         header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
         header('Cache-Control: max-age=0'); //no cache
@@ -553,6 +621,7 @@ class Audit_Report extends CI_Controller {
         //if you want to save it as .XLSX Excel 2007 format
         $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');  
         //force user to download the Excel file without writing it to server's HD
+        $objWriter->save(str_replace(__FILE__,'admin/assets/audit_report/'.$filename,__FILE__));
         $objWriter->save('php://output');   
     }
   /* ----- Export functionality end ----- */

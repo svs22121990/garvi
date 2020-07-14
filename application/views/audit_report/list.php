@@ -23,8 +23,8 @@ $this->load->view('common/left_panel');
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
+            <div class="form-group row" style="padding-top: 20px;" >
             <?= form_open('Audit_Report/search',['id'=>'serch_date']); ?>
-                  <div class="form-group row" style="padding-top: 20px;" >
                     <div class="col-md-3">
                         <select name="date" id="date" class="form-control">
                             <option value="">Select Year</option>
@@ -44,8 +44,19 @@ $this->load->view('common/left_panel');
                       <button type="submit" class="btn btn-success">Search</button>
                       <a href="<?php site_url("Audit Report/index/")?>" class="btn btn-danger">X</a>
                     </div>
-                  </div>
-                  <?= form_close(); ?>
+              <?= form_close(); ?>
+              <?= form_open('Audit_Report/submit_physical_stock',['id'=>'serch_date']); ?>
+                    <div class="col-md-2">
+                      <input type="hidden" class="form-control" name="dateYear" value="<?= $selected_year; ?>">
+                      <button type="submit" class="btn btn-warning">Submit Physical Stock</button>
+                    </div>
+              <?= form_close(); ?>
+                  <?php if($download == 1) { ?>
+                    <div class="col-md-2">
+                      <a download="<?=$fileName?>" class="btn btn-success" title="Download Format" href="<?=$filePath?>">Download Audit Report</a>
+                    </div>
+                  <?php } ?>
+              </div>
               <form method="post" action="<?=site_url("Audit_Report/export_audit_report/$selected_year")?>">
                 <div class="panel-heading">                                
                     <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
@@ -81,7 +92,7 @@ $this->load->view('common/left_panel');
                         <thead>
                             <tr>
                                 <th colspan="4"></th>
-                                <th colspan="2">Opening Stock as of <?php echo $selected_year; ?></th>
+                                <th colspan="2">Opening Stock as of <?php echo $openingStockDate; ?></th>
                                 <th colspan="2">Received during the year</th>
                                 <th colspan="2">Purchase Return</th>
                                 <th colspan="2">Sales Amount</th>
