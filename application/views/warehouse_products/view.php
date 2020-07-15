@@ -43,7 +43,8 @@ $this->load->view('common/left_panel');
                                                     ?>
                                                     <table class="table table-bordered table-striped table-actions">
                                                         <thead>
-                                                             <tr>                                                               
+                                                             <tr>                    
+                                                                <th>Purchase Date</th>                                           
                                                                 <th>Product Name</th>
                                                                 <th>Quantity</th>  
                                                                 <th>Category</th>
@@ -65,6 +66,7 @@ $this->load->view('common/left_panel');
                                                             foreach ($getAssetData as $getData) {
                                                             ?> 
                                                             <tr>
+                                                                <td><?php echo $getData->purchase_date ?></td>
                                                                 <td><?php echo $getData->asset_name ?></td>
                                                                 <td><?php echo $getData->quantity; ?></td>
                                                                 <td><?php echo $getData->title; ?></td>

@@ -134,11 +134,7 @@ $this->load->view('common/left_panel');
                     </div>
                 </div>
                 <?= form_close(); ?>
-                <?php if($dateinfo!= 0 ){ ?>
                 <form method="post" action="<?=site_url("Warehouse_Product_Summary/export_product_summary/$selected_date/$selected_type/$selected_type2/$selected_color/$selected_size/$selected_fabric/$selected_craft/$selected_cat")?>">
-                    <?php }else{ ?>
-                    <form method="post" action="<?=site_url("Warehouse_Product_Summary/export_product_summary/")?>">
-                        <?php } ?>
 
                         <div class="panel-heading">
                             <h3 class="panel-title"><strong><?= $heading ?></strong></h3>

@@ -315,10 +315,9 @@ class Warehouse extends CI_Controller
                     }
                     $barcode .= $code;
 
-                    $purchase_date = date("Y-m-d");
                     $data = array(
                         'warehouse_id' => $last_id,
-                        'purchase_date' => $purchase_date,
+                        'purchase_date' => date("Y-m-d", strtotime($_POST['product_purchase_date'][$i])),
                         'asset_type_id' => $_POST['asset_type_id'][$i],
                         'product_type_id' => $_POST['asset_type_2_id'][$i],
                         'markup_percent' => $_POST['markup'][$i],
@@ -403,10 +402,9 @@ class Warehouse extends CI_Controller
                 }
                 $barcode .= $code;
 
-                $purchase_date = date("Y-m-d");
                 $data = array(
                     'warehouse_id' => $last_id,
-                        'purchase_date' => $purchase_date,
+                        'purchase_date' => date("Y-m-d", strtotime($_POST['product_purchase_date'][0])),
                         'asset_type_id' => $_POST['asset_type_id'][0],
                         'product_type_id' => $_POST['asset_type_2_id'][0],
                         'markup_percent' => $_POST['markup'][0],
@@ -573,27 +571,31 @@ class Warehouse extends CI_Controller
                 );
 
                 $this->Crud_model->SaveData("warehouse", $data_array, "id='" . $id . "'");
-            $data = array(
-                'purchase_date' => $purchase_date,
-                'markup_percent' => $_POST['markup'][0],
-                'asset_name' => $_POST['asset_name'][0],
-                'quantity' => $_POST['quantity'][0],
-                'total_quantity' => $_POST['quantity'][0],
-                'product_mrp' => $_POST['product_mrp'][0],
-                'gst_percent' => $_POST['gst_percent'][0],
-                'hsn' => $_POST['hsn'][0],
-                'category_id' =>$_POST['category_id'][0],
-                'price' =>$_POST['product_mrp'][0],
-                'total_amount' =>$_POST['multitotal'][0],
-                'asset_type_id' => $_POST['asset_type_id'][0],
-                'product_type_id' => $_POST['asset_type_2_id'][0],
-                'size_id' =>$_POST['size_id'][0],
-                'fabric_id' =>$_POST['fabric_id'][0],
-                'craft_id' =>$_POST['craft_id'][0],
-                'color_id' =>$_POST['color_id'][0],
-                'modified' => date('Y-m-d H:i:s'),
-            );
-            $this->Crud_model->SaveData("warehouse_details", $data, "warehouse_id='" . $id . "'");
+
+            for ($i = 0; $i < count($_POST['asset_name']); $i++) {
+                $data = array(
+                    'purchase_date' => date("Y-m-d", strtotime($_POST['product_purchase_date'][$i])),
+                    'asset_type_id' => $_POST['asset_type_id'][$i],
+                    'product_type_id' => $_POST['asset_type_2_id'][$i],
+                    'markup_percent' => $_POST['markup'][$i],
+                    'asset_name' => $_POST['asset_name'][$i],
+                    'quantity' => $_POST['quantity'][$i],
+                    'available_qty' => $_POST['quantity'][0],
+                    'price' =>$_POST['product_mrp'][$i],
+                    'cost_total' =>$_POST['cost_total'][$i],
+                    'product_mrp' => $_POST['sp'][$i],
+                    'sp_total' => $_POST['sp_total'][$i],
+                    'gst_percent' => $_POST['gst_percent'][$i],
+                    'hsn' => $_POST['hsn'][$i],
+                    'category_id' =>$_POST['category_id'][$i],
+                    'size_id' =>$_POST['size_id'][$i],
+                    'fabric_id' =>$_POST['fabric_id'][$i],
+                    'craft_id' =>$_POST['craft_id'][$i],
+                    'color_id' =>$_POST['color_id'][$i],
+                    'modified' => date('Y-m-d H:i:s'),
+                );
+                $this->Crud_model->SaveData("warehouse_details", $data, "id='" . $_POST['detail_id'][$i] . "'");
+            }
 
             $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Product has been updated successfully</span>');
             redirect('Warehouse/index');

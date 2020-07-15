@@ -179,7 +179,8 @@ class Warehouse_Products extends CI_Controller {
       $this->Crud_model->SaveData("products", $data_array);
       $last_id = $this->db->insert_id();
 
-      $this->db->select('w.category_id,
+      $this->db->select('w.purchase_date,
+                         w.category_id,
                          w.asset_type_id,
                          w.product_type_id,
                          w.color_id,
@@ -215,7 +216,7 @@ class Warehouse_Products extends CI_Controller {
           'product_mrp' => $detail[$i]->price,
           'gst_percent' => $detail[$i]->gst_percent,
           'hsn' => $detail[$i]->hsn,
-          'purchase_date' => date('Y-m-d H:i:s'),
+          'purchase_date' => $detail[$i]->purchase_date,
           'created_by' => $_SESSION[SESSION_NAME]['id'],
           'created' => date('Y-m-d H:i:s'),
         );
