@@ -92,7 +92,13 @@ class Rebate_Summary extends CI_Controller {
 
       $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
       $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
-
+      if($date != 0)
+      {
+          $date = str_replace("-", "/", $date);
+          $date = str_replace("_", " - ", $date);
+      } else {
+          $date = 0;
+      }
       $data = array('types' => $types, 'product_types' => $product_types,'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 'selected_type3' => $type3,'salesTypes' => $salesTypes,
       'gstarray'=>$userdata['gstArray'],'dateinfo'=>$date,'breadcrumbs' => $breadcrumbs ,'actioncolumn' => '16' ,'ajax_manage_page' => $action, 'heading' => 'Rebate Summary', 'addPermission'=>$add, 'importaction' => $importaction, 'download' => $download, 'import' => $import,'export' =>$export, 'exportPermission'=>$exportbutton,'view'=>$userdata['rebateData']);
 
@@ -334,35 +340,42 @@ class Rebate_Summary extends CI_Controller {
         //name the worksheet
         $this->excel->getActiveSheet()->setTitle('Report Sheet');
         //set cell A1 content with some text
-        $this->excel->getActiveSheet()->setCellValue('A1', 'Rebate Summary Details ');
+        $this->excel->getActiveSheet()->setCellValue('A1', 'Gujarat State Handloom & Handicraft Development Corp. Ltd.');
+        $this->excel->getActiveSheet()->setCellValue('A2', $_SESSION[SESSION_NAME]['address']);
+        $this->excel->getActiveSheet()->setCellValue('A3', $_SESSION[SESSION_NAME]['gst_number']);
+        $this->excel->getActiveSheet()->setCellValue('A4', 'Rebate Summary Details');
 
-        $this->excel->getActiveSheet()->setCellValue('A3', 'Sr. No');
-        $this->excel->getActiveSheet()->setCellValue('B3', 'Invoice No.');
-        $this->excel->getActiveSheet()->setCellValue('C3', 'Date');
-        $this->excel->getActiveSheet()->setCellValue('D3', 'Product Name');
-        $this->excel->getActiveSheet()->setCellValue('E3', 'Product Type1');
-        $this->excel->getActiveSheet()->setCellValue('F3', 'Product Type2');
-        $this->excel->getActiveSheet()->setCellValue('G3', 'HSN');
-        $this->excel->getActiveSheet()->setCellValue('H3', 'Quantity');
-        $this->excel->getActiveSheet()->setCellValue('I3', 'Rate');
-        $this->excel->getActiveSheet()->setCellValue('J3', 'Total Value');
-        $this->excel->getActiveSheet()->setCellValue('K3', 'Rebate 5%');
-        $this->excel->getActiveSheet()->setCellValue('L3', 'Discount');
-        $this->excel->getActiveSheet()->setCellValue('M3', 'Other Discount');
-        $this->excel->getActiveSheet()->setCellValue('N3', 'Total Taxable Amount');
+        $this->excel->getActiveSheet()->setCellValue('A5', 'Sr. No');
+        $this->excel->getActiveSheet()->setCellValue('B5', 'Invoice No.');
+        $this->excel->getActiveSheet()->setCellValue('C5', 'Date');
+        $this->excel->getActiveSheet()->setCellValue('D5', 'Product Name');
+        $this->excel->getActiveSheet()->setCellValue('E5', 'Product Type1');
+        $this->excel->getActiveSheet()->setCellValue('F5', 'Product Type2');
+        $this->excel->getActiveSheet()->setCellValue('G5', 'HSN');
+        $this->excel->getActiveSheet()->setCellValue('H5', 'Quantity');
+        $this->excel->getActiveSheet()->setCellValue('I5', 'Rate');
+        $this->excel->getActiveSheet()->setCellValue('J5', 'Total Value');
+        $this->excel->getActiveSheet()->setCellValue('K5', 'Rebate 5%');
+        $this->excel->getActiveSheet()->setCellValue('L5', 'Discount');
+        $this->excel->getActiveSheet()->setCellValue('M5', 'Other Discount');
+        $this->excel->getActiveSheet()->setCellValue('N5', 'Total Taxable Amount');
 
-        $this->excel->getActiveSheet()->setCellValue('O3', 'CGST');
-        $this->excel->getActiveSheet()->setCellValue('P3', 'SGST');
-        $this->excel->getActiveSheet()->setCellValue('Q3', 'C+S GST');
-        $this->excel->getActiveSheet()->setCellValue('R3', 'IGST');
+        $this->excel->getActiveSheet()->setCellValue('O5', 'CGST');
+        $this->excel->getActiveSheet()->setCellValue('P5', 'SGST');
+        $this->excel->getActiveSheet()->setCellValue('Q5', 'C+S GST');
+        $this->excel->getActiveSheet()->setCellValue('R5', 'IGST');
 
-        $this->excel->getActiveSheet()->setCellValue('S3', 'Adj +');
-        $this->excel->getActiveSheet()->setCellValue('T3', 'Adj -');
-        $this->excel->getActiveSheet()->setCellValue('U3', 'Amount after GST');
-        $this->excel->getActiveSheet()->setCellValue('V3', 'Shipping Charge');
-        $this->excel->getActiveSheet()->setCellValue('W3', 'Net Anount');
+        $this->excel->getActiveSheet()->setCellValue('S5', 'Adj +');
+        $this->excel->getActiveSheet()->setCellValue('T5', 'Adj -');
+        $this->excel->getActiveSheet()->setCellValue('U5', 'Amount after GST');
+        $this->excel->getActiveSheet()->setCellValue('V5', 'Shipping Charge');
+        $this->excel->getActiveSheet()->setCellValue('W5', 'Net Anount');
             
-        $a='4'; $no = 1;    
+        $a='6'; $no = 1;    
+        $total_sum = 0;
+        $total_qty = 0;
+        $total_total_amount = 0;
+        $total_net_amount = 0;
         //print_r($results);exit;
         foreach ($results as $result) 
         {    
@@ -426,37 +439,55 @@ class Rebate_Summary extends CI_Controller {
             //$this->excel->getActiveSheet()->setCellValue('H'.$a, $total);
             //$sr++;
             $a++;
+            $total_sum += $result->total; 
+            $total_qty += $result->invoice_quantity; 
+            $total_total_amount += $total_amount;   
+            $total_net_amount += $result->net_amount;     
         }
+
+        $this->excel->getActiveSheet()->setCellValue('H'.$a, $total_qty);                
+        $this->excel->getActiveSheet()->setCellValue('J'.$a, "Rs. ".number_format($total_sum,2));
+        $this->excel->getActiveSheet()->setCellValue('Y'.$a, "Rs. ".number_format($total_total_amount,2));
+        $this->excel->getActiveSheet()->setCellValue('W'.$a, "Rs. ".number_format($total_net_amount,2));
+
+        $this->excel->getActiveSheet()->getStyle('H'.$a)->getFont()->setBold(true);                
+        $this->excel->getActiveSheet()->getStyle('J'.$a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('Y'.$a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('W'.$a)->getFont()->setBold(true);
+
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
-        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);                
+        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A2')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('A3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('B3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('C3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('D3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('E3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('F3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('G3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('H3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('I3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('J3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('K3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('L3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('M3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('N3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('O3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('P3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('Q3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('R3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('S3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('T3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('U3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('V3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('X3')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A4')->getFont()->setBold(true);              
+        $this->excel->getActiveSheet()->getStyle('A5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('B5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('C5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('D5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('E5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('F5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('G5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('H5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('I5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('J5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('K5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('L5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('M5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('N5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('O5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('P5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('Q5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('R5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('S5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('T5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('U5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('V5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('X5')->getFont()->setBold(true);
         //$this->excel->getActiveSheet()->getStyle('H3')->getFont()->setBold(true);
         //$this->excel->getActiveSheet()->mergeCells('A1:H1');
         $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             
-        $filename=''.$FileTitle.'.xls'; //save our workbook as this file name
+        $filename=''.$FileTitle.'.xlsx'; //save our workbook as this file name
         header('Content-Type: application/vnd.ms-excel'); //mime type
         header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
         header('Cache-Control: max-age=0'); //no cache
@@ -464,7 +495,7 @@ class Rebate_Summary extends CI_Controller {
                     
         //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
         //if you want to save it as .XLSX Excel 2007 format
-        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');  
+        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');  
         //force user to download the Excel file without writing it to server's HD
         $objWriter->save('php://output');   
     }

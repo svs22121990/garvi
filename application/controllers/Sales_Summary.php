@@ -92,7 +92,13 @@ class Sales_Summary extends CI_Controller {
 
       $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
       $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
-
+      if($date != 0)
+      {
+          $date = str_replace("-", "/", $date);
+          $date = str_replace("_", " - ", $date);
+      } else {
+          $date = 0;
+      }
 	    $data = array(
         'types' => $types, 'product_types' => $product_types,'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 'selected_type3' => $type3,
         'dateinfo'=>$date,
@@ -239,21 +245,24 @@ class Sales_Summary extends CI_Controller {
         //name the worksheet
         $this->excel->getActiveSheet()->setTitle('Report Sheet');
         //set cell A1 content with some text
-        $this->excel->getActiveSheet()->setCellValue('A1', 'Sales Summary Details ');
+        $this->excel->getActiveSheet()->setCellValue('A1', 'Gujarat State Handloom & Handicraft Development Corp. Ltd.');
+        $this->excel->getActiveSheet()->setCellValue('A2', $_SESSION[SESSION_NAME]['address']);
+        $this->excel->getActiveSheet()->setCellValue('A3', $_SESSION[SESSION_NAME]['gst_number']);
+        $this->excel->getActiveSheet()->setCellValue('A4', 'Sales Summary Details');
 
-        $this->excel->getActiveSheet()->setCellValue('A3', 'Sr. No');
-        $this->excel->getActiveSheet()->setCellValue('B3', 'Invoice No.');
-        $this->excel->getActiveSheet()->setCellValue('C3', 'Date');
-        $this->excel->getActiveSheet()->setCellValue('D3', 'Type of Sales');
-        $this->excel->getActiveSheet()->setCellValue('E3', 'Product Name');
-        $this->excel->getActiveSheet()->setCellValue('F3', 'Payment Mode');
-        $this->excel->getActiveSheet()->setCellValue('G3', 'Quantity');
-        $this->excel->getActiveSheet()->setCellValue('H3', 'Type 1');
-        $this->excel->getActiveSheet()->setCellValue('I3', ' Type 2');
-        $this->excel->getActiveSheet()->setCellValue('J3', 'Sub-Total');
-        $this->excel->getActiveSheet()->setCellValue('K3', 'Total Amount');
+        $this->excel->getActiveSheet()->setCellValue('A5', 'Sr. No');
+        $this->excel->getActiveSheet()->setCellValue('B5', 'Invoice No.');
+        $this->excel->getActiveSheet()->setCellValue('C5', 'Date');
+        $this->excel->getActiveSheet()->setCellValue('D5', 'Type of Sales');
+        $this->excel->getActiveSheet()->setCellValue('E5', 'Product Name');
+        $this->excel->getActiveSheet()->setCellValue('F5', 'Payment Mode');
+        $this->excel->getActiveSheet()->setCellValue('G5', 'Quantity');
+        $this->excel->getActiveSheet()->setCellValue('H5', 'Type 1');
+        $this->excel->getActiveSheet()->setCellValue('I5', ' Type 2');
+        $this->excel->getActiveSheet()->setCellValue('J5', 'Sub-Total');
+        $this->excel->getActiveSheet()->setCellValue('K5', 'Total Amount');
             
-        $a='4'; $sr = 1;    
+        $a='6'; $sr = 1;    
         //print_r($results);exit;
         $total_sum = 0;
         $qty = 0;
@@ -301,18 +310,21 @@ class Sales_Summary extends CI_Controller {
         $this->excel->getActiveSheet()->getStyle('K'.$a)->getFont()->setBold(true);
         
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
-        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);                
+        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A2')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('A3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('B3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('C3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('D3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('E3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('F3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('G3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('H3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('I3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('J3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('K3')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A4')->getFont()->setBold(true);              
+        $this->excel->getActiveSheet()->getStyle('A5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('B5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('C5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('D5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('E5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('F5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('G5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('H5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('I5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('J5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('K5')->getFont()->setBold(true);
         
         //$this->excel->getActiveSheet()->mergeCells('A1:H1');
         $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);

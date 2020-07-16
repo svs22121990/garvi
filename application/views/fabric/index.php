@@ -216,6 +216,7 @@ $this->load->view('common/left_panel');
                 //alert(response);return false;
                 if(response == 1)
                 {
+                    $('.loader').hide();
                     $("#nameError").fadeIn().html("Fabric name already exist");
                     setTimeout(function(){$("#nameError").fadeOut();},8000);
                 }

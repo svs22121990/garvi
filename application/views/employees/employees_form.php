@@ -77,7 +77,7 @@
                                 <div class="form-group">
                                   <label class="col-md-12">Mobile <span style="color:red;">*</span> <span id="errmobile" style="color:red"></span><span class="form_error" style="color:red"> <?php echo form_error('mobile') ?></span></label>
                                     <div class="col-md-10">  
-                                        <input type="text" class="form-control" name="mobile" id="mobile" placeholder="Enter Mobile" maxlength="10" onkeypress="only_number(event)" value="<?php echo $mobile; ?>"/>
+                                        <input type="text" class="form-control" name="mobile" id="mobile" placeholder="Enter Mobile" maxlength="11" onkeypress="only_number(event)" value="<?php echo $mobile; ?>"/>
                                     </div>  
                                 </div>
                               </div>

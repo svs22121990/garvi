@@ -85,12 +85,13 @@ $this->load->view('common/left_panel'); ?>
                                         <th> Fabric <span style="color: red">*</span> </th>
                                         <th> Craft<span style="color: red">*</span> </th>
                                         <th> Cost Price  <span style="color: red">*</span><span style="color: red"id="error_price"></span></th>
-                                        <th> Total Cost Amt  <span style="color: red">*</span></th>
+                                        <th> Total CP Amt  <span style="color: red">*</span></th>
                                         <th> GST % <span style="color: red">*</span><span  id="error_gst_percent"></span></th>
                                         <th> HSN <span style="color: red">*</span><span id="error_hsn"></span></th>
                                         <th> Markup %<span style="color: red">*</span><span style="color: red" id="lf_no_error"></span></th>
+                                        <th> Markup Amt<span style="color: red">*</span></th>
                                         <th> Selling Price </th>
-                                        <th>Total Selling Amt</th>
+                                        <th>Total SP Amt</th>
                                         <th class="text-center"> <a  href="javascript:void(0)" class="btn  btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>
                                     </tr>
                                     </thead>
@@ -177,6 +178,9 @@ $this->load->view('common/left_panel'); ?>
                                             <input type="text" class="form-control markup" name="markup[]" id="markup1" readonly="readonly" placeholder="Enter Markup" autocomplete="off">
                                         </td>
                                         <td>
+                                            <input type="text" class="form-control markup_amt" name="markup_amt[]" id="markup_amt1" readonly="readonly" autocomplete="off">
+                                        </td>
+                                        <td>
                                             <input type="text" class="form-control sp" name="sp[]" id="sp1" readonly="readonly" autocomplete="off">
                                         </td>
                                         <td>
@@ -192,29 +196,29 @@ $this->load->view('common/left_panel'); ?>
                                     <tfoot>
                                     <tr>
                                         <th colspan="15"><span class="pull-right">Total SGST Amount</span></th>
-                                        <th colspan="2">
+                                        <th colspan="3">
                                             <input type="text" class="form-control" id="totalSGST" readonly="readonly" value="0">
                                         </th>
                                     </tr>
                                     <tr>
                                         <th colspan="15"><span class="pull-right">Total CGST Amount</span></th>
-                                        <th colspan="2">
+                                        <th colspan="3">
                                             <input type="text" class="form-control" id="totalCGST" readonly="readonly" value="0">
                                         </th>
                                     </tr>
                                     <tr>
                                         <th colspan="15" >&nbsp;<span class="pull-right">Total Markup Amount</span></th>
-                                        <th colspan="2"><input type="text" class="form-control" name="gtotal" id="grandTotal" readonly="readonly" value="0"></th>
+                                        <th colspan="3"><input type="text" class="form-control" name="gtotal" id="grandTotal" readonly="readonly" value="0"></th>
                                     </tr>
                                     <tr>
-                                        <th colspan="15" >&nbsp;<span class="pull-right">Total Cost Price </span></th>
-                                        <th colspan="2">
+                                        <th colspan="15" >&nbsp;<span class="pull-right">Total CP Amt. </span></th>
+                                        <th colspan="3">
                                             <input type="text" class="form-control" id="costTotal" readonly="readonly" value="0">
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th colspan="15" >&nbsp;<span class="pull-right">Total Selling Price </span></th>
-                                        <th colspan="2">
+                                        <th colspan="15" >&nbsp;<span class="pull-right">Total SP Amt. </span></th>
+                                        <th colspan="3">
                                             <input type="text" class="form-control" id="spTotal" readonly="readonly" value="0">
                                         </th>
                                     </tr>
@@ -263,6 +267,7 @@ $this->load->view('common/left_panel'); ?>
             mult += $total;
 
             var $markup = $('.markup', this).val();
+            $('.markup_amt', this).val(($val1 * 1) * ($val2 * 1) * (($markup * 1)/100));
 
             var $sp = ($val1 * 1) + (($val1 * 1) * (($markup * 1)/100));
             $('.sp', this).val($sp);

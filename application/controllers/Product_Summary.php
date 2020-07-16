@@ -116,8 +116,13 @@ class Product_Summary extends CI_Controller
         $crafts = $this->Crud_model->GetData('craft', "", "status='Active'", '', 'title asc');
         $category = $this->Crud_model->GetData('categories', "", "status='Active'", '', 'title asc');
         
-        //echo $date;
-        //exit();
+        if($date != 0)
+        {
+            $date = str_replace("-", "/", $date);
+            $date = str_replace("_", " - ", $date);
+        } else {
+            $date = 0;
+        }
         $data = array('sizes' => $sizes,'fabrics' => $fabrics,'colors' => $colors,'crafts' => $crafts, 'category' => $category, 'selected_size' => $size,'selected_fabric' => $fabric, 'selected_color' => $color, 'selected_craft' => $craft, 'selected_cat' => $cat,
         'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 
         'types' => $types, 'product_types' => $product_types, 'dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '9', 'ajax_manage_page' => $action, 'heading' => 'Manage Product Summary', 'addPermission' => $add, 'importaction' => $importaction, 'download' => $download, 'import' => $import, 'export' => $export, 'exportPermission' => $exportbutton);
@@ -333,176 +338,187 @@ class Product_Summary extends CI_Controller
 
   //=======================/export list==========================
 
-  /* ----- Export functionality start ----- */
-  public function export_product_summary($date = 0, $type = 0, $type2 = 0, $color = 0, $size=0, $fabric=0, $craft=0, $cat=0)
-  {
-      $con = "p.id<>''";
-      if($type != 0)
-          $con .= "and a.asset_type_id ='". $type . "'";
-      if($type2 != 0)
-          $con .= "and a.product_type_id ='". $type2 . "'";
-      if($color != 0)
-          $con .= "and a.color_id ='". $color . "'";
-      if($size != 0)
-          $con .= "and a.size_id ='". $size . "'";
-      if($fabric != 0)
-          $con .= "and a.fabric_id ='". $fabric . "'";
-      if($craft != 0)
-          $con .= "and a.craft_id ='". $craft . "'";
-      if($cat != 0)
-          $con .= "and a.category_id ='". $cat . "'";
-      if (!empty($_SESSION[SESSION_NAME]['branch_id'])) {
-          $con .= " and ast.id in (select asset_id from asset_branch_mappings where branch_id='" . $_SESSION[SESSION_NAME]['branch_id'] . "')";
-      }
+   /* ----- Export functionality start ----- */
+   public function export_product_summary($date = 0, $type = 0, $type2 = 0, $color = 0, $size=0, $fabric=0, $craft=0, $cat=0)
+   {
+       $con = "p.id<>''";
+       if($type != 0)
+           $con .= "and p.asset_type_id ='". $type . "'";
+       if($type2 != 0)
+           $con .= "and p.product_type_id ='". $type2 . "'";
+       if($color != 0)
+           $con .= "and p.color_id ='". $color . "'";
+       if($size != 0)
+           $con .= "and p.size_id ='". $size . "'";
+       if($fabric != 0)
+           $con .= "and p.fabric_id ='". $fabric . "'";
+       if($craft != 0)
+           $con .= "and p.craft_id ='". $craft . "'";
+       if($cat != 0)
+           $con .= "and p.category_id ='". $cat . "'";
+       if (!empty($_SESSION[SESSION_NAME]['branch_id'])) {
+           $con .= " and ast.id in (select asset_id from asset_branch_mappings where branch_id='" . $_SESSION[SESSION_NAME]['branch_id'] . "')";
+       }
 
-      $results = $this->Product_Summary_model->get_datatables($con, $date);
-      //$results = $query->result();
-      //$con = "p.id<>0";
+       $results = $this->Product_Summary_model->get_datatables($con, $date);
+       //$results = $query->result();
+       //$con = "p.id<>0";
 
-      //$results = $this->Warehouse_product_summary_model->ExportCSV($con);
-      $FileTitle = 'Product Summary Report';
+       //$results = $this->Warehouse_product_summary_model->ExportCSV($con);
+       $FileTitle = 'Warehouse Product Summary Report';
 
-      $this->load->library('excel');
-      //activate worksheet number 1
-      $this->excel->setActiveSheetIndex(0);
-      //name the worksheet
-      $this->excel->getActiveSheet()->setTitle('Report Sheet');
-      //set cell A1 content with some text
-      $this->excel->getActiveSheet()->setCellValue('A1', 'Product Summary Details ');
+       $this->load->library('excel');
+       //activate worksheet number 1
+       $this->excel->setActiveSheetIndex(0);
+       //name the worksheet
+       $this->excel->getActiveSheet()->setTitle('Report Sheet');
+       //set cell A1 content with some text
+       $this->excel->getActiveSheet()->setCellValue('A1', 'Gujarat State Handloom & Handicraft Development Corp. Ltd.');
+       $this->excel->getActiveSheet()->setCellValue('A2', $_SESSION[SESSION_NAME]['address']);
+       $this->excel->getActiveSheet()->setCellValue('A3', $_SESSION[SESSION_NAME]['gst_number']);
+       $this->excel->getActiveSheet()->setCellValue('A4', 'Product Summary Report');
 
-      $this->excel->getActiveSheet()->setCellValue('A3', 'Sr. No');
-      $this->excel->getActiveSheet()->setCellValue('B3', 'Purchase Date');
-      $this->excel->getActiveSheet()->setCellValue('C3', 'Name');
-      $this->excel->getActiveSheet()->setCellValue('D3', 'Received From');
-      $this->excel->getActiveSheet()->setCellValue('E3', 'Category');
-      $this->excel->getActiveSheet()->setCellValue('F3', 'Type');
-      $this->excel->getActiveSheet()->setCellValue('G3', 'Type 2');
-      $this->excel->getActiveSheet()->setCellValue('H3', 'Size');
-      $this->excel->getActiveSheet()->setCellValue('I3', 'Color');
-      $this->excel->getActiveSheet()->setCellValue('J3', 'Fabric');
-      $this->excel->getActiveSheet()->setCellValue('K3', 'Craft');
-      $this->excel->getActiveSheet()->setCellValue('L3', 'HSN Code');
-      $this->excel->getActiveSheet()->setCellValue('M3', 'Qty');
-      $this->excel->getActiveSheet()->setCellValue('N3', 'Avail. Qty');
-      $this->excel->getActiveSheet()->setCellValue('O3', 'Cost Price');
-      $this->excel->getActiveSheet()->setCellValue('P3', 'Total Cost Amt');
-      $this->excel->getActiveSheet()->setCellValue('Q3', 'GST %');
-      $this->excel->getActiveSheet()->setCellValue('R3', 'GST Amt');
-      $this->excel->getActiveSheet()->setCellValue('S3', 'Selling Price');
-      $this->excel->getActiveSheet()->setCellValue('T3', 'Total SP');
-      $this->excel->getActiveSheet()->setCellValue('U3', 'Barcode Number');
-      $this->excel->getActiveSheet()->setCellValue('V3', 'AGE');
+       $this->excel->getActiveSheet()->setCellValue('A5', 'Sr. No');
+       $this->excel->getActiveSheet()->setCellValue('B5', 'Purchase Date');
+       $this->excel->getActiveSheet()->setCellValue('C5', 'Name');
+       $this->excel->getActiveSheet()->setCellValue('D5', 'Received From');
+       $this->excel->getActiveSheet()->setCellValue('E5', 'Category');
+       $this->excel->getActiveSheet()->setCellValue('F5', 'Type');
+       $this->excel->getActiveSheet()->setCellValue('G5', 'Type 2');
+       $this->excel->getActiveSheet()->setCellValue('H5', 'Size');
+       $this->excel->getActiveSheet()->setCellValue('I5', 'Color');
+       $this->excel->getActiveSheet()->setCellValue('J5', 'Fabric');
+       $this->excel->getActiveSheet()->setCellValue('K5', 'Craft');
+       $this->excel->getActiveSheet()->setCellValue('L5', 'HSN Code');
+       $this->excel->getActiveSheet()->setCellValue('M5', 'Qty');
+       $this->excel->getActiveSheet()->setCellValue('N5', 'Avail. Qty');
+       $this->excel->getActiveSheet()->setCellValue('O5', 'Cost Price');
+       $this->excel->getActiveSheet()->setCellValue('P5', 'Total Cost Amt');
+       $this->excel->getActiveSheet()->setCellValue('Q5', 'GST %');
+       $this->excel->getActiveSheet()->setCellValue('R5', 'GST Amt');
+       $this->excel->getActiveSheet()->setCellValue('S5', 'Selling Price');
+       $this->excel->getActiveSheet()->setCellValue('T5', 'Total SP');
+       $this->excel->getActiveSheet()->setCellValue('U5', 'Barcode Number');
+       $this->excel->getActiveSheet()->setCellValue('V5', 'AGE');
 
-      $a = '4';
-      $sr = 1;
-      //print_r($results);exit;
-      $product_mrp =  0;
-      $total_quantity =   0;
-      $quantity =  0;
-      $damage_qty =  0;
-      $total_amount = 0;
-      foreach ($results as $result) {
-          $startDate = $result->product_purchase_date;
-          $endDate = date('Y-m-d');
+       $a = '6';
+       $sr = 1;
 
-          $datetime1 = date_create($startDate);
-          $datetime2 = date_create($endDate);
-          $interval = date_diff($datetime1, $datetime2, false);
-          $arrTime = array();
-          if ($interval->y != 0) {
-              $arrTime[] =  $interval->y . ' Year ';
-          }
-          if ($interval->m != 0) {
-              $arrTime[] =  $interval->m . ' Months ';
-          }
-          $arrTime[] =  $interval->d . ' Days Ago';
-          /*$total = $result->sum + $result->transport ;
-              $returnAmt = $this->Crud_model->GetData('purchase_returns','sum(return_amount) as return_amount',"purchase_order_id='".$result->id."'",'','','','single');
-              $total = $total - $returnAmt->return_amount;*/
+       $total_quantity =   0;
+       $total_available_qty =  0;
+       $total_cost_total =  0;
+       $total_price = 0;
+       $total_gst = 0;
+       $total_product_mrp = 0;
+       $total_sp_total = 0;
+       foreach ($results as $result) {
+           $startDate = $result->product_purchase_date;
+           $endDate = date('Y-m-d');
 
-          $this->excel->getActiveSheet()->setCellValue('A' . $a, $sr);
-          $this->excel->getActiveSheet()->setCellValue('B' . $a, $result->product_purchase_date);
-          $this->excel->getActiveSheet()->setCellValue('C' . $a, $result->asset_name);
-          $this->excel->getActiveSheet()->setCellValue('D' . $a, $result->name);
-          $this->excel->getActiveSheet()->setCellValue('E' . $a, $result->title);
-          $this->excel->getActiveSheet()->setCellValue('F' . $a, $result->type);
-          $this->excel->getActiveSheet()->setCellValue('G' . $a, $result->productType);
-          $this->excel->getActiveSheet()->setCellValue('H' . $a, $result->size);
-          $this->excel->getActiveSheet()->setCellValue('I' . $a, $result->color);
-          $this->excel->getActiveSheet()->setCellValue('J' . $a, $result->fabric);
-          $this->excel->getActiveSheet()->setCellValue('K' . $a, $result->craft);
-          $this->excel->getActiveSheet()->setCellValue('L' . $a, $result->hsn_code);
-          $this->excel->getActiveSheet()->setCellValue('M' . $a, $result->quantity);
-          $this->excel->getActiveSheet()->setCellValue('N' . $a, $result->available_qty);
-          $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($result->price, 2));
-          $this->excel->getActiveSheet()->setCellValue('P' . $a, "Rs. " . number_format($result->cost_total, 2));
-          $this->excel->getActiveSheet()->setCellValue('Q' . $a, $result->gst_percent);
-          $this->excel->getActiveSheet()->setCellValue('S' . $a, $result->product_mrp);
-          $this->excel->getActiveSheet()->setCellValue('T' . $a, $result->sp_total);
-          $this->excel->getActiveSheet()->setCellValue('U' . $a, $result->barcode_number);
-          $this->excel->getActiveSheet()->setCellValue('V' . $a, implode(" ", $arrTime));
+           $datetime1 = date_create($startDate);
+           $datetime2 = date_create($endDate);
+           $interval = date_diff($datetime1, $datetime2, false);
+           $arrTime = array();
+           if ($interval->y != 0) {
+               $arrTime[] =  $interval->y . ' Year ';
+           }
+           if ($interval->m != 0) {
+               $arrTime[] =  $interval->m . ' Months ';
+           }
+           $arrTime[] =  $interval->d . ' Days Ago';
 
-          $sr++;
-          $a++;
-          //$product_mrp +=  $result->product_mrp;
-          //$total_quantity +=   $result->total_quantity;
-          //$quantity +=  $result->quantity;
-          //$damage_qty +=  $result->damage_qty;
-          //$total_amount += ($result->quantity * $result->product_mrp);
-      }
-      //$this->excel->getActiveSheet()->setCellValue('G' . $a, "Rs. " . number_format($product_mrp, 2));
-      //$this->excel->getActiveSheet()->setCellValue('H' . $a, $total_quantity);
-      //$this->excel->getActiveSheet()->setCellValue('I' . $a, $quantity);
-      //$this->excel->getActiveSheet()->setCellValue('J' . $a, $damage_qty);
-      //$this->excel->getActiveSheet()->setCellValue('K' . $a, "Rs. " . number_format($total_amount, 2));
+           $this->excel->getActiveSheet()->setCellValue('A' . $a, $sr);
+           $this->excel->getActiveSheet()->setCellValue('B' . $a, $result->product_purchase_date);
+           $this->excel->getActiveSheet()->setCellValue('C' . $a, $result->asset_name);
+           $this->excel->getActiveSheet()->setCellValue('D' . $a, $result->name);
+           $this->excel->getActiveSheet()->setCellValue('E' . $a, $result->title);
+           $this->excel->getActiveSheet()->setCellValue('F' . $a, $result->type);
+           $this->excel->getActiveSheet()->setCellValue('G' . $a, $result->product_type);
+           $this->excel->getActiveSheet()->setCellValue('H' . $a, $result->size);
+           $this->excel->getActiveSheet()->setCellValue('I' . $a, $result->color);
+           $this->excel->getActiveSheet()->setCellValue('J' . $a, $result->fabric);
+           $this->excel->getActiveSheet()->setCellValue('K' . $a, $result->craft);
+           $this->excel->getActiveSheet()->setCellValue('L' . $a, $result->hsn_code);
+           $this->excel->getActiveSheet()->setCellValue('M' . $a, $result->quantity);
+           $this->excel->getActiveSheet()->setCellValue('N' . $a, $result->available_qty);
+           $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($result->price, 2));
+           $this->excel->getActiveSheet()->setCellValue('P' . $a, "Rs. " . number_format(($result->price * $result->available_qty), 2));
+           $this->excel->getActiveSheet()->setCellValue('Q' . $a, $result->gst_percent);
+           $this->excel->getActiveSheet()->setCellValue('R' . $a, number_format(($result->price * $result->available_qty) * ($result->gst_percent/100), 2));
+           $this->excel->getActiveSheet()->setCellValue('S' . $a, $result->product_mrp);
+           $this->excel->getActiveSheet()->setCellValue('T' . $a, "Rs. " . number_format(($result->product_mrp * $result->available_qty), 2));
+           $this->excel->getActiveSheet()->setCellValue('U' . $a, $result->barcode_number);
+           $this->excel->getActiveSheet()->setCellValue('V' . $a, implode(" ", $arrTime));
 
-      $this->excel->getActiveSheet()->getStyle('G' . $a)->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('H' . $a)->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('I' . $a)->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('J' . $a)->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('K' . $a)->getFont()->setBold(true);
+           $sr++;
+           $a++;
+           $total_quantity +=   $result->quantity;
+           $total_available_qty +=  $result->available_qty;
+           $total_price +=  $result->price;
+           $total_cost_total += ($result->price * $result->available_qty);
+           $total_gst += ($result->price * $result->available_qty) * ($result->gst_percent/100);
+           $total_product_mrp += $result->product_mrp;
+           $total_sp_total += ($result->product_mrp * $result->available_qty);
+       }
+       $this->excel->getActiveSheet()->setCellValue('M' . $a, $total_quantity);
+       $this->excel->getActiveSheet()->setCellValue('N' . $a, $total_available_qty);
+       $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($total_price, 2));
+       $this->excel->getActiveSheet()->setCellValue('P' . $a, "Rs. " . number_format($total_cost_total, 2));
+       $this->excel->getActiveSheet()->setCellValue('R' . $a, "Rs. " . number_format($total_gst, 2));
+       $this->excel->getActiveSheet()->setCellValue('S' . $a, "Rs. " . number_format($total_product_mrp, 2));
+       $this->excel->getActiveSheet()->setCellValue('T' . $a, "Rs. " . number_format($total_sp_total, 2));
 
+       $this->excel->getActiveSheet()->getStyle('M' . $a)->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('N' . $a)->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('O' . $a)->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('P' . $a)->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('R' . $a)->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('S' . $a)->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('T' . $a)->getFont()->setBold(true);
 
-      $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
-      $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('A3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('B3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('C3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('D3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('E3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('F3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('G3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('H3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('I3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('J3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('K3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('L3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('M3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('N3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('O3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('P3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('Q3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('R3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('S3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('T3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('U3')->getFont()->setBold(true);
-      $this->excel->getActiveSheet()->getStyle('V3')->getFont()->setBold(true);
-      //$this->excel->getActiveSheet()->mergeCells('A1:H1');
-      $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+       $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
+       $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('A2')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('A3')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('A4')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('A5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('B5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('C5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('D5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('E5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('F5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('G5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('H5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('I5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('J5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('K5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('L5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('M5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('N5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('O5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('P5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('Q5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('R5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('S5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('T5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('U5')->getFont()->setBold(true);
+       $this->excel->getActiveSheet()->getStyle('V5')->getFont()->setBold(true);
+       //$this->excel->getActiveSheet()->mergeCells('A1:H1');
+       $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-      $filename = '' . $FileTitle . '.xlsx'; //save our workbook as this file name
-      header('Content-Type: application/vnd.ms-excel'); //mime type
-      header('Content-Disposition: attachment;filename="' . $filename . '"'); //tell browser what's the file name
-      header('Cache-Control: max-age=0'); //no cache
-      ob_clean();
+       $filename = '' . $FileTitle . '.xlsx'; //save our workbook as this file name
+       header('Content-Type: application/vnd.ms-excel'); //mime type
+       header('Content-Disposition: attachment;filename="' . $filename . '"'); //tell browser what's the file name
+       header('Cache-Control: max-age=0'); //no cache
+       ob_clean();
 
-      //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
-      //if you want to save it as .XLSX Excel 2007 format
-      $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
-      //force user to download the Excel file without writing it to server's HD
-      $objWriter->save('php://output');
-  }
-  /* ----- Export functionality end ----- */
+       //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
+       //if you want to save it as .XLSX Excel 2007 format
+       $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+       //force user to download the Excel file without writing it to server's HD
+       $objWriter->save('php://output');
+   }
+   /* ----- Export functionality end ----- */
 
   public function getGST()
   {

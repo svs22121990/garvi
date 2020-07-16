@@ -581,7 +581,7 @@ class Warehouse extends CI_Controller
                     'asset_name' => $_POST['asset_name'][$i],
                     'quantity' => $_POST['quantity'][$i],
                     'available_qty' => $_POST['quantity'][0],
-                    'price' =>$_POST['product_mrp'][$i],
+                    'price' =>$_POST['price'][$i],
                     'cost_total' =>$_POST['cost_total'][$i],
                     'product_mrp' => $_POST['sp'][$i],
                     'sp_total' => $_POST['sp_total'][$i],

@@ -19,7 +19,7 @@ class Sales_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('employees as e');
-       
+        $this->db->where('status=', 'Active');
         $this->db->where($con);
         $this->db->where('type','User');
         $this->db->group_by("e.id");

@@ -77,13 +77,13 @@ $this->load->view('common/left_panel');
                         <table class="table table-bordered table-striped table-actions example_datatable2">
                             <thead>
                             <tr>
-                                <th class="text-center">Sr No</th>
-                                <th class="text-center">Dn No</th>
+                                <th class="text-center">Sr. No.</th>
+                                <th class="text-center">DN. No.</th>
                                 <th class="text-center"> Date</th>
                                 <!--<th class="text-center">Amount</th>-->
                                 <th class="text-center">Received from</th>
-                                <th class="text-center">Total Cost Amount</th>
-                                <th class="text-center">Total SP Amount</th>
+                                <th class="text-center">Total CP Amt.</th>
+                                <th class="text-center">Total SP Amt.</th>
                                 <!--<th class="text-center">GST %</th>
                                 <th class="text-center">GST</th>-->
                                 <th class="text-center">Action</th>

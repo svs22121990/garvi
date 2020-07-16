@@ -98,6 +98,14 @@ class GST_Summary extends CI_Controller {
         $types = $this->Crud_model->GetData('mst_asset_types', "", "status='Active' and is_delete='No'", 'type');
         $product_types =  $this->Crud_model->GetData('product_type', "", "status='Active'");
 
+        if($date != 0)
+        {
+            $date = str_replace("-", "/", $date);
+            $date = str_replace("_", " - ", $date);
+        } else {
+            $date = 0;
+        }
+
       $data = array(
           'types' => $types, 'product_types' => $product_types,'selected_date' => $date,'selected_type' => $type, 'selected_type2' => $type2, 'selected_type3' => $type3,
 		      'dateinfo' => $date,
@@ -233,20 +241,24 @@ class GST_Summary extends CI_Controller {
         //name the worksheet
         $this->excel->getActiveSheet()->setTitle('Report Sheet');
         //set cell A1 content with some text
-        $this->excel->getActiveSheet()->setCellValue('A1', 'GST Summary Details ');
+        
+        $this->excel->getActiveSheet()->setCellValue('A1', 'Gujarat State Handloom & Handicraft Development Corp. Ltd.');
+        $this->excel->getActiveSheet()->setCellValue('A2', $_SESSION[SESSION_NAME]['address']);
+        $this->excel->getActiveSheet()->setCellValue('A3', $_SESSION[SESSION_NAME]['gst_number']);
+        $this->excel->getActiveSheet()->setCellValue('A4', 'GST Summary Details');
 
-        $this->excel->getActiveSheet()->setCellValue('A3', 'Sr. No');
-        $this->excel->getActiveSheet()->setCellValue('B3', 'GST Rate');
-        $this->excel->getActiveSheet()->setCellValue('C3', 'GST Amount');
-        $this->excel->getActiveSheet()->setCellValue('D3', 'Taxable Amount');
-        $this->excel->getActiveSheet()->setCellValue('E3', 'CGST Rate');
-        $this->excel->getActiveSheet()->setCellValue('F3', 'CGST Amount');
-        $this->excel->getActiveSheet()->setCellValue('G3', 'SGST Rate');
-        $this->excel->getActiveSheet()->setCellValue('H3', 'SGST Amount');
-        $this->excel->getActiveSheet()->setCellValue('I3', 'IGST Rate');
-        $this->excel->getActiveSheet()->setCellValue('J3', 'IGST Amount');
+        $this->excel->getActiveSheet()->setCellValue('A5', 'Sr. No');
+        $this->excel->getActiveSheet()->setCellValue('B5', 'GST Rate');
+        $this->excel->getActiveSheet()->setCellValue('C5', 'GST Amount');
+        $this->excel->getActiveSheet()->setCellValue('D5', 'Taxable Amount');
+        $this->excel->getActiveSheet()->setCellValue('E5', 'CGST Rate');
+        $this->excel->getActiveSheet()->setCellValue('F5', 'CGST Amount');
+        $this->excel->getActiveSheet()->setCellValue('G5', 'SGST Rate');
+        $this->excel->getActiveSheet()->setCellValue('H5', 'SGST Amount');
+        $this->excel->getActiveSheet()->setCellValue('I5', 'IGST Rate');
+        $this->excel->getActiveSheet()->setCellValue('J5', 'IGST Amount');
             
-        $a='4'; $sr = 1; 
+        $a='6'; $sr = 1; 
         $gst_amount = 0;
         $taxable = 0;
         $cgst_amount = 0;
@@ -291,17 +303,20 @@ class GST_Summary extends CI_Controller {
         
 
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
-        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);                
+        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A2')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('A3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('B3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('C3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('D3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('E3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('F3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('G3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('H3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('I3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('J3')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A4')->getFont()->setBold(true);              
+        $this->excel->getActiveSheet()->getStyle('A5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('B5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('C5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('D5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('E5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('F5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('G5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('H5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('I5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('J5')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             
         $filename=''.$FileTitle.'.xlsx'; //save our workbook as this file name
