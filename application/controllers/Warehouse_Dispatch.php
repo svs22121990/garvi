@@ -80,7 +80,14 @@ class Warehouse_Dispatch extends CI_Controller
             $download = ' <a  download="assets.xls" style="color:black;" title="Download Format" href="' . base_url('uploads/assets_demo_excel/assets.xls') . '"><span class="fa fa-download"></span></a>';
 
             $branch_data = $this->Crud_model->GetData('branches', "", "is_delete='No' and status='Active'", '', 'branch_title');
-            $data = array('dateinfo' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '6', 'ajax_manage_page' => $action, 'heading' => 'Manage Warehouse Dispatch', 'branch_data' => $branch_data, 'import' => $import, 'importaction' => $importaction, 'download' => $download, 'addPermission' => $add);
+            if($date != 0)
+            {
+                $date = str_replace("-", "/", $date);
+                $date = str_replace("_", " - ", $date);
+            } else {
+                $date = 0;
+            }
+            $data = array('selected_date' => $date, 'breadcrumbs' => $breadcrumbs, 'actioncolumn' => '6', 'ajax_manage_page' => $action, 'heading' => 'Manage Warehouse Dispatch', 'branch_data' => $branch_data, 'import' => $import, 'importaction' => $importaction, 'download' => $download, 'addPermission' => $add);
 
             $this->load->view('warehouse_dispatch/list', $data);
         } else {
@@ -571,27 +578,39 @@ class Warehouse_Dispatch extends CI_Controller
     public function export_bill_summary($date = 0)
     {
         $con = "p.id<>''";
-        $Data = $this->Warehouse_model->get_datatables($con, $date);
+        $Data = $this->Dispatch_model->warehouse_get_datatables($con,$date);
         //$Data = $query->result();
 
-        $FileTitle = 'Warehouse';
+        $FileTitle = 'Warehouse Dispatch';
 
         $this->load->library('excel');
         //activate worksheet number 1
         $this->excel->setActiveSheetIndex(0);
         //name the worksheet
-        $this->excel->getActiveSheet()->setTitle('Warehouse Note-Bill');
+        $this->excel->getActiveSheet()->setTitle('Warehouse Dispatch Details');
         //set cell A1 content with some text
-        $this->excel->getActiveSheet()->setCellValue('B1', ' Warehouse Product Details');
+        $this->excel->getActiveSheet()->setCellValue('A1', 'Gujarat State Handloom & Handicraft Development Corp. Ltd.');
+        $this->excel->getActiveSheet()->setCellValue('A2', $_SESSION[SESSION_NAME]['address']);
+        $this->excel->getActiveSheet()->setCellValue('A3', $_SESSION[SESSION_NAME]['gst_number']);
+        $this->excel->getActiveSheet()->setCellValue('A4', 'Warehouse Dispatch Details');
 
-        $this->excel->getActiveSheet()->setCellValue('A3', 'Sr. No.');
-        $this->excel->getActiveSheet()->setCellValue('B3', 'DN Number.');
-        $this->excel->getActiveSheet()->setCellValue('C3', ' Date');
-        $this->excel->getActiveSheet()->setCellValue('D3', 'Recived From');
-        $this->excel->getActiveSheet()->setCellValue('E3', 'Total Amount');
+        $this->excel->getActiveSheet()->setCellValue('A5', 'Sr. No.');
+        $this->excel->getActiveSheet()->setCellValue('B5', 'DN Number.');
+        $this->excel->getActiveSheet()->setCellValue('C5', 'Date');
+        $this->excel->getActiveSheet()->setCellValue('D5', 'Sent To');
+        $this->excel->getActiveSheet()->setCellValue('E5', 'Qty');
+        $this->excel->getActiveSheet()->setCellValue('F5', 'SP');
+        $this->excel->getActiveSheet()->setCellValue('G5', 'Total SP Amt.');
+        $this->excel->getActiveSheet()->setCellValue('H5', 'GST');
+        $this->excel->getActiveSheet()->setCellValue('I5', 'Grand Total');
 
-        $a = '4';
+        $a = '6';
         $sr = 1;
+        $total_qty = 0;
+        $total_sp = 0;
+        $total_sp_sum = 0;
+        $total_gst = 0;
+        $total_grand = 0;
         //print_r($results);exit;
         foreach ($Data as $result) {
 
@@ -599,23 +618,48 @@ class Warehouse_Dispatch extends CI_Controller
             $this->excel->getActiveSheet()->setCellValue('B' . $a, $result->dn_number);
             $this->excel->getActiveSheet()->setCellValue('C' . $a, date('d-m-Y', strtotime($result->warehouse_date)));
             $this->excel->getActiveSheet()->setCellValue('D' . $a, $result->employee_name);
-            $this->excel->getActiveSheet()->setCellValue('E' . $a, "Rs. " . number_format($result->total_amount, 2));
+            $this->excel->getActiveSheet()->setCellValue('E' . $a, $result->sum_quantity);
+            $this->excel->getActiveSheet()->setCellValue('F' . $a, "Rs. " . number_format($result->sum_amount, 2));
+            $this->excel->getActiveSheet()->setCellValue('G' . $a, "Rs. " . number_format(($result->sum_quantity * $result->sum_amount),2));
+            $this->excel->getActiveSheet()->setCellValue('H' . $a, "Rs. " . number_format(($result->gst/100),2));
+            $this->excel->getActiveSheet()->setCellValue('I' . $a, "Rs. " . number_format(($result->sum_quantity * $result->sum_amount) + ($result->gst/100),2));
             $sr++;
             $a++;
-            $total_amount += $result->total_amount;
+            $total_qty += $result->sum_quantity;
+            $total_sp += $result->sum_amount;
+            $total_sp_sum += number_format(($result->sum_quantity * $result->sum_amount),2);
+            $total_gst += number_format(($result->gst/100),2);
+            $total_grand += number_format(($result->sum_quantity * $result->sum_amount) + ($result->gst/100),2);
         }
-        $this->excel->getActiveSheet()->setCellValue('E' . $a++, cNumberFormat($total_amount));
-        //$this->excel->getActiveSheet()->getStyle('E'.$a)->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('B1')->getFont()->setSize(14);
+        $this->excel->getActiveSheet()->setCellValue('E' . $a, cNumberFormat($total_qty));
+        $this->excel->getActiveSheet()->setCellValue('F' . $a, cNumberFormat($total_sp));
+        $this->excel->getActiveSheet()->setCellValue('G' . $a, cNumberFormat($total_sp_sum));
+        $this->excel->getActiveSheet()->setCellValue('H' . $a, cNumberFormat($total_gst));
+        $this->excel->getActiveSheet()->setCellValue('I' . $a, cNumberFormat($total_grand));
+
+        $this->excel->getActiveSheet()->getStyle('E' . $a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('F' . $a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('G' . $a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('H' . $a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('I' . $a)->getFont()->setBold(true);
+        
+        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A2')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('A3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('B3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('C3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('D3')->getFont()->setBold(true);
-        $this->excel->getActiveSheet()->getStyle('E3')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A4')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('B5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('C5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('D5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('E5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('F5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('G5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('H5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('I5')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-        $filename = '' . $FileTitle . '.xls'; //save our workbook as this file name
+        $filename = '' . $FileTitle . '.xlsx'; //save our workbook as this file name
         header('Content-Type: application/vnd.ms-excel'); //mime type
         header('Content-Disposition: attachment;filename="' . $filename . '"'); //tell browser what's the file name
         header('Cache-Control: max-age=0'); //no cache
@@ -623,20 +667,19 @@ class Warehouse_Dispatch extends CI_Controller
 
         //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
         //if you want to save it as .XLSX Excel 2007 format
-        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
         //force user to download the Excel file without writing it to server's HD
         $objWriter->save('php://output');
     }
     public function pdf_summary($date = 0)
     {
         $con = "p.id<>''";
-        $con = "p.id<>''";
-        $data['results'] = $this->Warehouse_model->get_datatables($con, $date);
+        $data['results'] = $this->Dispatch_model->warehouse_get_datatables($con,$date);
         //$data['results'] = $query->result();
-        $html = $this->load->view('warehouse/product_pdf2', $data, TRUE);
+        $html = $this->load->view('warehouse_dispatch/product_pdf2', $data, TRUE);
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
-        $mpdf->Output('Warehouse Note/Bill', 'I');
+        $mpdf->Output('Warehouse Dispatch', 'I');
     }
 
     public function export_pdf($id)

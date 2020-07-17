@@ -21,6 +21,7 @@ class Welcome extends CI_Controller {
   { 
      $email = $this->input->post('email'); 
      $password = $this->input->post('password');
+
      $cond = "email='".$email."' && password='".md5($password)."'";
      $chk_login = $this->Crud_model->GetData("employees",'',$cond,'','','','single');
      //$user_role = $this->Crud_model->GetData("mst_designations",'',"id='".$chk_login->designation_id."'",'','','','single');

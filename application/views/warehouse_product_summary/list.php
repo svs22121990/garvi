@@ -191,11 +191,11 @@ $this->load->view('common/left_panel');
                                         <th>Qty</th>
                                         <th>Avail. Qty</th>
                                         <th>Cost Price</th>
-                                        <th>Total Cost Amt</th>
+                                        <th>Total CP Amt</th>
                                         <th>GST %</th>
                                         <th>GST Amt</th>
                                         <th>Selling Price</th>
-                                        <th>Total SP</th>
+                                        <th>Total SP Amt</th>
                                         <th>Barcode Number</th>
                                         <th>AGE</th>
                                         <!--<th>Selling Price</th>

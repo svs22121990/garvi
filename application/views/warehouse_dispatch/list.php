@@ -21,24 +21,15 @@ $this->load->view('common/left_panel');
                   <div class="form-group row" style="padding-top: 20px;" >
                     <label class="col-md-2"> Select Date<span style="color: red">*</span> <span  id="purchase_date_error" style="color: red"></span></label>
                     <div class="col-md-3">
-                      <!--<input type="text" name="purchase_date" id="purchase_date" class="form-control datepicker" placeholder="Purchase Date" required>-->
-					  <input type="text" class="form-control" name="daterange" value="" />
+                      <input type="text" class="form-control" name="daterange" placeholder="Select Date" autocomplete="off" value="<?php if($selected_date != 0)echo $selected_date; ?>" />
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                       <button type="submit" class="btn btn-success">Search</button>
+                      <a href="<?php site_url("Warehouse_Dispatch/index/")?>" class="btn btn-danger">X</a>
                     </div>
-					<div  class="col-md-4">
-					
 
-
-					</div>
                   </div>
                   <?= form_close(); ?>
-			  <?php if($dateinfo!=0){ ?>
-              <form method="post" action="<?=site_url("Warehouse_Dispatch/export_dispatch1/$dateinfo")?>">
-			  <?php }else{ ?>
-			  <form method="post" action="<?=site_url('Warehouse_Dispatch/export_dispatch1')?>">
-			  <?php } ?>
                 <div class="panel-heading">                                
                     <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                      <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
@@ -56,17 +47,10 @@ $this->load->view('common/left_panel');
                           <?php  echo  $importaction; ?>
                         </li>
                         <?php } ?>
-                        <?php if($exportPermission=='1'){?>
-						  <li>
-						    <?php if($dateinfo!=0){ ?>
-							<a href="<?= base_url(); ?>index.php/Warehouse_Dispatch/listpdf/<?= $dateinfo; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
-							<?php } else { ?>
-                            <a href="<?= base_url(); ?>index.php/Warehouse_Dispatch/listpdf" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
-							<?php } ?>
-                          </li>
-                          <li><?=$export; ?></li>
-                          <button type="submit" style="display: none" id="subbtn"></button>
-                          <?php }?>
+                      
+                        <!--<li><a href="<?php //echo site_url("Warehouse_Dispatch/pdf_summary/$selected_date")?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>-->
+                        <li><a href="<?php echo site_url("Warehouse_Dispatch/export_bill_summary/$selected_date")?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>
+    
                         <?php if($addPermission=='1'){?>
                          <li><a href="<?php echo site_url("Warehouse_Dispatch/create")?>" ><span class="fa fa-plus"></span></a></li>
 
@@ -85,10 +69,10 @@ $this->load->view('common/left_panel');
                                 <th>Sr No</th>
                                 <th>DN No</th>
                                 <th>Date</th>
-                                <th>User</th>
+                                <th>Sent To</th>
                                 <th>Qty</th>
-                                <th>Amount</th>
-                                <th>Total</th>
+                                <th>Selling Price</th>
+                                <th>Total SP Amt.</th>
                                 <th>GST</th>
                                 <th>Grand Total</th>
                                 <th>Action</th>

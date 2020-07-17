@@ -450,7 +450,7 @@ class Warehouse_Product_Summary extends CI_Controller
             $this->excel->getActiveSheet()->setCellValue('I' . $a, $result->color);
             $this->excel->getActiveSheet()->setCellValue('J' . $a, $result->fabric);
             $this->excel->getActiveSheet()->setCellValue('K' . $a, $result->craft);
-            $this->excel->getActiveSheet()->setCellValue('L' . $a, $result->hsn_code);
+            $this->excel->getActiveSheet()->setCellValue('L' . $a, $result->hsn);
             $this->excel->getActiveSheet()->setCellValue('M' . $a, $result->quantity);
             $this->excel->getActiveSheet()->setCellValue('N' . $a, $result->available_qty);
             $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($result->price, 2));

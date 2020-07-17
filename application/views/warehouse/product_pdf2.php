@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Warehouse Bill</title>
+        <title>Warehouse Products</title>
         <style type="text/css">
             #customers {
                 font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -28,52 +28,71 @@
     <body>
         
         <div class="title-center"><img class="img-responsive logo-image" src="http://app.garvigurjari.in/images/logo.jpg" style=""></div>
+            
             <div class="title-center"><?= $_SESSION[SESSION_NAME]['address'] ?></div>
-            <div style="text-align: center;">GST Number: <?= $_SESSION[SESSION_NAME]['gst_number'] ?></div>
-            <h4 style="text-align: center;">Warehouse Bill</h4>
-             <?php $sr = 1; ?>
-            <?php $results2=array(); $total_amount= 0; 
-            foreach($results as $key){
-                $no = $sr++;
-                $results2[] = array(
-                   'no' => $no,
-                   'dn_number' =>  $key->dn_number,
-                   'warehouse_date' => date('d-m-Y', strtotime($key->warehouse_date)),
-                   'employee_name' => $key->employee_name,
-                   'total_amount' => $key->total_amount,
+            <!--<div style="text-align: center;">GST Number: <?/*= $_SESSION[SESSION_NAME]['gst_number'] */?></div>-->
+            <h4 style="text-align: center;">Warehouse Products</h4>
+            <?php $qty=0; $product_mrp=0; $sr = 1; $data = array(); $total_cost = 0; ; $total_sp = 0;  ?>
+            <?php foreach ($results as $result) { 
+                $data[] = array(
+                    'no' => $sr++,
+                    'dn_number' =>$result->dn_number,
+                    'warehouse_date' => $result->warehouse_date,
+                    'employee_name' =>$result->employee_name,
+                    'cost_total' =>$result->cost_total,
+                    'sp_total' =>$result->sp_total,
                 );
-                $total_amount += $key->total_amount;
-            } 
-            $results2[] = array(
-                   'no' => '',
-                   'dn_number' =>  '',
-                   'warehouse_date' => '',
-                   'employee_name' => '',
-                   'total_amount' => $total_amount,
-                );
-            ?>
+
+                $total_cost += $result->cost_total;
+                $total_sp += $result->sp_total;
+                
+             } 
+
+             ?>
+             
+
         <table id="customers">
             <thead>
                 <tr>    
-                    <th style="width:60px;">Sr. No.</th>                    
-                    <th>DN No.</th>
-                    <th>Warehouse Bill Date</th>
-                    <th>Recived From</th>
-                    <th>Total Amount</th> 
+                <th class="text-center">Sr. No.</th>
+                <th class="text-center">DN. No.</th>
+                <th class="text-center"> Date</th>
+                <th class="text-center">Received from</th>
+                <th class="text-center">Total CP Amt.</th>
+                <th class="text-center">Total SP Amt.</th>
                 </tr>
             </thead>
+            
             <tbody> 
-                <?php $no=1; foreach ($results2 as $result) { ?>
+                <?php $sr = 1; ?>
+                <?php foreach ($results as $result) { ?>
                 <tr>
-                    <td><?= $result['no']; ?></td>
-                    <td><?= $result['dn_number']; ?></td>
-                    <td><?= $result['warehouse_date']; ?></td>
-                    <td><?= $result['employee_name']; ?></td>
-                    <td><?= "Rs. ".number_format($result['total_amount'],2); ?></td>  
-                </tr> 
-                <?php } ?>                     
+                    <td><?php echo $sr++; ?></td>
+                    <td><?php echo $result->dn_number; ?></td>
+                    <td><?php echo date('d-m-Y', strtotime($result->warehouse_date)); ?></td>
+                    <td><?php echo $result->employee_name; ?></td>
+                    <td><?php echo "Rs. ".number_format($result->cost_total,2); ?></td>
+                    <td> <?php echo "Rs. ".number_format($result->sp_total,2); ?></td>
+
+                </tr>    
+                <?php } ?>                  
             </tbody>
-        </table>                   
+            <tfoot>
+            <tr>
+                <td colspan="4" style="text-align:right;">Total</td>
+                <th>
+                    <?php echo "Rs. " . number_format($total_cost, 2); ?>
+                </th>  
+                <th>
+                    <?php echo "Rs. " . number_format($total_sp, 2); ?>
+                </th>
+            </tr>
+            
+            </tfoot>
+        </table>
+        </br>
+        
+
     </body>
 </html>
         
