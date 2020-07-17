@@ -385,6 +385,7 @@ class Warehouse_Product_Summary extends CI_Controller
         //name the worksheet
         $this->excel->getActiveSheet()->setTitle('Report Sheet');
         //set cell A1 content with some text
+
         $this->excel->getActiveSheet()->setCellValue('A1', 'Gujarat State Handloom & Handicraft Development Corp. Ltd.');
         $this->excel->getActiveSheet()->setCellValue('A2', $_SESSION[SESSION_NAME]['address']);
         $this->excel->getActiveSheet()->setCellValue('A3', $_SESSION[SESSION_NAME]['gst_number']);

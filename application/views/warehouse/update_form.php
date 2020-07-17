@@ -187,20 +187,31 @@ $this->load->view('common/left_panel'); ?>
                                     </tbody>
                                     <tfoot>
                                     <tr>
-                                        <th colspan="14"><span class="pull-right">Total GST Amount</span></th>
+                                        <th colspan="14"><span class="pull-right">Total SGST Amount</span></th>
                                         <th colspan="3">
-                                            <input type="text" class="form-control" id="totalGST" readonly="readonly" value="0">
+                                            <input type="text" class="form-control" id="totalSGST" readonly="readonly" value="0">
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="14"><span class="pull-right">Total CGST Amount</span></th>
+                                        <th colspan="3">
+                                            <input type="text" class="form-control" id="totalCGST" readonly="readonly" value="0">
                                         </th>
                                     </tr>
                                     <tr>
                                         <th colspan="14" >&nbsp;<span class="pull-right">Total Markup Amount</span></th>
                                         <th colspan="3"><input type="text" class="form-control" name="gtotal" id="grandTotal" readonly="readonly" value="0"></th>
                                     </tr>
-
                                     <tr>
-                                        <th colspan="14" >&nbsp;<span class="pull-right">Final Selling Price </span></th>
+                                        <th colspan="14" >&nbsp;<span class="pull-right">Total CP Amt. </span></th>
                                         <th colspan="3">
-                                            <input type="text" class="form-control" id="finalTotal" readonly="readonly" value="0">
+                                            <input type="text" class="form-control" id="costTotal" readonly="readonly" value="0">
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="14" >&nbsp;<span class="pull-right">Total SP Amt. </span></th>
+                                        <th colspan="3">
+                                            <input type="text" class="form-control" id="spTotal" readonly="readonly" value="0">
                                         </th>
                                     </tr>
                                     </tfoot>
@@ -321,11 +332,10 @@ $this->load->view('common/left_panel'); ?>
     });
     function price()
     {
+        var markup = 0;
         var mult = 0;
         var totalGST = 0;
         var finalTotal = 0;
-        var total = 0;
-        // for each row:
         $("tr.trRow").each(function () {
             // get the values from this row:
             var $val1 = $('.price', this).val();
@@ -333,18 +343,26 @@ $this->load->view('common/left_panel'); ?>
             var $total = ($val1 * 1) * ($val2 * 1);
             // set total for the row
             $('.cost_total', this).val($total);
-            //consol.log($total);
+
             mult += $total;
 
             var $markup = $('.markup', this).val();
             $('.markup_amt', this).val(($val1 * 1) * ($val2 * 1) * (($markup * 1)/100));
 
+            var $sp = ($val1 * 1) + (($val1 * 1) * (($markup * 1)/100));
+            $('.sp', this).val($sp);
+            var $sp_total = ($sp * 1) * ($val2 * 1);
+            $('.sp_total', this).val($sp_total);
+            markup+= ($markup / 100) * $total;
+            
             var $gstPercent = $('.gstPercent', this).val();
             totalGST+= ($gstPercent / 100) * $total;
         });
-        $("#grandTotal").val(mult);
-        $("#totalGST").val(parseFloat(totalGST).toFixed(2));
-        $("#finalTotal").val(parseFloat(mult+totalGST).toFixed(2));
+        $("#grandTotal").val(markup);
+        $("#totalCGST").val(totalGST / 2);
+        $("#totalSGST").val(totalGST / 2);
+        $("#costTotal").val(mult);
+        $("#spTotal").val(mult+markup);
     }
 </script>
 <script>
