@@ -777,7 +777,7 @@ class Warehouse extends CI_Controller
         $this->db->where("b.id='".$id."'");
         $data['barcodes'] = $this->db->get('warehouse_details b')->result();
 
-        $html = $this->load->view('warehouse/product_pdf', $data, TRUE);
+        $html = $this->load->view('warehouse/product_pdf3', $data, TRUE);
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
         $mpdf->Output('Warehouse Product_Details', 'I');
