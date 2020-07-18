@@ -155,7 +155,7 @@ $this->load->view('common/left_panel');
                                 <?php } ?>
                                 <?php if($exportPermission=='1'){?>
                                     <?php if(isset($dateinfo)){ ?>
-<!--                                        <li><a href="--><?//= base_url(); ?><!--index.php/Product_Summary/export_pdf_summary/--><?//= $dateinfo; ?><!--" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>-->
+                                        <li><a href="<?= base_url(); ?>index.php/Product_Summary/export_pdf_summary/<?= $dateinfo; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
                                     <?php } else { ?>
 <!--                                        <li><a href="--><?//= base_url(); ?><!--index.php/Product_Summary/export_pdf_summary" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>-->
                                     <?php } ?>

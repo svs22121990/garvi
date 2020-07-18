@@ -48,7 +48,7 @@ $this->load->view('common/left_panel');
                         </li>
                         <?php } ?>
                       
-                        <!--<li><a href="<?php //echo site_url("Warehouse_Dispatch/pdf_summary/$selected_date")?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>-->
+                        <li><a href="<?php echo site_url("Warehouse_Dispatch/pdf_summary/$selected_date")?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
                         <li><a href="<?php echo site_url("Warehouse_Dispatch/export_bill_summary/$selected_date")?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>
     
                         <?php if($addPermission=='1'){?>

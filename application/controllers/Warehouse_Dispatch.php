@@ -590,6 +590,7 @@ class Warehouse_Dispatch extends CI_Controller
         $this->excel->getActiveSheet()->setTitle('Warehouse Dispatch Details');
         //set cell A1 content with some text
         $this->excel->getActiveSheet()->setCellValue('A1', 'Gujarat State Handloom & Handicraft Development Corp. Ltd.');
+        $this->excel->getActiveSheet()->setCellValue('A2', $_SESSION[SESSION_NAME]['name']);
         $this->excel->getActiveSheet()->setCellValue('A2', $_SESSION[SESSION_NAME]['address']);
         $this->excel->getActiveSheet()->setCellValue('A3', $_SESSION[SESSION_NAME]['gst_number']);
         $this->excel->getActiveSheet()->setCellValue('A4', 'Warehouse Dispatch Details');
