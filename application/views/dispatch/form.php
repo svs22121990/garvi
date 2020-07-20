@@ -86,7 +86,7 @@
                   <div class="form-group">
                     <label class="col-md-11"> Date <span style="color: red">*</span> <span  id="date_error" style="color: red"></span></label>
                     <div class="col-md-11">
-                      <input type="text" name="date" id="date" class="form-control datepicker" placeholder="Date" value="<?php if(isset($dispatch)){ echo $dispatch->dispatch_date; } ?>">
+                      <input type="text" name="date" id="date" class="form-control datepicker" autocomplete="off" placeholder="Date" value="<?php if(isset($dispatch)){ echo $dispatch->dispatch_date; } ?>">
                     </div>
                   </div>
                 </div>
@@ -119,9 +119,10 @@
         <table class="table table-striped table-bordered">
           <thead>
             <tr>
-              
+              <th> Barcode <span style="color: red">*</span><span id="error_barcode"></span></th>
               <th> Product Name <span style="color: red">*</span><span id="error_asset_name"></span></th>
               <th> Quantity <span style="color: red">*</span><span id="error_quantity"></span></th>
+              <th> Attributes </th>
               <th> Price <span style="color: red">*</span><span id="error_price"></span></th>
               <th> GST % <span style="color: red">*</span><span id="error_gst_percent"></span></th>
               <th> LF No. <span style="color: red">*</span><span id="error_lf_no"></span></th>
@@ -137,7 +138,10 @@
 		    <?php if(isset($dispatchData)):
 					foreach($dispatchData as $d): ?>
 			<tr class="trRow">
-              
+              <td>
+                  <input type="text" class="form-control barcode" name="barcode[]" placeholder="Enter Barcode No." autocomplete="off">
+                  <span style="color: red" class="barcode_error"></span>
+              </td>
               <td>
                 <!-- <input type="text" class="form-control" name="asset_name[]" id="asset_name1" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())"> -->
                 <select class="form-control"  disabled>
@@ -147,6 +151,9 @@
               </td>
               <td>
                 <input type="text" class="form-control" disabled value="<?= $d->quantity; ?>">
+              </td>
+              <td>
+                <div class="attribute_div">Attributes</div>
               </td>
               <td>
                 <input type="text" class="form-control" disabled value="<?= $d->price; ?>">
@@ -167,7 +174,10 @@
 			<?php endforeach; endif; ?>
 			
             <tr class="trRow">
-              
+              <td>
+                  <input type="text" class="form-control barcode" name="barcode[]" placeholder="Enter Barcode No." autocomplete="off">
+                  <span style="color: red" class="barcode_error"></span>
+              </td>
               <td>
                 <!-- <input type="text" class="form-control" name="asset_name[]" id="asset_name1" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())"> -->
                 <select class="form-control" name="asset_name" id="asset_name1" onclick="modelOpen()">
@@ -179,6 +189,9 @@
                 <input type="text" class="form-control" name="quantity" id="quantity1" placeholder="Enter Quantity" autocomplete="off">
               </td>
               <td>
+                <div class="attribute_div">Attributes</div>
+              </td>
+              <td>
                 <input type="text" class="form-control" name="product_mrp" id="product_mrp1" readonly="readonly" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">
               </td>
               <td>
@@ -186,7 +199,7 @@
               </td>
               
               <td>
-                <input type="text" class="form-control" name="lf_no" id="lf_no1" placeholder="Enter LF No." autocomplete="off">
+                <input type="text" class="form-control" name="lf_no" id="lf_no1" readonly="readonly" placeholder="Enter LF No." autocomplete="off">
               </td>
               <td class="text-center">
               </td>
@@ -194,7 +207,10 @@
 			<?php endif; ?>
 			<?php if(isset($view)): ?>
 				<tr class="trRow">
-              
+              <td>
+                  <input type="text" class="form-control barcode" name="barcode[]" placeholder="Enter Barcode No." autocomplete="off">
+                  <span style="color: red" class="barcode_error"></span>
+              </td>
               <td>
                 <!-- <input type="text" class="form-control" name="asset_name[]" id="asset_name1" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())"> -->
                 <select class="form-control" name="asset_name" id="asset_name1" onchange="getGST(this.value,$(this).closest('tr').index());">
@@ -205,9 +221,11 @@
               <td>
                 <input type="text" value="<?= $dispatchData->quantity; ?>" class="form-control" name="quantity" id="quantity1" placeholder="Enter Quantity" autocomplete="off">
                 <input type="hidden" value=<?= $dispatchData->quantity; ?> name="actual_qty">
-				<input type="hidden" value=<?= $dispatchData->id; ?> name="dis_id">
-			  </td>
-			  
+				        <input type="hidden" value=<?= $dispatchData->id; ?> name="dis_id">
+			        </td>
+			        <td>
+                <div class="attribute_div">Attributes</div>
+              </td>
               <td>
                 <input type="text"value="<?= $dispatchData->price; ?>" class="form-control" name="product_mrp" id="product_mrp1" readonly="readonly" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">
               </td>
@@ -216,7 +234,7 @@
               </td>
               
               <td>
-                <input type="text" value="<?= $dispatchData->lf_no; ?>" class="form-control" name="lf_no" id="lf_no1" placeholder="Enter LF No." autocomplete="off">
+                <input type="text" value="<?= $dispatchData->lf_no; ?>" class="form-control" name="lf_no" id="lf_no1" readonly="readonly" placeholder="Enter LF No." autocomplete="off">
               </td>
               <td class="text-center">
 					 <button type="button" id="edit-action-button" class="btn  btn-sm btn-success"><i class="fa fa-edit"></i></button>
@@ -346,12 +364,18 @@
 
 				<table id="myTable" style="max-height:600px;overflow-x:scroll">
 				  <tr class="header"> 
-				    <th style="width:20%;">Name</th>
-				    <th style="width:15%;">Available Quantity</th>
-				    <th style="width:10%;">Price</th>
-				    <th style="width:15%;">Purchase Date</th>
-            <th style="width:30%;">AGE</th>
-            <th style="width:10%;">Add</th>
+            <th>Name</th>
+            <th>Barcode</th>
+				    <th>Available Quantity</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Color</th>
+            <th>Size</th>
+            <th>Fabric</th>
+            <th>Craft</th>
+				    <th>Purchase Date</th>
+            <th>AGE</th>
+            <th>Add</th>
 				  </tr>
 				  <?php if(!empty($products)) {
 		               foreach ($products as $product) {
@@ -371,9 +395,15 @@
                     $arrTime[] =  $interval->d.' Days';
 		              ?>
 						  <tr>
-						    <td><?= $product->asset_name; ?></td>
+                <td><?= $product->asset_name; ?></td>
+                <td><?= $product->barcode_number; ?></td>
 						    <td><?= $product->quantity; ?></td>
-						    <td><?= $product->product_mrp; ?></td>
+                <td><?= $product->product_mrp; ?></td>
+                <td><?= $product->title; ?></td>
+                <td><?= $product->color; ?></td>
+                <td><?= $product->size; ?></td>
+                <td><?= $product->fabric; ?></td>
+                <td><?= $product->craft; ?></td>
                 <td><?= date("d-m-Y", strtotime($product->purchase_date)); ?></td> 
                 <td><?= implode(" ",$arrTime); ?></td>  
 						    <td><button id="add_product" class="btn btn-success add_product" data-name="<?= $product->asset_name; ?>" data-id="<?= $product->id; ?>"><i class="fa fa-plus"></i></button></td>
@@ -396,6 +426,38 @@
 <?php $this->load->view('common/footer');?>
 
 <script>
+
+$(document).on('keyup','.barcode',function(e){
+      /* ENTER PRESSED*/
+      if (e.keyCode == 13) {
+
+        var dataString = "barcode="+this.value;
+        var index = $(this).closest('td').parent()[0].sectionRowIndex;
+
+        var url = "<?php echo site_url('Dispatch/checkBarcode'); ?>";
+        $.post(url, dataString, function(returndata){
+          //alert(returndata);
+          var obj = jQuery.parseJSON(returndata);
+          
+          if(obj.success == "1")
+          {
+            $('#asset_name1').html('<option value="'+obj.id+'">'+obj.name+'</option>');
+
+            $('#gst_percent1').val(obj.gst_percent);
+			      $('#product_mrp1').val(obj.price);
+
+            $('table .attribute_div').slice(index, index+1).empty();
+            $('table .attribute_div').slice(index, index+1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
+            
+          } else {
+            $('.barcode_error').eq(index).html("Invalid Barcode").fadeIn();
+            setTimeout(function(){$(".barcode_error").eq(index).fadeOut()},5000);
+          }
+
+        });
+      }
+  });
+
 $(document).on('click','.add_product',function(){
 		var id = $(this).attr('data-id');
 		var name = $(this).attr('data-name');
@@ -546,7 +608,8 @@ function getGST(val,len) {
 		var obj = jQuery.parseJSON(returndata);
 		//alert(obj);
       $('#gst_percent1').val(obj.gst_percent);
-			$('#product_mrp1').val(obj.price);
+      $('#product_mrp1').val(obj.price);
+        $('#lf_no1').val(obj.lf_no);
 			//$('#hsn'+(len+1)).val(obj.hsn);
 		
 	});

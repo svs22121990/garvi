@@ -55,6 +55,7 @@ $this->load->view('common/left_panel');
                                                                 <th>Selling Price</th>
                                                                 <th>GST %</th>
                                                                 <th>GST</th>
+                                                                 <th>Action</th>
                                                                 <!-- <th>Image</th> -->                                                          
                                                             </tr>
                                                         </thead>
@@ -77,6 +78,8 @@ $this->load->view('common/left_panel');
                                                                 <td><?php echo 'Rs. '.$getData->product_mrp; ?></td>
                                                                 <td><?php echo $getData->gst_percent ?></td>
                                                                 <td><?php echo 'Rs. '.(($getData->product_mrp * $getData->quantity) * ($getData->gst_percent/100)) ?></td>
+                                                                <td><a href="<?= site_url('Warehouse_products/product_pdf_summary/' . $getData->id) ?>" title="PDF" target="_blank" class="btn btn-danger btn-circle btn-sm"><i class="fa fa-file-pdf-o"></i></a></td>
+
                                                             </tr>  
                                                             <?php 
                                                             $totalGST += (($getData->product_mrp * $getData->quantity) * ($getData->gst_percent/100));

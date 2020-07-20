@@ -59,6 +59,7 @@
                                      <tr>
                                          <th>Category Name</th>
                                          <th>Product Type Name</th>
+                                         <th>Product Type Name 2</th>
                                          <th>Product Name</th>
                                          <th>Quantity</th>
                                          <th>Product Price</th>
@@ -81,6 +82,7 @@
                                      <tr>
                                          <td><?php echo $getData->title ?></td>
                                          <td><?php echo $getData->type ?></td>
+                                         <td><?php echo $getData->label ?></td>
                                          <td><?php echo $getData->asset_name ?></td>
                                          <td><?php echo $getData->total_quantity ?></td>
                                          <td><?php echo "Rs. " . number_format($getData->product_mrp, 2); ?></td>

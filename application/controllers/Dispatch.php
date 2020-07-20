@@ -124,13 +124,10 @@ class Dispatch extends CI_Controller {
         if(!empty($view)){
         $btn .='<a href='.site_url("Dispatch/view/".$row->id).' title="Details" class="btn btn-primary btn-circle btn-sm"><i class="fa fa-eye"></i></a>';
         }
-        //if(!empty($delete)){
-        //$btn .='&nbsp;|&nbsp;'.'<a href="#deleteData" data-toggle="modal" title="Delete" class="btn btn-danger btn-circle btn-sm" onclick="checkStatus('.$row->id.')"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>';
-        //}
-        $btn .='&nbsp;|&nbsp;'.'<a href="#approveData" data-toggle="modal" title="Approve" class="btn btn-success btn-check btn-sm" onclick="approveStatus('.$row->id.')"><i class="ace-icon fa fa-check bigger-130"></i></a>';
-        //if(!empty($edit)){
-        //    $btn .= ('<a href="#myModaledit" title="Edit" class="btn btn-info btn-circle btn-sm" data-toggle="modal"  onclick="getEditvalue('.$row->id.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>');
-       // }
+
+        if(!empty($delete)){
+        $btn .='&nbsp;|&nbsp;'.'<a href="#deleteData" data-toggle="modal" title="Delete" class="btn btn-danger btn-circle btn-sm" onclick="checkStatus('.$row->id.')"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>';
+        }
         if(!empty($avlquantity)){
         	$avl_quantity = $avlquantity;
         }else{
@@ -428,6 +425,42 @@ class Dispatch extends CI_Controller {
       $this->load->view('dispatch/form',$data);
   }
   
+  public function checkBarcode()
+  {
+      $query =  $this->db->select('a.id,a.asset_name,a.barcode_number,a.gst_percent,mat.type,a.quantity,a.product_mrp,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
+              ->join("size siz","siz.id = a.size_id","left")
+              ->join("color col","col.id = a.color_id","left")
+              ->join("fabric fab","fab.id = a.fabric_id","left")
+              ->join("craft cra","cra.id = a.craft_id","left")
+              ->join("categories cat","cat.id = a.category_id","left")
+              ->join("mst_asset_types mat","mat.id = a.asset_type_id","left")
+              ->from('assets as a')
+              ->where('a.barcode_number=',$this->input->post('barcode'))
+              ->get();
+      $select = $query->result();
+
+      if(!empty($select)) {
+          $response['success'] = '1';
+          $response['gst_percent'] = $select[0]->gst_percent;
+          $response['id'] = $select[0]->id;
+          $response['name'] = $select[0]->asset_name;
+          $response['price'] = $select[0]->product_mrp;
+          $response['title'] = $select[0]->title;
+          $response['type'] = $select[0]->type;
+          $response['size'] = $select[0]->size;
+          $response['color'] = $select[0]->color;
+          $response['fabric'] = $select[0]->fabric;
+          $response['craft'] = $select[0]->craft;
+          $response['quantity'] = $select[0]->quantity;
+          $response['barcode_number'] = $select[0]->barcode_number;
+          //$response['hsn'] = $select->hsn;
+        } else {
+          $response['success'] = '0';
+        }
+  
+        echo json_encode($response);exit;
+
+  }
 
   public function approveProduct() { 
 	  $id = $_POST['id'];
@@ -2773,7 +2806,7 @@ public function delete_assets_images($asset_id,$asset_details_id)
         $response['success'] = '1';
         $response['gst_percent'] = $select->gst_percent;
         $response['price'] = $select->product_mrp;
-        //$response['hsn'] = $select->hsn;
+        $response['lf_no'] = $select->lf_no;
       } else {
         $response['success'] = '0';
       }

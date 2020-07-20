@@ -465,7 +465,9 @@ $this->load->view('common/left_panel'); ?>
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-
+                                            <th>
+                                                Barcode
+                                                <span style="color: red;">*</span> <span id="error_barcode" style="color: red;"></span></th>
                                             <th>
                                                 Product
                                                 <span style="color: red;">*</span> <span id="error_asset_name" style="color: red;"></span></th>
@@ -528,7 +530,9 @@ $this->load->view('common/left_panel'); ?>
                                             <?php if (isset($view)) : ?>
                                                 <?php foreach ($view as $key) : ?>
                                                     <tr>
-
+                                                    <td>
+                                                        <input type="text" class="form-control barcode" name="barcode" placeholder="Enter Barcode No." autocomplete="off">
+                                                    </td>
                                                         <td>
                                                             <select class="form-control" style="min-width: 100px;" readonly>
                                                                 <option value="">Select Product</option>
@@ -660,6 +664,9 @@ $this->load->view('common/left_panel'); ?>
                                                     <input type="hidden" name="invoice_id2" value="<?= $invoice_id ?>">
                                                 <?php endif; ?>
                                                 <td>
+                                                    <input type="text" class="form-control barcode" name="barcode" placeholder="Enter Barcode No." autocomplete="off">
+                                                </td>
+                                                <td>
 
                                                     <select class="form-control" name="asset_name" id="asset_name1" onchange="getGST(this.value);" style="min-width: 100px;">
                                                         <option value="">Select Product</option>
@@ -771,6 +778,9 @@ $this->load->view('common/left_panel'); ?>
                                         <?php endif; ?>
                                         <?php if (isset($edit_data)) : ?>
                                             <tr>
+                                                <td>
+                                                    <input type="text" class="form-control barcode" name="barcode" placeholder="Enter Barcode No." autocomplete="off">
+                                                </td>
                                                 <td>
 
                                                     <select class="form-control" name="asset_name" id="asset_name1" onchange="getGST(this.value);" style="min-width: 100px;">
@@ -904,6 +914,7 @@ $this->load->view('common/left_panel'); ?>
                                     </tbody>
                                     <tfoot>
                                         <tr>
+                                            <th></th>
                                             <th></th>
                                             <th></th>
                                             <th><input type="text" class="form-control" id="total_qty" readonly="readonly"></th>
@@ -1664,6 +1675,46 @@ $this->load->view('common/left_panel'); ?>
             getDiscountAmount();
         });
     }
+
+    $(document).on('keyup','.barcode',function(e){
+          /* ENTER PRESSED*/
+          if (e.keyCode == 13) {
+
+            var dataString = "barcode="+this.value;
+            var index = $(this).closest('td').parent()[0].sectionRowIndex;
+
+            var url = "<?php echo site_url('Invoice/checkBarcode'); ?>";
+            $.post(url, dataString, function(returndata){
+              //alert(returndata);
+              var obj = jQuery.parseJSON(returndata);
+              
+              if(obj.success == "1")
+              {
+
+                getGST(obj.id);
+                getTotalAmount();
+                var name = $(this).attr('data-name');
+                $('#asset_name1').html('<option value="' + obj.id + '">' + obj.name + '</option>');
+                $('#myModal').modal('hide');
+                allQty();
+                allRateItem();
+                allTotal();
+                allDiscount();
+                allTaxable();
+                allGst();
+                allAmtGst();
+                allShipping();
+                allTotalTax();
+                allTotalAmount();
+
+              } else {
+                $('.barcode_error').eq(index).html("Invalid Barcode").fadeIn();
+                setTimeout(function(){$(".barcode_error").eq(index).fadeOut()},5000);
+              }
+
+            });
+          }
+      });
 
     function getTotalAmount() {
         var rate_per_item = $('#rate_per_item1').val();

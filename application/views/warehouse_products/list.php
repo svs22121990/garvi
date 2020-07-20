@@ -67,10 +67,13 @@ $this->load->view('common/left_panel');
                          <li><a href="<?php echo site_url("Warehouse_Products/create")?>" ><span class="fa fa-plus"></span></a></li>
 
                         <?php }?>
-                       
+                        <li><a href="<?php echo site_url("Warehouse_Products/pdf_summary/$selected_date")?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
+                        <li><a href="<?php echo site_url("Warehouse_Products/export_bill_summary/$selected_date")?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>
+
                         <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
                         <!-- <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
                         <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li> -->
+
                     </ul>                                
                 </div>
                 <div class="panel-body ">
@@ -81,11 +84,11 @@ $this->load->view('common/left_panel');
                                 <th>Sr No</th>
                                 <th>DN No</th>
                                 <th>Date</th>
-                                <th>User</th>
+                                <th>Received From </th>
                                 <th>Qty</th>
                                 <th>Amount</th>
-                                <th>Total</th>
-                                <th>GST</th>
+                                <th>Total Amt.</th>
+                                <th>GST Amt.</th>
                                 <th>Grand Total</th>
                                 <th>Action</th>
                             </tr>

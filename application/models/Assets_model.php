@@ -109,6 +109,7 @@ class Assets_model extends CI_Model
             ast.id,
             ast.category_id,
             ast.asset_type_id,
+            ast.product_type_id,
             ast.cgst_asset,
             ast.sgst_asset,
             ast.final_amount,
@@ -117,6 +118,7 @@ class Assets_model extends CI_Model
             ast.total_quantity,
             cat.title,
             mat.type,
+            pro.label,
             ast.warranty_type,
             ast.warranty_from_date,
             ast.warranty_to_date,
@@ -132,6 +134,7 @@ class Assets_model extends CI_Model
         );        
         $this->db->join("categories cat","cat.id = ast.category_id","left");
         $this->db->join("mst_asset_types mat","mat.id = ast.asset_type_id","left");
+        $this->db->join("product_type pro","pro.id = ast.product_type_id","left");
         $this->db->join("products p", "p.id = ast.product_id", "left");
         $this->db->join("employees e","e.id = p.received_from","left");
         $this->db->where('ast.created_by',$_SESSION[SESSION_NAME]['id']);

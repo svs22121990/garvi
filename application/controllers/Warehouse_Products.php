@@ -155,7 +155,126 @@ class Warehouse_Products extends CI_Controller {
     $output = array("data" => $data);
     echo json_encode($output);
   }
-  
+    public function export_bill_summary($date = 0)
+    {
+        $con = "p.id<>''";
+        $Data = $this->Dispatch_model->warehouse_get_datatables($con,$date);
+        //$Data = $query->result();
+
+        $FileTitle = 'Warehouse Dispatch';
+
+        $this->load->library('excel');
+        //activate worksheet number 1
+        $this->excel->setActiveSheetIndex(0);
+        //name the worksheet
+        $this->excel->getActiveSheet()->setTitle('Warehouse Dispatch Details');
+        //set cell A1 content with some text
+        $this->excel->getActiveSheet()->setCellValue('A1', 'Gujarat State Handloom & Handicraft Development Corp. Ltd.');
+        $this->excel->getActiveSheet()->setCellValue('A2', $_SESSION[SESSION_NAME]['name']);
+        $this->excel->getActiveSheet()->setCellValue('A2', $_SESSION[SESSION_NAME]['address']);
+        $this->excel->getActiveSheet()->setCellValue('A3', $_SESSION[SESSION_NAME]['gst_number']);
+        $this->excel->getActiveSheet()->setCellValue('A4', 'Warehouse Dispatch Details');
+
+        $this->excel->getActiveSheet()->setCellValue('A5', 'Sr. No.');
+        $this->excel->getActiveSheet()->setCellValue('B5', 'DN Number.');
+        $this->excel->getActiveSheet()->setCellValue('C5', 'Date');
+        $this->excel->getActiveSheet()->setCellValue('D5', 'Sent To');
+        $this->excel->getActiveSheet()->setCellValue('E5', 'Qty');
+        $this->excel->getActiveSheet()->setCellValue('F5', 'SP');
+        $this->excel->getActiveSheet()->setCellValue('G5', 'Total SP Amt.');
+        $this->excel->getActiveSheet()->setCellValue('H5', 'GST');
+        $this->excel->getActiveSheet()->setCellValue('I5', 'Grand Total');
+
+        $a = '6';
+        $sr = 1;
+        $total_qty = 0;
+        $total_sp = 0;
+        $total_sp_sum = 0;
+        $total_gst = 0;
+        $total_grand = 0;
+        //print_r($results);exit;
+        foreach ($Data as $result) {
+
+            $this->excel->getActiveSheet()->setCellValue('A' . $a, $sr);
+            $this->excel->getActiveSheet()->setCellValue('B' . $a, $result->dn_number);
+            $this->excel->getActiveSheet()->setCellValue('C' . $a, date('d-m-Y', strtotime($result->warehouse_date)));
+            $this->excel->getActiveSheet()->setCellValue('D' . $a, $result->employee_name);
+            $this->excel->getActiveSheet()->setCellValue('E' . $a, $result->sum_quantity);
+            $this->excel->getActiveSheet()->setCellValue('F' . $a, "Rs. " . number_format($result->sum_amount, 2));
+            $this->excel->getActiveSheet()->setCellValue('G' . $a, "Rs. " . number_format(($result->sum_quantity * $result->sum_amount),2));
+            $this->excel->getActiveSheet()->setCellValue('H' . $a, "Rs. " . number_format(($result->gst/100),2));
+            $this->excel->getActiveSheet()->setCellValue('I' . $a, "Rs. " . number_format(($result->sum_quantity * $result->sum_amount) + ($result->gst/100),2));
+            $sr++;
+            $a++;
+            $total_qty += $result->sum_quantity;
+            $total_sp += $result->sum_amount;
+            $total_sp_sum += number_format(($result->sum_quantity * $result->sum_amount),2);
+            $total_gst += number_format(($result->gst/100),2);
+            $total_grand += number_format(($result->sum_quantity * $result->sum_amount) + ($result->gst/100),2);
+        }
+        $this->excel->getActiveSheet()->setCellValue('E' . $a, cNumberFormat($total_qty));
+        $this->excel->getActiveSheet()->setCellValue('F' . $a, cNumberFormat($total_sp));
+        $this->excel->getActiveSheet()->setCellValue('G' . $a, cNumberFormat($total_sp_sum));
+        $this->excel->getActiveSheet()->setCellValue('H' . $a, cNumberFormat($total_gst));
+        $this->excel->getActiveSheet()->setCellValue('I' . $a, cNumberFormat($total_grand));
+
+        $this->excel->getActiveSheet()->getStyle('E' . $a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('F' . $a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('G' . $a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('H' . $a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('I' . $a)->getFont()->setBold(true);
+
+        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
+        $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A2')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A3')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A4')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('B5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('C5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('D5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('E5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('F5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('G5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('H5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('I5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+        $filename = '' . $FileTitle . '.xlsx'; //save our workbook as this file name
+        header('Content-Type: application/vnd.ms-excel'); //mime type
+        header('Content-Disposition: attachment;filename="' . $filename . '"'); //tell browser what's the file name
+        header('Cache-Control: max-age=0'); //no cache
+        ob_clean();
+
+        //save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
+        //if you want to save it as .XLSX Excel 2007 format
+        $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+        //force user to download the Excel file without writing it to server's HD
+        $objWriter->save('php://output');
+    }
+    public function product_pdf_summary($date = 0)
+    {
+        $con = "p.id<>''";
+
+        $data['results'] = $this->Dispatch_model->warehouse_get_datatables($con, $date);
+//        print_r($data);exit();
+        //$data['results'] = $query->result();
+        $html = $this->load->view('warehouse_products/product_pdf4', $data, TRUE);
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML($html);
+        $mpdf->Output('Warehouse Product', 'I');
+    }
+
+    public function pdf_summary($date = 0)
+    {
+        $con = "p.id<>''";
+        $data['results'] = $this->Dispatch_model->warehouse_get_datatables($con,$date);
+        //$data['results'] = $query->result();
+        $html = $this->load->view('warehouse_products/product_pdf', $data, TRUE);
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML($html);
+        $mpdf->Output('Warehouse Dispatch', 'I');
+    }
 
   public function approveProduct() { 
 	  $id = $_POST['id'];
@@ -215,6 +334,8 @@ class Warehouse_Products extends CI_Controller {
           'total_quantity' => $detail[$i]->quantity,
           'product_mrp' => $detail[$i]->price,
           'gst_percent' => $detail[$i]->gst_percent,
+          'barcode_number' => $detail[$i]->barcode_number,
+          'barcode_image' => $detail[$i]->barcode_image,
           'hsn' => $detail[$i]->hsn,
           'purchase_date' => $detail[$i]->purchase_date,
           'created_by' => $_SESSION[SESSION_NAME]['id'],

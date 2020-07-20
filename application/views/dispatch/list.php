@@ -83,10 +83,10 @@ $this->load->view('common/left_panel');
                         <thead>
                              <tr>
                                 <th>Sr No</th>
-                                <th>DN No</th>
+                                <th>DN.No.</th>
                                 <th>Date</th>
-                                <th>Amount</th>
-                                <th>User</th>
+                                <th>Total Amount </th>
+                                <th>Sent to </th>
                                 <th>Action</th>
                             </tr>
                         </thead>

@@ -28,7 +28,7 @@
     <body>
         
         <div class="title-center"><img class="img-responsive logo-image" src="http://app.garvigurjari.in/images/logo.jpg" style=""></div>
-            
+        <div class="title-center"><?= $_SESSION[SESSION_NAME]['name'] ?></div>
             <div class="title-center"><?= $_SESSION[SESSION_NAME]['address'] ?></div>
             <!--<div style="text-align: center;">GST Number: <?/*= $_SESSION[SESSION_NAME]['gst_number'] */?></div>-->
             <h4 style="text-align: center;">Warehouse Products</h4>
