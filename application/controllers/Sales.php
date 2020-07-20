@@ -169,7 +169,7 @@ class Sales extends CI_Controller {
                 "recordsFiltered" => $this->Sales_model->count_filtered($con),
                 "data" => $data,
             );
-   
+
     echo json_encode($output);
   }
 
