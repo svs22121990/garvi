@@ -373,7 +373,7 @@ function myFunction() {
                 price();
               } else {
                 $('.barcode_error').eq(index).html("Invalid Barcode").fadeIn();
-                setTimeout(function(){$(".barcode_error").eq(i).fadeOut()},5000);
+                setTimeout(function(){$(".barcode_error").eq(index).fadeOut()},5000);
               }
 
             });

@@ -906,6 +906,32 @@ class Invoice extends CI_Controller
     exit;
   }
 
+  public function checkBarcode()
+  {
+      $query =  $this->db->select('a.id,a.asset_name,a.barcode_number,a.gst_percent,a.quantity,a.product_mrp')
+              ->join("mst_asset_types mat","mat.id = a.asset_type_id","left")
+              ->from('assets as a')
+              ->where('a.barcode_number=',$this->input->post('barcode'))
+              ->get();
+      $select = $query->result();
+
+      if(!empty($select)) {
+          $response['success'] = '1';
+          $response['gst_percent'] = $select[0]->gst_percent;
+          $response['id'] = $select[0]->id;
+          $response['name'] = $select[0]->asset_name;
+          $response['price'] = $select[0]->product_mrp;
+          $response['barcode_number'] = $select[0]->barcode_number;
+          //$response['hsn'] = $select->hsn;
+        } else {
+          $response['success'] = '0';
+        }
+  
+        echo json_encode($response);exit;
+
+  }
+
+
   public function delete()
   {
     $con = "id='" . $_POST['id'] . "'";

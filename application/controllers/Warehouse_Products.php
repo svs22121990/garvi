@@ -215,6 +215,8 @@ class Warehouse_Products extends CI_Controller {
           'total_quantity' => $detail[$i]->quantity,
           'product_mrp' => $detail[$i]->price,
           'gst_percent' => $detail[$i]->gst_percent,
+          'barcode_number' => $detail[$i]->barcode_number,
+          'barcode_image' => $detail[$i]->barcode_image,
           'hsn' => $detail[$i]->hsn,
           'purchase_date' => $detail[$i]->purchase_date,
           'created_by' => $_SESSION[SESSION_NAME]['id'],

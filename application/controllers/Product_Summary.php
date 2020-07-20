@@ -252,7 +252,7 @@ class Product_Summary extends CI_Controller
           'btn' =>  "<a href='javascript:void(0)' onclick='addDamage(" . $product_id . ")' title='Add Damage' class='btn btn-danger btn-circle btn-sm edit-qty'><i class='fa fa-plus'></i></a>",
         );
       }
-    //dd($data); 
+    
     $output = array("data" => $data);
 
     echo json_encode($output);

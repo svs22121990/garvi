@@ -139,7 +139,12 @@ class Invoice_model extends CI_Model
 	public function getProduct()
 	{
 		$query = $this->db
-                      ->select('a.asset_name,a.quantity,a.product_mrp,a.purchase_date,a.id')
+                      ->select('a.asset_name,a.barcode_number,a.quantity,a.product_mrp,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
+                      ->join("size siz","siz.id = a.size_id","left")
+                    ->join("color col","col.id = a.color_id","left")
+                    ->join("fabric fab","fab.id = a.fabric_id","left")
+                    ->join("craft cra","cra.id = a.craft_id","left")
+                    ->join("categories cat","cat.id = a.category_id","left")
                       ->from('assets as a')
                       ->join('products as p','p.id=a.product_id')
 					  ->where('a.created_by',$_SESSION[SESSION_NAME]['id'])
