@@ -108,7 +108,7 @@ $this->load->view('common/left_panel');
                                             <td><?php echo "Rs. " . $getData->sp_total; ?></td>
 
                                               <td><a href="<?= site_url('Warehouse/export_single_pdf/' . $getData->id) ?>" title="PDF" target="_blank" class="btn btn-danger btn-circle btn-sm"><i class="fa fa-file-pdf-o"></i></a></td>
-                                                 <td>  <a href="<?= site_url('Warehouse/export_summary/' . $getData->id) ?>" title="Export" ><i class="fa fa-file-excel-o"></i></a></td>
+<!--                                                 <td>  <a href="--><?//= site_url('Warehouse/export_summary/' . $getData->id) ?><!--" title="Export" ><i class="fa fa-file-excel-o"></i></a></td>-->
 
 
                                         </tr>
