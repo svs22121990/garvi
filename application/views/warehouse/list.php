@@ -79,8 +79,9 @@ $this->load->view('common/left_panel');
                                 <th class="text-center">Received from</th>
                                 <th class="text-center">Total CP Amt.</th>
                                 <th class="text-center">Total SP Amt.</th>
-                                <!--<th class="text-center">GST %</th>
-                                <th class="text-center">GST</th>-->
+                                <th class="text-center">CGST</th>
+                                <th class="text-center">SGST</th>
+                                <th class="text-center">Total GST</th>
                                 <th class="text-center">Action</th>
                             </tr>
                             </thead>
@@ -89,6 +90,9 @@ $this->load->view('common/left_panel');
                             <tfoot>
                             <tr>
                                 <th colspan="4" style="text-align:right">TOTAL</th>
+                                <th class="text-center"></th>
+                                <th class="text-center"></th>
+                                <th class="text-center"></th>
                                 <th class="text-center"></th>
                                 <th class="text-center"></th>
                                 <!--<th class="text-center"></th>
@@ -230,6 +234,24 @@ $this->load->view('common/left_panel');
                 },
                 {
                     "data": "sp_total",
+                    "render": function ( data, type, row, meta ) {
+                        return 'Rs. '+data;
+                    }
+                },
+                {
+                    "data": "cgst",
+                    "render": function ( data, type, row, meta ) {
+                        return 'Rs. '+data;
+                    }
+                },
+                {
+                    "data": "cgst",
+                    "render": function ( data, type, row, meta ) {
+                        return 'Rs. '+data;
+                    }
+                },
+                {
+                    "data": "gst",
                     "render": function ( data, type, row, meta ) {
                         return 'Rs. '+data;
                     }

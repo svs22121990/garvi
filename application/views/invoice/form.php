@@ -1010,12 +1010,18 @@ $this->load->view('common/left_panel'); ?>
 
                 <table id="myTable" style="max-height:600px;overflow-x:scroll">
                     <tr class="header">
-                        <th style="width:20%;">Name</th>
-                        <th style="width:15%;">Available Quantity</th>
-                        <th style="width:10%;">Price</th>
-                        <th style="width:15%;">Purchase Date</th>
-                        <th style="width:30%;">AGE</th>
-                        <th style="width:10%;">Add</th>
+                        <th>Name</th>
+                        <th>Barcode</th>
+                        <th>Available Quantity</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Fabric</th>
+                        <th>Craft</th>
+                        <th>Purchase Date</th>
+                        <th>AGE</th>
+                        <th>Add</th>
                     </tr>
                     <?php if (!empty($products)) {
                         foreach ($products as $product) {
@@ -1036,8 +1042,14 @@ $this->load->view('common/left_panel'); ?>
                             ?>
                             <tr>
                                 <td><?= $product->asset_name; ?></td>
+                                <td><?= $product->barcode_number; ?></td>
                                 <td><?= $product->quantity; ?></td>
                                 <td><?= $product->product_mrp; ?></td>
+                                <td><?= $product->title; ?></td>
+                                <td><?= $product->color; ?></td>
+                                <td><?= $product->size; ?></td>
+                                <td><?= $product->fabric; ?></td>
+                                <td><?= $product->craft; ?></td>
                                 <td><?= date("d-m-Y", strtotime($product->purchase_date)); ?></td>
                                 <td><?= implode(" ", $arrTime); ?></td>
                                 <td><button id="add_product" class="btn btn-success add_product" data-name="<?= $product->asset_name; ?>" data-id="<?= $product->id; ?>"><i class="fa fa-plus"></i></button></td>

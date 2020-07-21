@@ -244,6 +244,7 @@ class Product_Summary extends CI_Controller
           'damage_qty' => $row->damage_qty,
           'quantity' => $row->quantity,
           'total' => number_format($row->quantity * $row->product_mrp, 2),
+          'gst' => number_format(($row->quantity * $row->product_mrp) * ($row->gst_percent/100), 2),
           'purchase_date' => $row->purchase_date,
           'attributes' => '<b>Color : </b>'.$row->color.'</br><b>Size : </b>'.$row->size.'</br><b>Fabric : </b>'.$row->fabric.'</br><b>Craft : </b>'.$row->craft,
           'product_purchase_date' => $row->product_purchase_date,
@@ -267,7 +268,9 @@ class Product_Summary extends CI_Controller
     $query = $this->db->get('assets');
     $product = $query->row();
     if ($qty <= $product->quantity) {
-      $data = array('damage_qty' => $product->damage_qty + $qty, 'quantity' => $product->quantity - $qty);
+      $data = array('damage_qty' => $product->damage_qty + $qty, 
+                    //'quantity' => $product->quantity - $qty
+                  );
       $condition = array('id' => $product_id);
       $this->Crud_model->SaveData('assets', $data, $condition);
       $msgArray = array('status' => 'success', 'msg' => 'Damage Quantity added suucessfully!');

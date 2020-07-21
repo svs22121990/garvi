@@ -225,6 +225,7 @@ class Bank_Reconcillation extends CI_Controller
         'assetType'=> $row->assetType,
         'invoice_quantity' => $row->invoice_quantity,
         'rate_per_item' => number_format($row->rate_per_item, 2),
+        'total_amt' => number_format($row->invoice_quantity * $row->rate_per_item, 2),
         'discount_1' => (($row->rate_per_item * $row->invoice_quantity * $row->discount_1) / 100),
         'total_discount' => (($row->rate_per_item * $row->invoice_quantity * $row->discount_3 ) / 100),
         'taxable' => number_format($row->taxable, 2),

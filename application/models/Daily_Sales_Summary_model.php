@@ -42,6 +42,7 @@ class Daily_Sales_Summary_model extends CI_Model
             (select sum(taxable) from invoice_details where invoice_id=i.id) as taxable,
             (select sum(cgst_amount) from invoice_details where invoice_id=i.id) as cgst_amount,
             (select sum(sgst_amount) from invoice_details where invoice_id=i.id) as sgst_amount,
+            (select sum(igst_amount) from invoice_details where invoice_id=i.id) as igst_amount,
             (select label from sales_type where id=i.invoice_sales_type) as salesType,
             (select type from payment_types where id=i.payment_mode) as paymentMode,
 
