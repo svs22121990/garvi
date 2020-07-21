@@ -67,11 +67,11 @@ $this->load->view('common/left_panel');
                         <thead>
                              <tr>
                                 <th>Sr No</th>
-                                <th>DN No</th>
+                                <th>DN. No.</th>
                                 <th>Date</th>
                                 <th>Sent To</th>
-                                <th>Qty</th>
-                                <th>Selling Price</th>
+                                <th>Qty.</th>
+                                <th>SP</th>
                                 <th>Total SP Amt.</th>
                                 <th>GST</th>
                                 <th>Grand Total</th>

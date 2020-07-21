@@ -61,8 +61,19 @@
 
 
                 );
-//                $total_amount += $key->total_amount;
 
+                $qty = 0;
+                $product_mrp = 0;
+                $total = 0;
+                $totalGST = 0;
+                $finalTotal = 0;
+                $totalmarkup = 0;
+                $selling = 0;
+//                $total_amount += $key->total_amount;
+                $product_mrp += $key->product_mrp;
+                $totalGST += (($key->gst_percent/100) * $key->cost_total);
+                $totalmarkup += ($key->product_mrp - $key->price);
+                $selling += $key->sp_total;
             }
             ?>
         <table id="customers">
@@ -135,7 +146,37 @@
                 </tr>
             <?php } ?>
             </tbody>
+            <tfoot>
 
+            <tr>
+                <td colspan="15" >&nbsp;<span class="pull-right">Total CGST Amount</span></td>
+                <th>
+                    <?= "Rs. " . number_format($totalGST/2, 2); ?>
+                </th>
+                <th colspan="2"></th>
+            </tr>
+            <tr>
+                <td colspan="15" >&nbsp;<span class="pull-right">Total SGST Amount</span></td>
+                <th>
+                    <?= "Rs. " . number_format($totalGST/2, 2); ?>
+                </th>
+                <th colspan="2"></th>
+            </tr>
+
+            <tr>
+                <td colspan="15" >&nbsp;<span class="pull-right">Total Markup Amount</span></td>
+                <th>
+                    <?= "Rs. " . number_format($totalmarkup, 2); ?>
+                </th>
+                <th colspan="2"></th>
+            </tr>
+            <tr>
+                <td colspan="15">&nbsp;<span class="pull-right">Final Selling Amount</span></td>
+                <th><?= "Rs. " . number_format($selling, 2); ?></th>
+                <td colspan="3"></td>
+            </tr>
+
+            </tfoot>
         </table>
     </body>
 </html>

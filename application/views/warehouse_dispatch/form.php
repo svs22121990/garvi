@@ -114,8 +114,8 @@
               <th> Product Name <span style="color: red">*</span><span id="error_asset_name"></span></th>
               <th> Quantity <span style="color: red">*</span><span id="error_quantity"></span></th>
               <th> Attributes </th>
-              <th> Price <span style="color: red">*</span><span id="error_price"></span></th>
-              <th> Amount <span style="color: red">*</span><span id="error_amt"></span></th>
+              <th> Selling Price <span style="color: red">*</span><span id="error_price"></span></th>
+              <th> Total SP Amt.  <span style="color: red">*</span><span id="error_amt"></span></th>
               <th> GST % <span style="color: red">*</span><span id="error_gst_percent"></span></th>
               <th> Total GST <span style="color: red">*</span><span id="error_gst_total"></span></th>
               <th class="text-center"> <a href="javascript:void(0)" class="btn btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>

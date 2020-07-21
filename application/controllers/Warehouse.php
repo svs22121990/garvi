@@ -645,7 +645,6 @@ class Warehouse extends CI_Controller
 
 
 
-
     public function export_bill_summary($date = 0)
     {
         $con = "p.id<>''";
