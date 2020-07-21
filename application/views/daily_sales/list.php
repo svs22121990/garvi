@@ -126,6 +126,7 @@ $this->load->view('common/left_panel');
                                 <th>Amt After Disc.</th>
                                 <th>CGST</th>
                                 <th>SGST</th>
+                                <th>IGST</th>
                                 <th>Total Amount</th>
                             </tr>
                         </thead>
@@ -136,6 +137,7 @@ $this->load->view('common/left_panel');
                                 <th colspan="6"></th>
                                 <th >Quantity</th>
                                 <th colspan="6"></th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -198,6 +200,7 @@ $this->load->view('common/left_panel');
             { "data": "taxable" },
             { "data": "cgst_amount" },
             { "data": "sgst_amount" },
+            { "data": "igst_amount" },
             {
                 "data": "net_amount",
                 "render": function ( data, type, row, meta ) {
@@ -234,13 +237,13 @@ $this->load->view('common/left_panel');
             $( api.column( 7 ).footer() ).html('Rs. '+total1.toFixed(2));
 
             total2 = api
-                .column(15, {filter: 'applied'})
+                .column(16, {filter: 'applied'})
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
             var additionalDOM = 'Rs.'+total2.toFixed(2)+'</div>';
-            $( api.column( 15 ).footer() ).html(additionalDOM);
+            $( api.column( 16 ).footer() ).html(additionalDOM);
         }
     });
   });

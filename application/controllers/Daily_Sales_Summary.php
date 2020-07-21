@@ -196,7 +196,8 @@ class Daily_Sales_Summary extends CI_Controller {
               $data[$key]['net_amount'] += $row->net_amount;
               $data[$key]['cgst_amount'] += $row->cgst_amount;
               $data[$key]['sgst_amount'] += $row->sgst_amount;
-              $data[$key]['gst_amount'] += $row->cgst_amount + $row->sgst_amount;
+              $data[$key]['igst_amount'] += $row->igst_amount;
+              $data[$key]['gst_amount'] += $row->cgst_amount + $row->sgst_amount + $row->igst_amount;
               break;
             }
           }
@@ -217,7 +218,8 @@ class Daily_Sales_Summary extends CI_Controller {
             'net_amount' => $row->net_amount,
             'cgst_amount' => $row->cgst_amount,
             'sgst_amount' => $row->sgst_amount,
-            'gst_amount' => $row->cgst_amount + $row->sgst_amount,
+            'igst_amount' => $row->igst_amount,
+            'gst_amount' => $row->cgst_amount + $row->sgst_amount + $row->igst_amount,
           );
         }
     }

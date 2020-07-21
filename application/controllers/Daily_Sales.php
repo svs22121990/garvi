@@ -200,6 +200,7 @@ class Daily_Sales extends CI_Controller {
           'net_amount' => number_format($row->net_amount,2),
           'cgst_amount' => $row->cgst_amount,
           'sgst_amount' => $row->sgst_amount,
+          'igst_amount' => $row->igst_amount,
           'productType' => $row->product_type,
           'assetType' => $row->asset_type,
         );

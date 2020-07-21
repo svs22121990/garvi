@@ -23,6 +23,7 @@ class Product_Summary_model extends CI_Model
             a.product_mrp, 
             a.total_quantity, 
             a.quantity, 
+            a.gst_percent, 
             a.damage_qty, 
             a.id,
             a.hsn,

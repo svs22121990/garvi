@@ -26,6 +26,7 @@ class Warehouse_model extends CI_Model
                 e.name as employee_name,
                 (select SUM(cost_total) from warehouse_details where warehouse_id=p.id) as cost_total,
                 (select SUM(sp_total) from warehouse_details as a where warehouse_id=p.id) as sp_total,
+                (select SUM(sp_total * gst_percent / 100) from warehouse_details as a where warehouse_id=p.id) as gst,
             ');
         $this->db->from("warehouse p");
         $this->db->join("employees e","e.id = p.received_from","left");

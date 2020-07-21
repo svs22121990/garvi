@@ -62,7 +62,7 @@ class Dashboard extends CI_Controller {
      //echo "<pre>"; print_r(); exit();
 
       $year = $this->datefind();
-      $marchDate = $year.'-3-1';
+      $marchDate = $year.'-4-1';
 
       //yearly
       $where = array('date_of_invoice>='=>$marchDate);

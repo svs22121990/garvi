@@ -123,6 +123,7 @@ $this->load->view('common/left_panel');
                                 <th>Amt After Disc.</th>
                                 <th>CGST</th>
                                 <th>SGST</th>
+                                <th>IGST</th>
                                 <th>Total GST</th>
                                 <th>Total Amount</th>
                             </tr>
@@ -132,6 +133,7 @@ $this->load->view('common/left_panel');
                         <tfoot>
                              <tr>
                                 <th colspan="2"></th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -215,6 +217,12 @@ $this->load->view('common/left_panel');
                 }
             },
             {
+                "data": "igst_amount",
+                "render": function ( data, type, row, meta ) {
+                  return data.toString().match(/\d+(\.\d{1,2})?/g)[0];
+                }
+            },
+            {
                 "data": "gst_amount",
                 "render": function ( data, type, row, meta ) {
                   return data.toString().match(/\d+(\.\d{1,2})?/g)[0];
@@ -289,13 +297,13 @@ $this->load->view('common/left_panel');
             $( api.column( 7 ).footer() ).html('Rs. '+total.toFixed(2));
 
             total2 = api
-                .column(11, {filter: 'applied'})
+                .column(12, {filter: 'applied'})
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
             var additionalDOM = 'Rs.'+total2.toFixed(2)+'</div>';
-            $( api.column( 11 ).footer() ).html(additionalDOM);
+            $( api.column( 12 ).footer() ).html(additionalDOM);
         }
     });
   });

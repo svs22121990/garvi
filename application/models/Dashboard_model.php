@@ -124,7 +124,7 @@ public function GetData($table,$field='',$condition='',$group='',$order='',$limi
 	
 	public function salecount($where)
     {
-        $query = $this->db->select('i.net_amount,in.date_of_invoice')
+        $query = $this->db->select('i.amount_after_gst,in.date_of_invoice')
                         ->from('invoice_details as i')
                         ->join('invoice as in','in.id=i.invoice_id')
                         ->where('in.created_by',$_SESSION['ASSETSTRACKING']['id'])
@@ -134,7 +134,7 @@ public function GetData($table,$field='',$condition='',$group='',$order='',$limi
         $countMonth = 0;
         foreach($invoices as $m)
         {
-            $countMonth +=$m['net_amount'];
+            $countMonth +=$m['amount_after_gst'];
         }
         return $countMonth;
 

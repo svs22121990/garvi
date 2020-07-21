@@ -106,6 +106,7 @@ $this->load->view('common/left_panel');
                     <!--<th>HSN</th>-->
                     <th>Quantity</th>
                     <th> Selling Price</th>
+                    <th> Total Amount</th>
                     <th>Sales Type</th>
                     <th>Payment Mode</th>
                     <!--<th>Total Value</th>-->
@@ -176,7 +177,7 @@ $this->load->view('common/left_panel');
                     <th>Net Amount</th>
 
                     <th> Amount Deposited in Bank </th>
-                    <th colspan="5"></th>
+                    <th colspan="6"></th>
 
                   </tr>
                 </tfoot>
@@ -326,6 +327,12 @@ $this->load->view('common/left_panel');
         },
         {
           "data": "rate_per_item",
+          "render": function(data, type, row, meta) {
+            return 'Rs. ' + data;
+          }
+        },
+        {
+          "data": "total_amt",
           "render": function(data, type, row, meta) {
             return 'Rs. ' + data;
           }
@@ -514,14 +521,14 @@ $this->load->view('common/left_panel');
         $(api.column(7).footer()).html('Rs. ' + total1.toFixed(2));
 
         total1 = api
-          .column(10, {
+          .column(8, {
             filter: 'applied'
           })
           .data()
           .reduce(function(a, b) {
             return intVal(a) + intVal(b);
           }, 0);
-        $(api.column(10).footer()).html('Rs. ' + total1.toFixed(2));
+        $(api.column(8).footer()).html('Rs. ' + total1.toFixed(2));
 
         total1 = api
           .column(11, {
@@ -642,6 +649,16 @@ $this->load->view('common/left_panel');
             return intVal(a) + intVal(b);
           }, 0);
         $(api.column(27).footer()).html('Rs. ' + total1.toFixed(2));
+
+        total1 = api
+          .column(28, {
+            filter: 'applied'
+          })
+          .data()
+          .reduce(function(a, b) {
+            return intVal(a) + intVal(b);
+          }, 0);
+        $(api.column(28).footer()).html('Rs. ' + total1.toFixed(2));
       }
     });
   });

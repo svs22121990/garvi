@@ -74,16 +74,16 @@
         <table class="table table-striped table-bordered">
           <thead>
             <tr>
-              <th> Date <span style="color: red">*</span><span style="color: red"></span></th>
+              <th> Purchase Date <span style="color: red">*</span><span style="color: red"></span></th>
               <th> Category  <a href="#myModalCategory" class="pull-right" data-toggle="modal" data-target="" title="Add new Category">(<i class="fa fa-plus" onclick="blankValue()"></i>)</a><span style="color: red">*</span> <span  id="category_id_error" style="color: red"></span></th>
 
               <th>Product Type <a href="#myModalAssetType" class="pull-right" data-toggle="modal" data-target="" title="Add new Product Type">(<i class="fa fa-plus" onclick="blankValue()"></i>)</a><span style="color: red">*</span> <span  id="asset_type_id_error" style="color: red"></span></th>
 
               <th> Product Type 2 <span style="color: red">*</span> </th>
-              <th> SKU  <span id="error_sku"></span></th>
+              <!--<th> SKU  <span id="error_sku"></span></th>-->
               <th> Product Name <span style="color: red">*</span><span style="color: red" id="asset_name_error"></span></th>
               <th> Quantity <span style="color: red">*</span><span style="color: red" id="error_quantity"></span></th>
-              <th> Price <span style="color: red">*</span><span style="color: red"id="error_price"></span></th>
+              <th> Selling Price <span style="color: red">*</span><span style="color: red"id="error_price"></span></th>
               <th>Total</th>
               <th> GST % <span style="color: red">*</span><span  id="error_gst_percent"></span></th>
               <th> HSN <span style="color: red">*</span><span id="error_hsn"></span></th>
@@ -120,9 +120,9 @@
                   <?php } ?>
                 </select>
               </td>
-              <td>
+              <!--<td>
                 <input type="text" class="form-control" name="sku[]" id="sku1" placeholder="Enter SKU" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
-              </td>
+              </td>-->
               <td>
                 <input type="text" class="form-control" name="asset_name[]" id="asset_name1" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
               </td>
@@ -388,9 +388,9 @@ function addrow() {
   inp16.value = '';
   inp16.id = 'asset_type_2_id'+(len+1);
 
-  var inp1 = new_row.cells[4].getElementsByTagName('input')[0];
-  inp1.value = '';
-  inp1.id = 'sku'+(len+1);
+  //var inp1 = new_row.cells[4].getElementsByTagName('input')[0];
+  //inp1.value = '';
+  //inp1.id = 'sku'+(len+1);
 
   var inp2 = new_row.cells[5].getElementsByTagName('input')[0];
   inp2.value = '';
@@ -693,7 +693,7 @@ function validateinfo() {
     //alert("1");
     var category_id = $('#category_id1').val();
     var asset_type_id = $('#asset_type_id1').val();
-    var sku = $('#sku1').val();
+    //var sku = $('#sku1').val();
     var product_name = $('#asset_name1').val();
     var quantity = $('#quantity1').val();
     var product_mrp = $('#product_mrp1').val();
@@ -750,7 +750,7 @@ function validateinfo() {
       
       var category_id = $('#category_id'+i).val();
       var asset_type_id = $('#asset_type_id'+i).val();
-      var sku = $('#sku'+i).val();
+      //var sku = $('#sku'+i).val();
       var product_name = $('#asset_name'+i).val();
       var quantity = $('#quantity'+i).val();
       var product_mrp = $('#product_mrp'+i).val();
