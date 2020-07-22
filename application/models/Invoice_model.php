@@ -24,6 +24,7 @@ class Invoice_model extends CI_Model
             (select type from payment_types where id=i.payment_mode) as paymentMode
             ');
         $this->db->from("invoice i");
+        $this->db->where('i.status','Active');
         $this->db->where('i.created_by',$_SESSION[SESSION_NAME]['id']);
         //$this->db->join("invoice_details ide","ide.invoice_id = i.id","left");
         //$this->db->join("assets a","ide.product_id = a.id","left");
@@ -83,6 +84,7 @@ class Invoice_model extends CI_Model
         $this->db->select('i.*,(select SUM(net_amount) from invoice_details where invoice_id=i.id) as sumAmount');
         $this->db->from("invoice i");
         $this->db->order_by("id", "desc");
+        $this->db->where('i.status','Active');
         $this->db->where('i.created_by',$_SESSION[SESSION_NAME]['id']);
         $this->db->limit(5);
         $query = $this->db->get();

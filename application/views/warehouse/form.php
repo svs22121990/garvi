@@ -242,7 +242,16 @@ $this->load->view('common/left_panel'); ?>
 <!-- END PAGE CONTENT WRAPPER -->
 
 <?php $this->load->view('common/footer');?>
+<script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
+<script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
 <script>
+    $(".datepicker").daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        });
     $(document).on('keyup','.price',function(){
         price();
     });
@@ -425,7 +434,13 @@ $this->load->view('common/left_panel'); ?>
         $('.sectionA').val(len+1);
 
         y.appendChild(new_row);
-        $('#'+inp1.id).datepicker();
+        $('#'+inp1.id).daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            }
+        });
     }
 
 
