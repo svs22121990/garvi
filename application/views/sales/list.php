@@ -42,7 +42,7 @@ td{
                   <?= form_close(); ?>
 
               <form method="post" action="<?=site_url("Sales/export_sales_summary/$date_data")?>">
-                <div class="panel-heading">                                
+                <div class="panel-heading">
                     <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                      <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
                     <ul class="panel-controls">
@@ -60,13 +60,15 @@ td{
                         </li>
                         <?php } ?>
                           <li><a href="<?= base_url("index.php/sales/printpdf/$date_data"); ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
-                          <li><?=$export; ?></li>
-                          <button type="submit" style="display: none" id="subbtn"></button>
+<!--                          <li>--><?//=$export; ?><!--</li>-->
+                        <li><a href="<?php echo site_url("Sales/export_sales_summary/$date_data")?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>
+
+                        <button type="submit" style="display: none" id="subbtn"></button>
                           
                         <!-- <?php if($addPermission=='1'){?>
                          <li><a href="<?php echo site_url("Sales_Summary/create")?>" ><span class="fa fa-plus"></span></a></li>
                         <?php }?> -->
-                       
+
                         <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
                         <!-- <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
                         <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li> -->
