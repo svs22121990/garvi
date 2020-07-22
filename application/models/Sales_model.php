@@ -123,6 +123,7 @@ class Sales_model extends CI_Model
                         //->where('in.created_by',$_SESSION['ASSETSTRACKING']['id'])
                         ->where($where)
                         ->get();
+
         $invoices = $query->result_array();
         $countMonth = 0;
         foreach($invoices as $m)

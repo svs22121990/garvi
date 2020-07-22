@@ -86,11 +86,11 @@ class Sales extends CI_Controller {
 
   public function ajax_manage_page($date=0)
   {
-    if($date!=0){
-      $date =  str_replace("_","-",$date);
-    }else{
-      $date = date('Y-m-d');
-    }
+//    if($date!=0){
+//      $date =  str_replace("_","-",$date);
+//    }else{
+//      $date = date('Y-m-d');
+//    }
     $con="e.id<>''";
     
     $Data = $this->Sales_model->get_datatables($con,$date);
@@ -258,9 +258,9 @@ class Sales extends CI_Controller {
         }
         $con="e.id<>''";
     
-        $results = $this->Sales_model->get_datatables($con);
+        $results = $this->Sales_model->get_datatables($con,$date);
 
-        $FileTitle='Sales Summary Report';
+        $FileTitle='Showroomwise Sales Summary';
                 
         $this->load->library('excel');
         //activate worksheet number 1
