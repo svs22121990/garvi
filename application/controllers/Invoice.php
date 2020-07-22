@@ -357,6 +357,12 @@ class Invoice extends CI_Controller
 
   public function save_invoice()
   {
+
+    $con = "status='".$_POST['Inactive']."'";      
+    $this->Crud_model->DeleteData('invoice',$con);
+    $con = "status='".$_POST['Inactive']."'";      
+    $this->Crud_model->DeleteData('invoice_details',$con);
+
     //Adjustment
     $adjustment_explode = $this->input->post('net_amount');
     // $adjustment_explode = 6.4;
@@ -462,6 +468,9 @@ class Invoice extends CI_Controller
           'consignee_address' => $_POST['address_receiver'],
           'created_by' => $_SESSION['ASSETSTRACKING']['id']
         );
+        if (!$this->input->post('save_finish')) {
+          $data_array['status'] = 'Inactive';
+        }
         ///print_r($data_array);exit;
         $invoice_id = $this->input->post('invoice_id2');
         if ($invoice_id) {
@@ -501,33 +510,64 @@ class Invoice extends CI_Controller
             'total_tax' => $_POST['total_tax'],
             'net_amount' => $netAmount,
             'shipping_charges' => $_POST['shipping_charge'],
-            'status' => 'Active',
             'created' => date('Y-m-d'),
           );
-          //print_r($data);
+          
+          if ($this->input->post('save_finish')) {
+            $data['status'] = 'Active';
+          } else {
+            $data['status'] = 'Inactive';
+          }
 
           if ($this->input->post('edit_invoice_dt_id')) {
             $where = array('id' => $this->input->post('edit_invoice_dt_id'));
             $this->Crud_model->SaveData("invoice_details", $data, $where);
 
-            $arrWhere = array('id' => $_POST['asset_name']);
-            $objProduct = $this->model->gatData('assets', $arrWhere);
-            $allQty = $objProduct[0]['quantity'] - $_POST['quantity'];
+            if ($this->input->post('save_finish')) {
+              $arrWhere = array('id' => $_POST['asset_name']);
+              $objProduct = $this->model->gatData('assets', $arrWhere);
+              $allQty = $objProduct[0]['quantity'] - $_POST['quantity'];
 
-            $arrData = array('quantity' => $allQty);
-            $this->model->updateData('assets', $arrData, $arrWhere);
+              $arrData = array('quantity' => $allQty);
+              $this->model->updateData('assets', $arrData, $arrWhere);
+            }
+
           } else {
             $saveData = $this->Crud_model->SaveData('invoice_details', $data);
 
-            $arrWhere = array('id' => $_POST['asset_name']);
+            if ($this->input->post('save_finish')) {
+              $arrWhere = array('id' => $_POST['asset_name']);
+              $objProduct = $this->model->gatData('assets', $arrWhere);
+              $allQty = $objProduct[0]['quantity'] - $_POST['quantity'];
+
+              $arrData = array('quantity' => $allQty);
+              $this->model->updateData('assets', $arrData, $arrWhere);
+            }
+          }
+        }
+        if ($this->input->post('save_finish')) {
+
+          $this->db->select('id, product_id, quantity');
+          $this->db->from("invoice_details");      
+          $this->db->where('invoice_id',$last_id);
+          $query = $this->db->get();
+          $detail = $query->result();
+          for ($i = 0; $i < count($detail); $i++) {
+
+            $arrWhere = array('id' => $detail[$i]->id);
             $objProduct = $this->model->gatData('assets', $arrWhere);
             $allQty = $objProduct[0]['quantity'] - $_POST['quantity'];
 
             $arrData = array('quantity' => $allQty);
             $this->model->updateData('assets', $arrData, $arrWhere);
+
+            $update['status'] ="Active";
+            $this->Crud_model->SaveData('invoice_details',$update,"id='".$detail[$i]->id."'");
           }
-        }
-        if ($this->input->post('save_finish')) {
+
+          $update['status'] ="Active";
+          $this->Crud_model->SaveData('invoice',$update,"id='".$last_id."'");
+
           $this->session->set_flashdata('print', 'print');
           //redirect("Invoice/invoicePdf/".$last_id, 'location', 301);
           return redirect('Invoice/view/' . $last_id);
@@ -578,6 +618,8 @@ class Invoice extends CI_Controller
 
     $rebate = $this->Crud_model->GetData("mst_rebate", "", "status='Active'");
     $states = $this->Crud_model->GetData("mst_states", "", "status='Active'");
+    $salesTypes = $this->Crud_model->GetData("sales_type", "", "status='Active'");
+    $paymentModes = $this->Crud_model->GetData("payment_types", "", "status='Active'");
     $action =  site_url("Invoice/save_invoice");
     $where = array('id' => $id, 'invoice_id' => $invoice_id);
     $content = array(
@@ -591,7 +633,9 @@ class Invoice extends CI_Controller
       'edit_data' => $this->Crud_model->GetData("invoice_details", "", $where, "", "", "", "1"),
       'invoice' => $this->Crud_model->GetData("invoice", "", "id='" . $invoice_id . "'", "", "", "", "1"),
       'invoice_id2' => $invoice_id,
-      'in_detail_id' => $id
+      'in_detail_id' => $id,
+      'salesTypes' => $salesTypes,
+      'paymentModes' => $paymentModes,
     );
 
     /*echo"<pre>";
