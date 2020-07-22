@@ -155,7 +155,9 @@ $this->load->view('common/left_panel');
                                 <?php } ?>
                                 <?php if($exportPermission=='1'){?>
                                     <?php if(isset($dateinfo)){ ?>
-                                        <li><a href="<?= base_url(); ?>index.php/Product_Summary/export_pdf_summary/<?= $dateinfo; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
+<!--                                            <li><a href="--><?php //echo site_url("Warehouse_Product_Summary/pdf_summary/$dateinfo")?><!--" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>-->
+
+<!--                                        <li><a href="--><?//= base_url(); ?><!--index.php/Product_Summary/export_pdf_summary/--><?//= $dateinfo; ?><!--" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>-->
                                     <?php } else { ?>
 <!--                                        <li><a href="--><?//= base_url(); ?><!--index.php/Product_Summary/export_pdf_summary" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>-->
                                     <?php } ?>
@@ -517,11 +519,10 @@ $this->load->view('common/left_panel');
 </script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
-
 <script>
     $(function() {
         $('input[name="daterange"]').daterangepicker({
-            autoUpdateInput: false,
+            showDropdowns: true,
             locale: {
                 format: 'DD/MM/YYYY'
             },
@@ -530,20 +531,34 @@ $this->load->view('common/left_panel');
             var startDate = start.format('YYYY-MM-DD');
             var endDate = end.format('YYYY-MM-DD');
         });
-
-        $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
-            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-        });
-
-        $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
-            $(this).val('');
-        });
     });
-    function addDamage($product_id){
-        $('#product_id').val($product_id);
-        $("#damage-add").click();
-    }
 </script>
+<!--<script>-->
+<!--    $(function() {-->
+<!--        $('input[name="daterange"]').daterangepicker({-->
+<!--            autoUpdateInput: false,-->
+<!--            locale: {-->
+<!--                format: 'DD/MM/YYYY'-->
+<!--            },-->
+<!--            opens: 'right'-->
+<!--        }, function(start, end, label) {-->
+<!--            var startDate = start.format('YYYY-MM-DD');-->
+<!--            var endDate = end.format('YYYY-MM-DD');-->
+<!--        });-->
+<!---->
+<!--        $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {-->
+<!--            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));-->
+<!--        });-->
+<!---->
+<!--        $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {-->
+<!--            $(this).val('');-->
+<!--        });-->
+<!--    });-->
+<!--    function addDamage($product_id){-->
+<!--        $('#product_id').val($product_id);-->
+<!--        $("#damage-add").click();-->
+<!--    }-->
+<!--</script>-->
 <script type="text/javascript">
     function checkStatus(id)
     {

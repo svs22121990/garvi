@@ -348,6 +348,17 @@ class Warehouse_Product_Summary extends CI_Controller
         $mpdf->Output('Product_Summary', 'I');
     }
 
+    public function pdf_summary($date = 0)
+    {
+        $con = "p.id<>''";
+        $data['results'] = $this->Warehouse_product_summary_model->get_datatables($con, $date);
+        //$data['results'] = $query->result();
+        $html = $this->load->view('warehouse_product_summary/product_summary_pdf', $data, TRUE);
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML($html);
+        $mpdf->Output('Warehouse Product', 'I');
+    }
+
     //=======================/export list==========================
 
     /* ----- Export functionality start ----- */

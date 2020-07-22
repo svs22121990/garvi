@@ -345,18 +345,33 @@ $this->load->view('common/left_panel');
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
 
 <script>
-$(function() {
-  $('input[name="daterange"]').daterangepicker({
-	  locale: {
-            format: 'DD/MM/YYYY'
-        },
-    opens: 'right'
-  }, function(start, end, label) {
-    var startDate = start.format('YYYY-MM-DD');
-	var endDate = end.format('YYYY-MM-DD');
-  });
-});
+    $(function() {
+        $('input[name="daterange"]').daterangepicker({
+            showDropdowns: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            opens: 'right'
+        }, function(start, end, label) {
+            var startDate = start.format('YYYY-MM-DD');
+            var endDate = end.format('YYYY-MM-DD');
+        });
+    });
 </script>
+
+<!--<script>-->
+<!--$(function() {-->
+<!--  $('input[name="daterange"]').daterangepicker({-->
+<!--	  locale: {-->
+<!--            format: 'DD/MM/YYYY'-->
+<!--        },-->
+<!--    opens: 'right'-->
+<!--  }, function(start, end, label) {-->
+<!--    var startDate = start.format('YYYY-MM-DD');-->
+<!--	var endDate = end.format('YYYY-MM-DD');-->
+<!--  });-->
+<!--});-->
+<!--</script>-->
     <script type="text/javascript">
       function checkStatus(id)
       {

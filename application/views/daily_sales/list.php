@@ -252,28 +252,41 @@ $this->load->view('common/left_panel');
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.js"></script>-->
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
-
 <script>
-$(function() {
-  $('input[name="daterange"]').daterangepicker({
-    autoUpdateInput: false,
-	  locale: {
-            format: 'DD/MM/YYYY'
-        },
-    opens: 'right'
-  }, function(start, end, label) {
-    var startDate = start.format('YYYY-MM-DD');
-	var endDate = end.format('YYYY-MM-DD');
-  });
-  $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
-    $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-  });
-
-  $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
-      $(this).val('');
-  });
-});
+    $(function() {
+        $('input[name="daterange"]').daterangepicker({
+            showDropdowns: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            opens: 'right'
+        }, function(start, end, label) {
+            var startDate = start.format('YYYY-MM-DD');
+            var endDate = end.format('YYYY-MM-DD');
+        });
+    });
 </script>
+<!--<script>-->
+<!--$(function() {-->
+<!--  $('input[name="daterange"]').daterangepicker({-->
+<!--    autoUpdateInput: false,-->
+<!--	  locale: {-->
+<!--            format: 'DD/MM/YYYY'-->
+<!--        },-->
+<!--    opens: 'right'-->
+<!--  }, function(start, end, label) {-->
+<!--    var startDate = start.format('YYYY-MM-DD');-->
+<!--	var endDate = end.format('YYYY-MM-DD');-->
+<!--  });-->
+<!--  $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {-->
+<!--    $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));-->
+<!--  });-->
+<!---->
+<!--  $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {-->
+<!--      $(this).val('');-->
+<!--  });-->
+<!--});-->
+<!--</script>-->
 
 
     <script type="text/javascript">

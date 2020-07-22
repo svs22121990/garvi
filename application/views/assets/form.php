@@ -12,7 +12,7 @@
           <div class="panel-heading">
             <h3 class="panel-title"><strong><?= $heading ?></h3>
               <ul class="panel-controls">
-               <li><a href="<?= site_url('Invoice/index')?>" ><span class="fa fa-arrow-left"></span></a></li>
+               <li><a href="<?= site_url('Products/index')?>" ><span class="fa fa-arrow-left"></span></a></li>
              </ul>
            </div>
            <div class="panel-body">
@@ -41,7 +41,7 @@
                   <div class="form-group">
                     <label class="col-md-11"> Bill Date <span style="color: red">*</span> <span  id="bill_date_error" style="color: red"></span></label>
                     <div class="col-md-11">
-                      <input type="text" name="bill_date" id="bill_date" class="form-control datepicker" placeholder="Bill Date">
+                      <input type="text" name="bill_date" id="bill_date" class="form-control datepicker" autocomplete="off" placeholder="Bill Date">
                     </div>
                   </div>
                 </div>
@@ -274,7 +274,17 @@
 
 
 <?php $this->load->view('common/footer');?>
+ <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
+ <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
 <script>
+    $(".datepicker").daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        locale: {
+            format: 'DD/MM/YYYY'
+        }
+    });
+
   $(document).on('keyup','.price',function(){
     price();
   });
@@ -426,7 +436,15 @@ function addrow() {
   $('.sectionA').val(len+1);
   
   y.appendChild(new_row);
-  $('#'+inp15.id).datepicker(); 
+//  $('#'+inp15.id).datepicker();
+
+    $('#'+inp15.id).daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        locale: {
+            format: 'DD/MM/YYYY'
+        }
+    });
 }
 
 

@@ -276,6 +276,17 @@
 
 
 <?php $this->load->view('common/footer');?>
+<script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
+<script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
+<script>
+    $(".datepicker").daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        locale: {
+            format: 'DD/MM/YYYY'
+        }
+    });
+    </script>
 
 <script>
 
@@ -459,6 +470,13 @@ function addrow() {
   //$('.asset_name').val(len+1);
 
   y.appendChild(new_row);
+    $('#'+inp2.id).daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        locale: {
+            format: 'DD/MM/YYYY'
+        }
+    });
 
   $('table .attribute_div').slice(len, len + 1).empty();
   $('table .attribute_div').slice(len, len + 1).html('Attributes');
@@ -745,7 +763,7 @@ function validateinfo() {
   var sent_to = $('#sent_to').val(); 
   var sectionA = $("#thetable td").closest("tr").length;
   //var sectionA = $('.asset_name').val();
-  
+  4
   if(dn_no=='') {
     $("#dn_no_error").html("Please enter DN Number").fadeIn();
     setTimeout(function(){$("#dn_no_error").fadeOut()},5000);
