@@ -310,6 +310,7 @@ $this->load->view('common/left_panel');
 <script>
     $(function() {
         $('input[name="daterange"]').daterangepicker({
+            showDropdowns: true,
             locale: {
                 format: 'DD/MM/YYYY'
             },

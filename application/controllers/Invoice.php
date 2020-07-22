@@ -358,9 +358,9 @@ class Invoice extends CI_Controller
   public function save_invoice()
   {
 
-    $con = "status='".$_POST['Inactive']."'";      
+    $con = "status='Inactive'";      
     $this->Crud_model->DeleteData('invoice',$con);
-    $con = "status='".$_POST['Inactive']."'";      
+    $con = "status='Inactive'";      
     $this->Crud_model->DeleteData('invoice_details',$con);
 
     //Adjustment
@@ -396,7 +396,10 @@ class Invoice extends CI_Controller
         $seriesNo = $_SESSION['ASSETSTRACKING']['invoice_serial_number_series'];
 
         // $number = $this->Crud_model->GetData("invoice", "count(*) as count", "invoice_no like '" . $seriesNo . "%'", "", "id desc", "1", "1");
-        $lastInvoice = $this->Crud_model->GetData("invoice", "invoice_no, created", "invoice_no like '" . $seriesNo . "%'", "", "created desc", "1", "1");
+        
+        //$arrWhere = array('id' => $detail[$i]->id);
+        //$objProduct = $this->model->gatData('assets', $arrWhere);
+        $lastInvoice = $this->Crud_model->GetData("invoice", "invoice_no", "created", "invoice_no like '" . $seriesNo . "%'", "status='Active'","", "created desc", "1", "1");
         $payment_status = $this->Crud_model->GetData("sales_type", "default_status", "id='" . $invoice_sales_type_id . "'", "", "", "1", "1");
 
         $invoice_no = null;
