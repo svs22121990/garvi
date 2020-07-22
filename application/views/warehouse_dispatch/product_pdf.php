@@ -31,7 +31,7 @@
             
             <div class="title-center"><?= $_SESSION[SESSION_NAME]['address'] ?></div>
             <!--<div style="text-align: center;">GST Number: <?/*= $_SESSION[SESSION_NAME]['gst_number'] */?></div>-->
-            <h4 style="text-align: center;">Warehouse Product Details</h4>
+            <h4 style="text-align: center;">Warehouse Products Sent </h4>
             <?php $qty=0; $product_mrp=0; $sr = 1; $data = array(); $allTotal = 0; ; $markup = 0; $totalGST = 0; $finalTotal = 0; ?>
             <?php foreach ($results as $result) { 
                 $total = $result->product_mrp * $result->total_quantity;

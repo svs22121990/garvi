@@ -19,6 +19,7 @@ class Inventory_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from("employees e");
+        $this->db->where('status=', 'Active');
         $this->db->where('type','User');
         $this->db->where($con);
         /*$i = 0;

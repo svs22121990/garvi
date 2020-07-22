@@ -31,7 +31,7 @@
 <div class="title-center"><?= $_SESSION[SESSION_NAME]['name'] ?></div>
 <div class="title-center"><?= $_SESSION[SESSION_NAME]['address'] ?></div>
 <div style="text-align: center;">GST Number: <?= $_SESSION[SESSION_NAME]['gst_number'] ?></div>
-<h4 style="text-align: center;">Warehouse Dispatch Bill</h4>
+<h4 style="text-align: center;">Warehouse Products Sent </h4>
 <?php $sr = 1; ?>
 <?php $results2=array(); $total_amount= 0;
 foreach($results as $key){

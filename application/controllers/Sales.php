@@ -129,7 +129,7 @@ class Sales extends CI_Controller {
     foreach($Data as $row) 
     {
         $year = $this->datefind($date);
-        $marchDate = $year.'-3-1';
+        $marchDate = $year.'-4-1';
 
         //yearly
         $where = array('in.date_of_invoice>='=>$marchDate,'in.created_by'=>$row->id);

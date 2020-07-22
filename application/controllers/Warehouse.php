@@ -651,7 +651,7 @@ class Warehouse extends CI_Controller
         $Data = $this->Warehouse_model->get_datatables($con, $date);
         //$Data = $query->result();
 
-        $FileTitle = 'Warehouse';
+        $FileTitle = 'Warehouse Products Received';
 
         $this->load->library('excel');
         //activate worksheet number 1

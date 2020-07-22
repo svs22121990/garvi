@@ -71,7 +71,7 @@ $this->load->view('common/left_panel');
                                 <th>Date</th>
                                 <th>Sent To</th>
                                 <th>Qty.</th>
-                                <th>S</th>
+                                <th>SP</th>
                                 <th>Total SP Amt.</th>
                                 <th>GST</th>
                                 <th>Grand Total</th>

@@ -581,13 +581,13 @@ class Warehouse_Dispatch extends CI_Controller
         $Data = $this->Dispatch_model->warehouse_get_datatables($con,$date);
         //$Data = $query->result();
 
-        $FileTitle = 'Warehouse Dispatch';
+        $FileTitle = 'Warehouse Products Sent ';
 
         $this->load->library('excel');
         //activate worksheet number 1
         $this->excel->setActiveSheetIndex(0);
         //name the worksheet
-        $this->excel->getActiveSheet()->setTitle('Warehouse Dispatch Details');
+        $this->excel->getActiveSheet()->setTitle('Warehouse Products Sent');
         //set cell A1 content with some text
         $this->excel->getActiveSheet()->setCellValue('A1', 'Gujarat State Handloom & Handicraft Development Corp. Ltd.');
         $this->excel->getActiveSheet()->setCellValue('A2', $_SESSION[SESSION_NAME]['name']);
