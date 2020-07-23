@@ -358,11 +358,6 @@ class Invoice extends CI_Controller
   public function save_invoice()
   {
 
-    $con = "status='Inactive'";      
-    $this->Crud_model->DeleteData('invoice',$con);
-    $con = "status='Inactive'";      
-    $this->Crud_model->DeleteData('invoice_details',$con);
-
     //Adjustment
     $adjustment_explode = $this->input->post('net_amount');
     // $adjustment_explode = 6.4;
@@ -399,7 +394,15 @@ class Invoice extends CI_Controller
         
         //$arrWhere = array('id' => $detail[$i]->id);
         //$objProduct = $this->model->gatData('assets', $arrWhere);
-        $lastInvoice = $this->Crud_model->GetData("invoice", "invoice_no", "created", "invoice_no like '" . $seriesNo . "%'", "status='Active'","", "created desc", "1", "1");
+        //$lastInvoice = $this->Crud_model->GetData("invoice", "invoice_no", "created", "invoice_no like '%" . $seriesNo . "%'", "status='Active'","", "created desc", "1", "1");
+
+        $this->db->select('invoice_no');
+        $this->db->like('invoice_no',$seriesNo);
+        $this->db->where('status','Active');
+        $this->db->order_by("created desc");
+        $query = $this->db->get('invoice');
+        $lastInvoice = $query->row();
+
         $payment_status = $this->Crud_model->GetData("sales_type", "default_status", "id='" . $invoice_sales_type_id . "'", "", "", "1", "1");
 
         $invoice_no = null;
@@ -428,7 +431,8 @@ class Invoice extends CI_Controller
           }
         }
         $invoice_no = $_SESSION['ASSETSTRACKING']['invoice_serial_number_series']."-".$newIndexStr;
-        
+        //print_r($invoice_no);
+        //die;
         // if($number->count != 0) {
         //             $checkInvoiceNo = $this->Crud_model->GetData("invoice", "id", "invoice_no='".$invoice_no1."'", "","","1","1");
         //             if (isset($checkInvoiceNo)) {
@@ -570,6 +574,11 @@ class Invoice extends CI_Controller
 
           $update['status'] ="Active";
           $this->Crud_model->SaveData('invoice',$update,"id='".$last_id."'");
+
+          $con = "status='Inactive'";      
+          $this->Crud_model->DeleteData('invoice',$con);
+          //$con = "status='Inactive'";      
+          //$this->Crud_model->DeleteData('invoice_details',$con);
 
           $this->session->set_flashdata('print', 'print');
           //redirect("Invoice/invoicePdf/".$last_id, 'location', 301);
