@@ -559,9 +559,10 @@ class Invoice extends CI_Controller
           $this->db->where('invoice_id',$last_id);
           $query = $this->db->get();
           $detail = $query->result();
+
           for ($i = 0; $i < count($detail); $i++) {
 
-            $arrWhere = array('id' => $detail[$i]->id);
+            $arrWhere = array('id' => $detail[$i]->product_id);
             $objProduct = $this->model->gatData('assets', $arrWhere);
             $allQty = $objProduct[0]['quantity'] - $_POST['quantity'];
 
