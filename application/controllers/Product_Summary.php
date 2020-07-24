@@ -231,10 +231,10 @@ class Product_Summary extends CI_Controller
         }
         $arrTime[] =  $interval->d . ' Day';
 
-        $no++;
+//        $no++;
         $product_id =  $row->id;
         $data[] = array(
-          'no' => $no,
+          'no' => $no++,
           'asset_name' => $row->asset_name,
           'title' => $row->title,
           'type' => $row->type,
@@ -395,14 +395,14 @@ class Product_Summary extends CI_Controller
        $this->excel->getActiveSheet()->setCellValue('L5', 'HSN Code');
        $this->excel->getActiveSheet()->setCellValue('M5', 'Qty');
        $this->excel->getActiveSheet()->setCellValue('N5', 'Damage Qty ');
-       $this->excel->getActiveSheet()->setCellValue('O5', 'Cost Price');
-       $this->excel->getActiveSheet()->setCellValue('P5', 'Total Cost Amt');
-       $this->excel->getActiveSheet()->setCellValue('Q5', 'GST %');
-       $this->excel->getActiveSheet()->setCellValue('R5', 'GST Amt');
-       $this->excel->getActiveSheet()->setCellValue('S5', 'Selling Price');
-       $this->excel->getActiveSheet()->setCellValue('T5', 'Total Amount');
+//       $this->excel->getActiveSheet()->setCellValue('O5', 'Cost Price');
+//       $this->excel->getActiveSheet()->setCellValue('P5', 'Total Cost Amt');
+       $this->excel->getActiveSheet()->setCellValue('O5', 'GST Amount');
+       $this->excel->getActiveSheet()->setCellValue('P5', 'Selling Price');
+//       $this->excel->getActiveSheet()->setCellValue('P5', 'Selling Price');
+       $this->excel->getActiveSheet()->setCellValue('Q5', 'Total Amount');
 //       $this->excel->getActiveSheet()->setCellValue('U5', 'Barcode Number');
-       $this->excel->getActiveSheet()->setCellValue('V5', 'AGE');
+       $this->excel->getActiveSheet()->setCellValue('R5', 'AGE');
 
        $a = '6';
        $sr = 1;
@@ -443,15 +443,15 @@ class Product_Summary extends CI_Controller
            $this->excel->getActiveSheet()->setCellValue('K' . $a, $result->craft);
            $this->excel->getActiveSheet()->setCellValue('L' . $a, $result->hsn);
            $this->excel->getActiveSheet()->setCellValue('M' . $a, $result->quantity);
-           $this->excel->getActiveSheet()->setCellValue('N' . $a, $result->available_qty);
-           $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($result->price, 2));
-           $this->excel->getActiveSheet()->setCellValue('P' . $a, "Rs. " . number_format(($result->price * $result->available_qty), 2));
-           $this->excel->getActiveSheet()->setCellValue('Q' . $a, $result->gst_percent);
-           $this->excel->getActiveSheet()->setCellValue('R' . $a, number_format(($result->price * $result->available_qty) * ($result->gst_percent/100), 2));
-           $this->excel->getActiveSheet()->setCellValue('S' . $a, $result->product_mrp);
-           $this->excel->getActiveSheet()->setCellValue('T' . $a, "Rs. " . number_format(($result->product_mrp * $result->quantity), 2));
+           $this->excel->getActiveSheet()->setCellValue('N' . $a, $result->damage_qty);
+//           $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($result->price, 2));
+//           $this->excel->getActiveSheet()->setCellValue('P' . $a, "Rs. " . number_format(($result->price * $result->available_qty), 2));
+//           $this->excel->getActiveSheet()->setCellValue('N' . $a, $result->gst_percent);
+           $this->excel->getActiveSheet()->setCellValue('O' . $a,  number_format(($result->quantity * $result->product_mrp) * ($result->gst_percent/100), 2));
+           $this->excel->getActiveSheet()->setCellValue('P' . $a, $result->product_mrp);
+           $this->excel->getActiveSheet()->setCellValue('Q' . $a, "Rs. " . number_format(($result->product_mrp * $result->quantity), 2));
 //           $this->excel->getActiveSheet()->setCellValue('U' . $a, $result->barcode_number);
-           $this->excel->getActiveSheet()->setCellValue('V' . $a, implode(" ", $arrTime));
+           $this->excel->getActiveSheet()->setCellValue('R' . $a, implode(" ", $arrTime));
 
            $sr++;
            $a++;
@@ -459,17 +459,17 @@ class Product_Summary extends CI_Controller
            $total_available_qty +=  $result->available_qty;
            $total_price +=  $result->price;
            $total_cost_total += ($result->price * $result->available_qty);
-           $total_gst += ($result->price * $result->available_qty) * ($result->gst_percent/100);
+           $total_gst += ($result->quantity * $result->product_mrp) * ($result->gst_percent/100);
            $total_product_mrp += $result->product_mrp;
            $total_sp_total += ($result->product_mrp * $result->available_qty);
        }
        $this->excel->getActiveSheet()->setCellValue('M' . $a, $total_quantity);
-       $this->excel->getActiveSheet()->setCellValue('N' . $a, $total_available_qty);
-       $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($total_price, 2));
-       $this->excel->getActiveSheet()->setCellValue('P' . $a, "Rs. " . number_format($total_cost_total, 2));
-       $this->excel->getActiveSheet()->setCellValue('R' . $a, "Rs. " . number_format($total_gst, 2));
-       $this->excel->getActiveSheet()->setCellValue('S' . $a, "Rs. " . number_format($total_product_mrp, 2));
-       $this->excel->getActiveSheet()->setCellValue('T' . $a, "Rs. " . number_format($total_sp_total, 2));
+//       $this->excel->getActiveSheet()->setCellValue('N' . $a, $total_available_qty);
+//       $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($total_price, 2));
+//       $this->excel->getActiveSheet()->setCellValue('P' . $a, "Rs. " . number_format($total_cost_total, 2));
+       $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($total_gst, 2));
+       $this->excel->getActiveSheet()->setCellValue('P' . $a, "Rs. " . number_format($total_product_mrp, 2));
+//       $this->excel->getActiveSheet()->setCellValue('P' . $a, "Rs. " . number_format($total_sp_total, 2));
 
        $this->excel->getActiveSheet()->getStyle('M' . $a)->getFont()->setBold(true);
        $this->excel->getActiveSheet()->getStyle('N' . $a)->getFont()->setBold(true);
