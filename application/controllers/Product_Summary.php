@@ -368,7 +368,7 @@ class Product_Summary extends CI_Controller
        //$con = "p.id<>0";
 
        //$results = $this->Warehouse_product_summary_model->ExportCSV($con);
-       $FileTitle = 'Warehouse Product Summary Report';
+       $FileTitle = 'Product Summary Report';
 
        $this->load->library('excel');
        //activate worksheet number 1
@@ -394,14 +394,14 @@ class Product_Summary extends CI_Controller
        $this->excel->getActiveSheet()->setCellValue('K5', 'Craft');
        $this->excel->getActiveSheet()->setCellValue('L5', 'HSN Code');
        $this->excel->getActiveSheet()->setCellValue('M5', 'Qty');
-       $this->excel->getActiveSheet()->setCellValue('N5', 'Avail. Qty');
+       $this->excel->getActiveSheet()->setCellValue('N5', 'Damage Qty ');
        $this->excel->getActiveSheet()->setCellValue('O5', 'Cost Price');
        $this->excel->getActiveSheet()->setCellValue('P5', 'Total Cost Amt');
        $this->excel->getActiveSheet()->setCellValue('Q5', 'GST %');
        $this->excel->getActiveSheet()->setCellValue('R5', 'GST Amt');
        $this->excel->getActiveSheet()->setCellValue('S5', 'Selling Price');
-       $this->excel->getActiveSheet()->setCellValue('T5', 'Total SP');
-       $this->excel->getActiveSheet()->setCellValue('U5', 'Barcode Number');
+       $this->excel->getActiveSheet()->setCellValue('T5', 'Total Amount');
+//       $this->excel->getActiveSheet()->setCellValue('U5', 'Barcode Number');
        $this->excel->getActiveSheet()->setCellValue('V5', 'AGE');
 
        $a = '6';
@@ -441,7 +441,7 @@ class Product_Summary extends CI_Controller
            $this->excel->getActiveSheet()->setCellValue('I' . $a, $result->color);
            $this->excel->getActiveSheet()->setCellValue('J' . $a, $result->fabric);
            $this->excel->getActiveSheet()->setCellValue('K' . $a, $result->craft);
-           $this->excel->getActiveSheet()->setCellValue('L' . $a, $result->hsn_code);
+           $this->excel->getActiveSheet()->setCellValue('L' . $a, $result->hsn);
            $this->excel->getActiveSheet()->setCellValue('M' . $a, $result->quantity);
            $this->excel->getActiveSheet()->setCellValue('N' . $a, $result->available_qty);
            $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($result->price, 2));
@@ -449,8 +449,8 @@ class Product_Summary extends CI_Controller
            $this->excel->getActiveSheet()->setCellValue('Q' . $a, $result->gst_percent);
            $this->excel->getActiveSheet()->setCellValue('R' . $a, number_format(($result->price * $result->available_qty) * ($result->gst_percent/100), 2));
            $this->excel->getActiveSheet()->setCellValue('S' . $a, $result->product_mrp);
-           $this->excel->getActiveSheet()->setCellValue('T' . $a, "Rs. " . number_format(($result->product_mrp * $result->available_qty), 2));
-           $this->excel->getActiveSheet()->setCellValue('U' . $a, $result->barcode_number);
+           $this->excel->getActiveSheet()->setCellValue('T' . $a, "Rs. " . number_format(($result->product_mrp * $result->quantity), 2));
+//           $this->excel->getActiveSheet()->setCellValue('U' . $a, $result->barcode_number);
            $this->excel->getActiveSheet()->setCellValue('V' . $a, implode(" ", $arrTime));
 
            $sr++;
