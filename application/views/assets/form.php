@@ -1,4 +1,4 @@
- <?php  $this->load->view('common/header');
+<?php  $this->load->view('common/header');
  $this->load->view('common/left_panel'); ?>
  <?php $created_by = $_SESSION[SESSION_NAME]['id']; ?> <!-- START BREADCRUMB -->
  <?= $breadcrumbs ?> <!-- END BREADCRUMB --> <!-- PAGE TITLE --> 
@@ -12,7 +12,7 @@
           <div class="panel-heading">
             <h3 class="panel-title"><strong><?= $heading ?></h3>
               <ul class="panel-controls">
-               <li><a href="<?= site_url('Products/index')?>" ><span class="fa fa-arrow-left"></span></a></li>
+               <li><a href="<?= site_url('Invoice/index')?>" ><span class="fa fa-arrow-left"></span></a></li>
              </ul>
            </div>
            <div class="panel-body">
@@ -41,7 +41,7 @@
                   <div class="form-group">
                     <label class="col-md-11"> Bill Date <span style="color: red">*</span> <span  id="bill_date_error" style="color: red"></span></label>
                     <div class="col-md-11">
-                      <input type="text" name="bill_date" id="bill_date" class="form-control datepicker" autocomplete="off" placeholder="Bill Date">
+                      <input type="text" name="bill_date" id="bill_date" class="form-control datepicker" placeholder="Bill Date">
                     </div>
                   </div>
                 </div>
@@ -80,7 +80,7 @@
               <th>Product Type <a href="#myModalAssetType" class="pull-right" data-toggle="modal" data-target="" title="Add new Product Type">(<i class="fa fa-plus" onclick="blankValue()"></i>)</a><span style="color: red">*</span> <span  id="asset_type_id_error" style="color: red"></span></th>
 
               <th> Product Type 2 <span style="color: red">*</span> </th>
-              <!--<th> SKU  <span id="error_sku"></span></th>-->
+              <th> SKU  <span id="error_sku"></span></th>
               <th> Product Name <span style="color: red">*</span><span style="color: red" id="asset_name_error"></span></th>
               <th> Quantity <span style="color: red">*</span><span style="color: red" id="error_quantity"></span></th>
               <th> Selling Price <span style="color: red">*</span><span style="color: red"id="error_price"></span></th>
@@ -120,9 +120,9 @@
                   <?php } ?>
                 </select>
               </td>
-              <!--<td>
+              <td>
                 <input type="text" class="form-control" name="sku[]" id="sku1" placeholder="Enter SKU" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
-              </td>-->
+              </td>
               <td>
                 <input type="text" class="form-control" name="asset_name[]" id="asset_name1" placeholder="Enter Product Name" autocomplete="off" onchange="checkassetduplicate(this.value,$(this).closest('tr').index())">
               </td>
@@ -274,17 +274,7 @@
 
 
 <?php $this->load->view('common/footer');?>
- <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
- <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
 <script>
-    $(".datepicker").daterangepicker({
-        singleDatePicker: true,
-        showDropdowns: true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        }
-    });
-
   $(document).on('keyup','.price',function(){
     price();
   });
@@ -436,15 +426,7 @@ function addrow() {
   $('.sectionA').val(len+1);
   
   y.appendChild(new_row);
-//  $('#'+inp15.id).datepicker();
-
-    $('#'+inp15.id).daterangepicker({
-        singleDatePicker: true,
-        showDropdowns: true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        }
-    });
+  $('#'+inp15.id).datepicker(); 
 }
 
 
@@ -864,4 +846,3 @@ function validateinfo() {
   }
    
 </script>
-

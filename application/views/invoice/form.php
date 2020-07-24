@@ -1739,7 +1739,7 @@ $this->load->view('common/left_panel'); ?>
           $("#quantity1").focus();
         } else {*/
         if (rate_per_item != '' && quantity != '') {
-            var total_amount = parseInt(quantity) * parseFloat(rate_per_item);
+            var total_amount = parseFloat(quantity) * parseFloat(rate_per_item);
         } else {
             var total_amount = '';
         }
