@@ -677,14 +677,14 @@ $this->load->view('common/left_panel'); ?>
                                                     <input type="text" class="form-control" name="hsn_code" id="hsn_code1" placeholder="HSN Code" readonly="readonly" autocomplete="off">
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control count-qty" name="quantity" id="quantity1" placeholder="Quantity" autocomplete="off" onkeypress="return only_number(event);" oninput="getTotalAmount();">
+                                                    <input type="text" class="form-control count-qty" name="quantity" id="quantity1" placeholder="Quantity" autocomplete="off" oninput="getTotalAmount();">
 
                                                     <input type="hidden" class="form-control" name="available_quantity" id="available_quantity1"></td>
                                                 <td>
-                                                    <input type="text" class="form-control count-rate-per-item" name="rate_per_item" id="rate_per_item1" placeholder="Rate (per item)" autocomplete="off" onkeypress="return only_number(event);" oninput="getTotalAmount();" readonly="readonly">
+                                                    <input type="text" class="form-control count-rate-per-item" name="rate_per_item" id="rate_per_item1" placeholder="Rate (per item)" autocomplete="off" oninput="getTotalAmount();" readonly="readonly">
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control count-total" name="total" id="total1" placeholder="total" readonly="readonly" autocomplete="off" onkeypress="return only_number(event)">
+                                                    <input type="text" class="form-control count-total" name="total" id="total1" placeholder="total" readonly="readonly" autocomplete="off" >
                                                 </td>
                                                 <td>
                                                     <select name="discount_1" id="discount_1_1" class="form-control discount-class" onchange="getDiscountAmount();">
@@ -805,14 +805,14 @@ $this->load->view('common/left_panel'); ?>
                                                     <input type="text" class="form-control" name="hsn_code" id="hsn_code1" placeholder="HSN Code" readonly="readonly" autocomplete="off" value="<?= $edit_data->hsn_code ?>">
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control count-qty" name="quantity" id="quantity1" placeholder="Quantity" autocomplete="off" onkeypress="return only_number(event);" oninput="getTotalAmount();" value="<?= $edit_data->quantity ?>">
+                                                    <input type="text" class="form-control count-qty" name="quantity" id="quantity1" placeholder="Quantity" autocomplete="off" oninput="getTotalAmount();" value="<?= $edit_data->quantity ?>">
 
                                                     <input type="hidden" class="form-control" name="available_quantity" id="available_quantity1"></td>
                                                 <td>
-                                                    <input type="text" class="form-control count-rate-per-item" name="rate_per_item" id="rate_per_item1" placeholder="Rate (per item)" autocomplete="off" onkeypress="return only_number(event);" oninput="getTotalAmount();" readonly="readonly" value="<?= $edit_data->rate_per_item ?>">
+                                                    <input type="text" class="form-control count-rate-per-item" name="rate_per_item" id="rate_per_item1" placeholder="Rate (per item)" autocomplete="off" oninput="getTotalAmount();" readonly="readonly" value="<?= $edit_data->rate_per_item ?>">
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control count-total" name="total" id="total1" placeholder="total" readonly="readonly" autocomplete="off" onkeypress="return only_number(event)" value="<?= $edit_data->total ?>">
+                                                    <input type="text" class="form-control count-total" name="total" id="total1" placeholder="total" readonly="readonly" autocomplete="off" value="<?= $edit_data->total ?>">
                                                 </td>
                                                 <td>
                                                     <select name="discount_1" id="discount_1_1" class="form-control discount-class" onchange="getDiscountAmount();">

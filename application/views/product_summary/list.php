@@ -500,10 +500,6 @@ $this->load->view('common/left_panel');
 <!--      $(this).val('');-->
 <!--  });-->
 <!--});-->
-<!--function addDamage($product_id){-->
-<!--     $('#product_id').val($product_id);-->
-<!--     $("#damage-add").click();-->
-<!--}-->
 <!--</script>-->
     <script type="text/javascript">
       function checkStatus(id)
@@ -511,6 +507,11 @@ $this->load->view('common/left_panel');
         $("#statusId").val(id);
         $("#deleteId").val(id);        
       }
+
+        function addDamage($product_id){
+            $('#product_id').val($product_id);
+            $("#damage-add").click();
+        }
     </script>
 
 
