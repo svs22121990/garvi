@@ -346,19 +346,19 @@ class Product_Summary extends CI_Controller
    {
        $con = "p.id<>''";
        if($type != 0)
-           $con .= "and p.asset_type_id ='". $type . "'";
+           $con .= "and a.asset_type_id ='". $type . "'";
        if($type2 != 0)
-           $con .= "and p.product_type_id ='". $type2 . "'";
+           $con .= "and a.product_type_id ='". $type2 . "'";
        if($color != 0)
-           $con .= "and p.color_id ='". $color . "'";
+           $con .= "and a.color_id ='". $color . "'";
        if($size != 0)
-           $con .= "and p.size_id ='". $size . "'";
+           $con .= "and a.size_id ='". $size . "'";
        if($fabric != 0)
-           $con .= "and p.fabric_id ='". $fabric . "'";
+           $con .= "and a.fabric_id ='". $fabric . "'";
        if($craft != 0)
-           $con .= "and p.craft_id ='". $craft . "'";
+           $con .= "and a.craft_id ='". $craft . "'";
        if($cat != 0)
-           $con .= "and p.category_id ='". $cat . "'";
+           $con .= "and a.category_id ='". $cat . "'";
        if (!empty($_SESSION[SESSION_NAME]['branch_id'])) {
            $con .= " and ast.id in (select asset_id from asset_branch_mappings where branch_id='" . $_SESSION[SESSION_NAME]['branch_id'] . "')";
        }

@@ -1072,6 +1072,17 @@ $this->load->view('common/left_panel'); ?>
 
 
 <?php $this->load->view('common/footer'); ?>
+<script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
+<script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
+<script>
+    $(".datepicker").daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        locale: {
+            format: 'DD/MM/YYYY'
+        }
+    });
+    </script>
 <!-- hide code -->
 <script type="text/javascript">
     //onload call function 
