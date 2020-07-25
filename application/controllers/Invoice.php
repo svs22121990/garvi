@@ -530,26 +530,26 @@ class Invoice extends CI_Controller
             $where = array('id' => $this->input->post('edit_invoice_dt_id'));
             $this->Crud_model->SaveData("invoice_details", $data, $where);
 
-            if ($this->input->post('save_finish')) {
+            /*if ($this->input->post('save_finish')) {
               $arrWhere = array('id' => $_POST['asset_name']);
               $objProduct = $this->model->gatData('assets', $arrWhere);
               $allQty = $objProduct[0]['quantity'] - $_POST['quantity'];
 
               $arrData = array('quantity' => $allQty);
               $this->model->updateData('assets', $arrData, $arrWhere);
-            }
+            }*/
 
           } else {
             $saveData = $this->Crud_model->SaveData('invoice_details', $data);
 
-            if ($this->input->post('save_finish')) {
+            /*if ($this->input->post('save_finish')) {
               $arrWhere = array('id' => $_POST['asset_name']);
               $objProduct = $this->model->gatData('assets', $arrWhere);
               $allQty = $objProduct[0]['quantity'] - $_POST['quantity'];
 
               $arrData = array('quantity' => $allQty);
               $this->model->updateData('assets', $arrData, $arrWhere);
-            }
+            }*/
           }
         }
         if ($this->input->post('save_finish')) {
@@ -561,10 +561,10 @@ class Invoice extends CI_Controller
           $detail = $query->result();
 
           for ($i = 0; $i < count($detail); $i++) {
-
+            
             $arrWhere = array('id' => $detail[$i]->product_id);
             $objProduct = $this->model->gatData('assets', $arrWhere);
-            $allQty = $objProduct[0]['quantity'] - $_POST['quantity'];
+            $allQty = $objProduct[0]['quantity'] - $detail[$i]->quantity;
 
             $arrData = array('quantity' => $allQty);
             $this->model->updateData('assets', $arrData, $arrWhere);
