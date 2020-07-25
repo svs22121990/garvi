@@ -56,6 +56,7 @@ class Bank_Reconcillation_model extends CI_Model
         $this->db->join("mst_asset_types mat","mat.id = a.asset_type_id","left");
         $this->db->join("product_type prdt","prdt.id = a.product_type_id","left");
         $this->db->where($con);
+        $this->db->where('i.status','Active');
         $this->db->where('i.created_by',$_SESSION[SESSION_NAME]['id']);
        /* $i = 0;
         foreach ($this->column_search as $item) // loop column 
