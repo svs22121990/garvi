@@ -176,6 +176,7 @@ $this->load->view('common/left_panel');
                                 <th>HSN Code</th>
                                 <th>Selling Price</th>
                                 <th>Quantity</th>
+
                                 <th>Remaining</th>
                                 <th>Damage Qty</th>
                                 <th>GST</th>
