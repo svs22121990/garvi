@@ -19,7 +19,9 @@ class Product_Summary_model extends CI_Model
     {
         $this->db->select('
             p.purchase_date, 
-            a.asset_name, 
+            a.asset_name,
+            a.asset_type_id,
+            a.product_type_id,
             a.product_mrp, 
             a.total_quantity, 
             a.quantity,
@@ -120,11 +122,11 @@ class Product_Summary_model extends CI_Model
 
     public function getAllDetails($id)
     {
-        $this->db->select('ast.asset_name,ast.id,ast.category_id,ast.asset_type_id,ast.cgst_asset,ast.sgst_asset,ast.final_amount,ast.product_mrp,ast.discount_amount,ast.quantity,cat.title,mat.type,ast.warranty_type,ast.warranty_from_date,ast.warranty_to_date,ast.warranty_description,ast.sku,ast.hsn,ast.gst_percent,ast.lf_no');        
+        $this->db->select('ast.asset_name,ast.id,ast.category_id,ast.asset_type_id,ast.cgst_asset,ast.sgst_asset,ast.final_amount,ast.product_mrp,ast.discount_amount,ast.quantity,cat.title,mat.type,ast.warranty_type,ast.warranty_from_date,ast.warranty_to_date,ast.warranty_description,ast.sku,ast.hsn,ast.gst_percent,ast.lf_no');
         $this->db->join("categories cat","cat.id = ast.category_id","left");
         $this->db->join("mst_asset_types mat","mat.id = ast.asset_type_id","left");
-        $this->db->where("ast.product_id='".$id."'");     
-        return $this->db->get('assets ast')->row();        
+        $this->db->where("ast.product_id='".$id."'");
+        return $this->db->get('assets ast')->row();
     }
 
 

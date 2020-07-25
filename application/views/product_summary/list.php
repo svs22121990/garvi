@@ -1,4 +1,5 @@
-<?php 
+
+<?php
 $this->load->view('common/header');
 $this->load->view('common/left_panel');
 //print_r(site_url());exit;
