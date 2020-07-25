@@ -1,4 +1,4 @@
- <?php 
+ <?php
 $this->load->view('common/header');
 $this->load->view('common/left_panel');
 //print_r(site_url());exit;
@@ -299,6 +299,7 @@ div.scrollable {
                                         <th>IGST Rate</th>
                                         <th>IGST Amount</th>
                                         <th>Net Amount</th>
+                                        <th> Shipping/Other Charge</th>
                                     </tr>
                                 </thead>
                                 <tbody>  
@@ -342,6 +343,9 @@ div.scrollable {
                                         <td><?php echo "Rs. ".number_format($detail->net_amount,2); 
                                         $allTotal +=  $detail->net_amount;
                                         ?></td>
+                                        <td><?php echo "Rs. ".number_format($detail->shipping_charges,2);
+                                            $allTotal +=  $detail->shipping_charges;
+                                            ?></td>
                                     </tr>       
                                     <?php 
                                     }

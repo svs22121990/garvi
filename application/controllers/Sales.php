@@ -137,6 +137,7 @@ class Sales extends CI_Controller {
         
 
         $tomonth = date('Y', strtotime($date)).'-'.date('m', strtotime($date)).'-1';
+        print_r($tomonth);
         $tomonth2 = date('Y', strtotime($date)).'-'.date('m', strtotime($date));
         $tomonth2 = date("Y-m-t", strtotime($tomonth2));
         //$tomonth2 = date('Y', strtotime($date)).'-'.date('m', strtotime($date)).'-t';
