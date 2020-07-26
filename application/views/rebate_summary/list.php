@@ -83,7 +83,7 @@ $this->load->view('common/left_panel');
                         $formatted_date = str_replace(" ", "", $formatted_date);
                     }
                     ?>
-              <form method="post" action="<?=site_url("Rebate_Summary/export_rebate_summary/$formatted_date/$selected_date/$selected_type/$selected_type2/$selected_type3")?>">
+              <form method="post" action="<?=site_url("Rebate_Summary/export_rebate_summary/$formatted_date/$selected_type/$selected_type2/$selected_type3")?>">
                 <div class="panel-heading">
                     <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                      <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
@@ -102,7 +102,7 @@ $this->load->view('common/left_panel');
                         </li>
                         <?php } ?>
                         <?php if($exportPermission=='1'){?>
-						            <li><a href="<?= base_url(); ?>index.php/Daily_Sales/listpdf/<?= $selected_date ?>/<?= $selected_type ?>/<?= $selected_type2 ?>/<?= $selected_type3 ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
+						            <li><a href="<?= base_url(); ?>index.php/Daily_Sales/listpdf/<?= $formatted_date ?>/<?= $selected_type ?>/<?= $selected_type2 ?>/<?= $selected_type3 ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
                           <li><?=$export; ?></li>
                           <button type="submit" style="display: none" id="subbtn"></button>
                           <?php }?>

@@ -57,7 +57,18 @@ $this->load->view('common/left_panel');
           </div>
         </div>
         <?= form_close(); ?>
-        <form method="post" action="<?= site_url("Bank_Reconcillation/export1/$selected_date/$selected_type/$selected_type2") ?>">
+        <?php
+        if($selected_date == 0)
+        {
+          $formatted_date = 0;
+        } else {
+          $formatted_date = $selected_date;
+          $formatted_date = str_replace("-", "_", $formatted_date);
+          $formatted_date = str_replace("/", "-", $formatted_date);
+          $formatted_date = str_replace(" ", "", $formatted_date);
+        }
+        ?>
+        <form method="post" action="<?= site_url("Bank_Reconcillation/export1/$formatted_date/$selected_type/$selected_type2") ?>">
           <div class="panel-heading">
             <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
             <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
@@ -78,7 +89,7 @@ $this->load->view('common/left_panel');
               <?php } ?>
               <?php if ($exportPermission == '1') { ?>
                 <li>
-                  <a href="<?= base_url("index.php/Bank_Reconcillation/printpdf/$selected_date/$selected_type/$selected_type2"); ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
+                  <a href="<?= base_url("index.php/Bank_Reconcillation/printpdf/$formatted_date/$selected_type/$selected_type2"); ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
                 </li>
                 <li><?= $export; ?></li>
                 <button type="submit" style="display: none" id="subbtn"></button>
