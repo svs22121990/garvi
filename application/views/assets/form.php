@@ -12,7 +12,7 @@
           <div class="panel-heading">
             <h3 class="panel-title"><strong><?= $heading ?></h3>
               <ul class="panel-controls">
-               <li><a href="<?= site_url('Invoice/index')?>" ><span class="fa fa-arrow-left"></span></a></li>
+               <li><a href="<?= site_url('Products/index')?>" ><span class="fa fa-arrow-left"></span></a></li>
              </ul>
            </div>
            <div class="panel-body">
