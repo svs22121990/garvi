@@ -68,8 +68,18 @@ td{
                     </div>
                   </div>
                   <?= form_close(); ?>
-
-          <form method="post" action='<?=site_url("GST_Summary/export_gst_summary/$selected_date/$selected_type/$selected_type2/$selected_type3")?>'>
+            <?php
+            if($selected_date == 0)
+            {
+                $formatted_date = 0;
+            } else {
+                $formatted_date = $selected_date;
+                $formatted_date = str_replace("-", "_", $formatted_date);
+                $formatted_date = str_replace("/", "-", $formatted_date);
+                $formatted_date = str_replace(" ", "", $formatted_date);
+            }
+            ?>
+          <form method="post" action='<?=site_url("GST_Summary/export_gst_summary/$formatted_date/$selected_date/$selected_type/$selected_type2/$selected_type3")?>'>
             <div class="panel-heading">
                 <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                 <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
