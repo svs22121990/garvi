@@ -231,7 +231,7 @@ class Product_Summary extends CI_Controller
         }
         $arrTime[] =  $interval->d . ' Day';
 
-//        $no++;
+        $no++;
         $product_id =  $row->id;
         $data[] = array(
           'no' => $no++,

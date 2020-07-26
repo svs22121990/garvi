@@ -126,6 +126,8 @@ class Sales extends CI_Controller {
 
     $data = array();       
     $no=0; 
+    if($date == 0)
+      $date = date('Y-m-d');
     foreach($Data as $row) 
     {
         $year = $this->datefind($date);
@@ -137,9 +139,10 @@ class Sales extends CI_Controller {
         
 
         $tomonth = date('Y', strtotime($date)).'-'.date('m', strtotime($date)).'-1';
-        print_r($tomonth);
+
         $tomonth2 = date('Y', strtotime($date)).'-'.date('m', strtotime($date));
         $tomonth2 = date("Y-m-t", strtotime($tomonth2));
+
         //$tomonth2 = date('Y', strtotime($date)).'-'.date('m', strtotime($date)).'-t';
         $where2 = array('in.date_of_invoice>='=>$tomonth,'in.date_of_invoice<='=>$tomonth2,'in.created_by'=>$row->id);
         $arrMonth = $this->Sales_model->salecount($where2);
