@@ -298,12 +298,13 @@ div.scrollable {
                                         <th>SGST Amount</th>
                                         <th>IGST Rate</th>
                                         <th>IGST Amount</th>
-                                        <th>Net Amount</th>
                                         <th> Shipping/Other Charge</th>
+                                        <th>Net Amount</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>  
-                                    <?php $i =1; $allTotal = 0; $allqty=0; $allRatPerItem=0; $allDiscountAmt=0; $alltotal = 0;
+                                    <?php $i =1; $allTotal = 0; $allqty=0; $allRatPerItem=0; $allDiscountAmt=0; $alltotal = 0;$allTotal_S=0;
                                     $allTaxabl = 0; $allCGST = 0; $allSGST = 0; $allIGST =0;
                                     foreach ($invoice_details as $detail) {
                                         $product = $this->Crud_model->GetData("assets","","id='".$detail->product_id."'","","","","1");
@@ -340,12 +341,13 @@ div.scrollable {
                                         <td><?php echo $detail->igst_rate; ?></td>
                                         <td><?php echo "Rs. ".number_format($detail->igst_amount,2); 
                                          $allIGST += $detail->igst_amount; ?></td>
+                                        <td><?php echo "Rs. ".number_format($detail->shipping_charges,2);
+                                            $allTotal_S +=  $detail->shipping_charges;
+                                            ?></td>
                                         <td><?php echo "Rs. ".number_format($detail->net_amount,2); 
                                         $allTotal +=  $detail->net_amount;
                                         ?></td>
-                                        <td><?php echo "Rs. ".number_format($detail->shipping_charges,2);
-                                            $allTotal +=  $detail->shipping_charges;
-                                            ?></td>
+
                                     </tr>       
                                     <?php 
                                     }
@@ -369,7 +371,8 @@ div.scrollable {
                                 		<th><?= "Rs. ".number_format($allSGST,2); ?></th> 
                                 		<th></th>
                                 		<th><?= "Rs. ".number_format($allIGST,2); ?></th>
-                                		<th><?= "Rs. ".number_format($allTotal,2); ?></th>
+                                		<th><?= "Rs. ".number_format($allTotal_S,2); ?></th>
+                                        <th><?= "Rs. ".number_format($allTotal,2); ?></th>
                                 	</tr>
                                 </tfoot>
                             </table>
