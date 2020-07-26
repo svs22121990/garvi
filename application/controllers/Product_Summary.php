@@ -214,7 +214,7 @@ class Product_Summary extends CI_Controller
       }
 
     $data = array();
-    $no = 0;
+    $no = 1;    
     foreach ($Data as $row) {
         $startDate = $row->product_purchase_date;
         $endDate = date('Y-m-d');
@@ -231,7 +231,6 @@ class Product_Summary extends CI_Controller
         }
         $arrTime[] =  $interval->d . ' Day';
 
-        $no++;
         $product_id =  $row->id;
         $data[] = array(
           'no' => $no++,
