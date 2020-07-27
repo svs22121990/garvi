@@ -17,7 +17,7 @@ $this->load->view('common/left_panel');
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <?= form_open('Daily_sales/search', ['id' => 'serch_date']); ?>
+                <?= form_open('Credit_Sales_Report/search', ['id' => 'serch_date']); ?>
                 <div class="form-group row" style="padding-top: 20px;">
                     <label class="col-md-2"> select Date<span style="color: red">*</span> <span id="purchase_date_error" style="color: red"></span></label>
                     <div class="col-md-3">
@@ -30,16 +30,27 @@ $this->load->view('common/left_panel');
                     <div class="col-md-4"></div>
                 </div>
                 <?= form_close(); ?>
+                <?php
+                if($selected_date == 0)
+                {
+                    $formatted_date = 0;
+                } else {
+                    $formatted_date = $selected_date;
+                    $formatted_date = str_replace("-", "_", $formatted_date);
+                    $formatted_date = str_replace("/", "-", $formatted_date);
+                    $formatted_date = str_replace(" ", "", $formatted_date);
+                }
+                ?>
                 <form method="post" action="<?= site_url("Credit_Sales_Report/export_credit_sales_report/$dateinfo") ?>">
                     <div class="panel-heading">
                         <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                         <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
                         <ul class="panel-controls">
                             <li>
-                                <a href="<?= base_url(); ?>index.php/Credit_Sales_Report/sales_pdf/<?= $dateinfo ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
+                                <a href="<?= base_url(); ?>index.php/Credit_Sales_Report/sales_pdf/<?= $formatted_date ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
                             </li>
                             <li>
-                                <a href="<?= base_url(); ?>index.php/Credit_Sales_Report/export_sales_summary/<?= $dateinfo ?>" target="_blank"><span title="Excel" class="fa fa-file-excel-o"></span></a>
+                                <a href="<?= base_url(); ?>index.php/Credit_Sales_Report/export_sales_summary/<?= $formatted_date ?>" target="_blank"><span title="Excel" class="fa fa-file-excel-o"></span></a>
                             </li>
                             <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
                             <!-- <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>

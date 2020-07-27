@@ -47,8 +47,8 @@ $this->load->view('common/left_panel');
                                 <thead>
                                     <tr>                        
                                         <th>Product Name</th>
-                                        <th>Product Name</th>
-                                        <th>Product Name</th>
+                                        <th>Product Type 1</th>
+                                        <th>Product Type 2</th>
 
                                         <th>HSN Code</th>                             
                                         <th>Quantity</th>
@@ -74,8 +74,8 @@ $this->load->view('common/left_panel');
                                     ?>
                                     <tr>
                                         <td><?php echo $product->asset_name; ?></td>
-                                        <td><?php echo $product->asset_name; ?></td>
-                                        <td><?php echo $product->asset_name; ?></td>
+                                        <td><?php echo $product->productType; ?></td>
+                                        <td><?php echo $product->assetType; ?></td>
 
                                         <td><?php echo $detail->hsn_code; ?></td>
                                         <td><?php echo $detail->quantity; ?></td>
