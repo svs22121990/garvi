@@ -134,7 +134,18 @@ $this->load->view('common/left_panel');
                     </div>
                 </div>
                 <?= form_close(); ?>
-                <form method="post" action="<?=site_url("Warehouse_Product_Summary/export_product_summary/$selected_date/$selected_type/$selected_type2/$selected_color/$selected_size/$selected_fabric/$selected_craft/$selected_cat")?>">
+                <?php
+                if($selected_date == 0)
+                {
+                    $formatted_date = 0;
+                } else {
+                    $formatted_date = $selected_date;
+                    $formatted_date = str_replace("-", "_", $formatted_date);
+                    $formatted_date = str_replace("/", "-", $formatted_date);
+                    $formatted_date = str_replace(" ", "", $formatted_date);
+                }
+                ?>
+                <form method="post" action="<?=site_url("Warehouse_Product_Summary/export_product_summary/$formatted_date/$selected_type/$selected_type2/$selected_color/$selected_size/$selected_fabric/$selected_craft/$selected_cat")?>">
 
                         <div class="panel-heading">
                             <h3 class="panel-title"><strong><?= $heading ?></strong></h3>

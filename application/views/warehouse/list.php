@@ -34,6 +34,18 @@ $this->load->view('common/left_panel');
                     </div>
                 </div>
                 <?= form_close(); ?>
+
+                <?php
+                if($selected_date == 0)
+                {
+                    $formatted_date = 0;
+                } else {
+                    $formatted_date = $selected_date;
+                    $formatted_date = str_replace("-", "_", $formatted_date);
+                    $formatted_date = str_replace("/", "-", $formatted_date);
+                    $formatted_date = str_replace(" ", "", $formatted_date);
+                }
+                ?>
                 <div class="panel-heading">
                     <h3 class="panel-title"><strong><?= $heading ?> Products</strong></h3>
                     <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
@@ -53,8 +65,8 @@ $this->load->view('common/left_panel');
                         <?php } ?>
 
 
-                        <li><a href="<?php echo site_url("Warehouse/pdf_summary/$selected_date")?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
-                        <li><a href="<?php echo site_url("Warehouse/export_bill_summary/$selected_date")?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>
+                        <li><a href="<?php echo site_url("Warehouse/pdf_summary/$formatted_date")?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
+                        <li><a href="<?php echo site_url("Warehouse/export_bill_summary/$formatted_date")?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>
                         <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
                         <!-- <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
                         <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li> -->
@@ -306,11 +318,26 @@ $this->load->view('common/left_panel');
 </script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
-
+<!---->
+<!--<script>-->
+<!--    $(function() {-->
+<!--        $('input[name="daterange"]').daterangepicker({-->
+<!--            showDropdowns: true,-->
+<!--            locale: {-->
+<!--                format: 'DD/MM/YYYY'-->
+<!--            },-->
+<!--            opens: 'right'-->
+<!--        }, function(start, end, label) {-->
+<!--            var startDate = start.format('YYYY-MM-DD');-->
+<!--            var endDate = end.format('YYYY-MM-DD');-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
 <script>
     $(function() {
         $('input[name="daterange"]').daterangepicker({
             showDropdowns: true,
+            autoUpdateInput: false,
             locale: {
                 format: 'DD/MM/YYYY'
             },
@@ -318,6 +345,13 @@ $this->load->view('common/left_panel');
         }, function(start, end, label) {
             var startDate = start.format('YYYY-MM-DD');
             var endDate = end.format('YYYY-MM-DD');
+        });
+        $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        });
+
+        $('input[name="daterange"]').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
         });
     });
 </script>

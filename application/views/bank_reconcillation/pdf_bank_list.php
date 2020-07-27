@@ -75,7 +75,7 @@
                         'invoice_no'=>$invoice_no,
                         'date_of_invoice'=>$result->date_of_invoice,
                         'asset_name' => $result->asset_name,
-                    
+
                         'invoice_quantity'=> $result->invoice_quantity,
                         'rate_per_item'=> $result->rate_per_item,
                     
@@ -121,8 +121,8 @@
                                 <th>Invoice No</th>
                                 <th>Date</th>
                                 <th>Product Name</th>
-                                <th>Type 1</th>
-                                <th>Type 2</th>
+<!--                                <th>Type 1</th>-->
+<!--                                <th>Type 2</th>-->
                                 <!--<th>HSN</th>-->
                                 <th>Quantity</th>
                                 <th> Selling Price</th>
@@ -165,8 +165,8 @@
                     <td><?= $result['invoice_no']; ?></td>
                     <td><?= date('d-m-Y', strtotime($result['date_of_invoice'])); ?></td>
                     <td><?= $result['asset_name']; ?></td>
-                    <td><?= $result['productType']; ?></td>
-                    <td><?= $result['assetType']; ?></td>
+<!--                    <td>--><?//= $result['productType']; ?><!--</td>-->
+<!--                    <td>--><?//= $result['assetType']; ?><!--</td>-->
                     
                     <td><?php echo $result['invoice_quantity']; $invoice_quantity += $result['invoice_quantity'];  ?></td>
                     <td><?php echo  "Rs. ".number_format($result['rate_per_item'],2); $rate_per_item +=$result['rate_per_item']; ?></td>

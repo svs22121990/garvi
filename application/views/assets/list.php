@@ -39,6 +39,7 @@ td{
 					</div>
                   </div>
                   <?= form_close(); ?>
+
                 <div class="panel-heading">                                
                     <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                      <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
