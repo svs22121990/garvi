@@ -355,15 +355,16 @@ class Dispatch extends CI_Controller {
         				$arrCondition = array('id'=>$this->input->post('dis_id'));
         				$this->Crud_model->SaveData("dispatch_details",$data,$arrCondition);
         				$quantity = $arrProduct->quantity+$_POST['actual_qty']-$_POST['quantity'];
-        				$total_quantity = $arrProduct->total_quantity+$_POST['actual_qty']-$_POST['quantity'];
+//        				$total_quantity = $arrProduct->total_quantity+$_POST['actual_qty']-$_POST['quantity'];
         			}
         			else{
         				$this->Crud_model->SaveData("dispatch_details",$data);
         				$quantity = $arrProduct->quantity-$_POST['quantity'];
-        				$total_quantity = $arrProduct->total_quantity-$_POST['quantity'];
+//        				$total_quantity = $arrProduct->total_quantity-$_POST['quantity'];
         			}
-        		  $arrData = array('quantity'=>$quantity,'total_quantity'=>$total_quantity);
-        		  $this->Crud_model->SaveData('assets',$arrData,$condition);
+//        		  $arrData = array('quantity'=>$quantity,'total_quantity'=>$total_quantity);
+            $arrData = array('quantity'=>$quantity);
+            $this->Crud_model->SaveData('assets',$arrData,$condition);
                 if($finish != 'finish') {
                     return redirect('dispatch/save_next/'.$last_id);
                 } else {
