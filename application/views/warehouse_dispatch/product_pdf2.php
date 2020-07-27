@@ -33,7 +33,7 @@
 <div style="text-align: center;">GST Number: <?= $_SESSION[SESSION_NAME]['gst_number'] ?></div>
 <h4 style="text-align: center;">Warehouse Products Sent </h4>
 <?php $sr = 1; ?>
-<?php $results2=array(); $total_amount= 0;
+<?php $results2=array(); $total_sum= 0;$sum_amount=0;$sum_quantity=0;$gst=0;$grand_total=0;
 foreach($results as $key){
     $no = $sr++;
     $results2[] = array(
@@ -47,7 +47,11 @@ foreach($results as $key){
         'gst' => number_format(($key->gst/100),2),
         'grand_total' => number_format(($key->sum_quantity * $key->sum_amount) + ($key->gst/100),2),
     );
-//    $total_amount += $key->total_amount;
+    $sum_quantity += $key->sum_quantity;
+    $sum_amount += $key->sum_amount;
+    $total_sum += ($key->sum_quantity * $key->sum_amount);
+    $gst += ($key->gst/100);
+    $grand_total += ($key->sum_quantity * $key->sum_amount) + ($key->gst/100);
 }
 
 ?>
@@ -80,6 +84,27 @@ foreach($results as $key){
         </tr>
     <?php } ?>
     </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="4" style="text-align:right;">Total</td>
+        <th>
+            <?php echo number_format($sum_quantity); ?>
+        </th>
+        <th>
+            <?php echo "Rs. " . number_format($sum_amount, 2); ?>
+        </th>
+        <th>
+            <?php echo "Rs. " . number_format($total_sum, 2); ?>
+        </th>
+        <th>
+            <?php echo "Rs. " . number_format($gst, 2); ?>
+        </th>
+        <th>
+            <?php echo "Rs. " . number_format($grand_total, 2); ?>
+        </th>
+    </tr>
+
+    </tfoot>
 </table>
 </body>
 </html>

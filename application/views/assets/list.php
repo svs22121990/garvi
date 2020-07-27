@@ -39,6 +39,18 @@ td{
 					</div>
                   </div>
                   <?= form_close(); ?>
+                <?php
+                if($selected_date == 0)
+                {
+                    $formatted_date = 0;
+                } else {
+                    $formatted_date = $selected_date;
+                    $formatted_date = str_replace("-", "_", $formatted_date);
+                    $formatted_date = str_replace("/", "-", $formatted_date);
+                    $formatted_date = str_replace(" ", "", $formatted_date);
+                }
+                ?>
+
                 <div class="panel-heading">                                
                     <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                      <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
@@ -58,8 +70,8 @@ td{
                         <?php } ?>
                         
                          
-                        <li><a href="<?= base_url(); ?>index.php/Products/pdf_summary/<?= $dateinfo; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
-                        <li><a href="<?= base_url(); ?>index.php/Products/export_bill_summary/<?= $dateinfo; ?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>
+                        <li><a href="<?= base_url(); ?>index.php/Products/pdf_summary/<?= $formatted_date; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
+                        <li><a href="<?= base_url(); ?>index.php/Products/export_bill_summary/<?= $formatted_date; ?>"><span title="Export" class="fa fa-file-excel-o"></span></a></li>
                         <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
                         <!-- <li><a href="#" class="panel-refresh"><span class="fa fa-refresh"></span></a></li>
                         <li><a href="#" class="panel-remove"><span class="fa fa-times"></span></a></li> -->

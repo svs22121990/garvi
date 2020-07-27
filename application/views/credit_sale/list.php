@@ -17,7 +17,7 @@ $this->load->view('common/left_panel');
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <?= form_open('Credit_Sales_Report/search', ['id' => 'serch_date']); ?>
+                <?= form_open('Daily_sales/search', ['id' => 'serch_date']); ?>
                 <div class="form-group row" style="padding-top: 20px;">
                     <label class="col-md-2"> select Date<span style="color: red">*</span> <span id="purchase_date_error" style="color: red"></span></label>
                     <div class="col-md-3">

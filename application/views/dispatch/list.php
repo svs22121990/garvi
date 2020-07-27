@@ -33,7 +33,20 @@ $this->load->view('common/left_panel');
 
 					</div>
                   </div>
+
                   <?= form_close(); ?>
+
+                <?php
+                if($selected_date == 0)
+                {
+                    $formatted_date = 0;
+                } else {
+                    $formatted_date = $selected_date;
+                    $formatted_date = str_replace("-", "_", $formatted_date);
+                    $formatted_date = str_replace("/", "-", $formatted_date);
+                    $formatted_date = str_replace(" ", "", $formatted_date);
+                }
+                ?>
 			  <?php if($dateinfo!=0){ ?>
               <form method="post" action="<?=site_url("Dispatch/export_dispatch1/$dateinfo")?>">
 			  <?php }else{ ?>
@@ -59,9 +72,9 @@ $this->load->view('common/left_panel');
                         <?php if($exportPermission=='1'){?>
 						  <li>
 						    <?php if($dateinfo!=0){ ?>
-							<a href="<?= base_url(); ?>index.php/Dispatch/listpdf/<?= $dateinfo; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
+							<a href="<?= base_url(); ?>index.php/Dispatch/listpdf/<?= $formatted_date; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
 							<?php } else { ?>
-                            <a href="<?= base_url(); ?>index.php/Dispatch/listpdf" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
+                            <a href="<?= base_url(); ?>index.php/Dispatch/listpdf/<?= $formatted_date; ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
 							<?php } ?>
                           </li>
                           <li><?=$export; ?></li>
