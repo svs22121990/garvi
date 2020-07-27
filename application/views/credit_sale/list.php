@@ -269,63 +269,6 @@ $this->load->view('common/left_panel');
             }
         });
 
-        var sTable = $('.settlement_datatable').DataTable({
-            "ajax": {
-                "url": url,
-                "dataSrc": "settlementData",
-            },
-            "columns": [{
-                    "data": "no"
-                },
-                {
-                    "data": "invoice_no"
-                },
-                {
-                    "data": "date_of_invoice"
-                },
-                {
-                    "data": "settlement_date"
-                },
-                {
-                    "data": "paymentMode"
-                },
-                {
-                    "data": "sumAmount",
-                    "render": function(data, type, row, meta) {
-                        if (data) {
-                            return 'Rs. ' + data;
-                        } else {
-                            return data;
-                        }
-                    }
-                },
-            ],
-            "ordering": false,
-
-            "footerCallback": function(row, data, start, end, display) {
-                var api = this.api(),
-                    data;
-
-                // Remove the formatting to get integer data for summation
-                var intVal = function(i) {
-                    return typeof i === 'string' ?
-                        i.replace(/[\$,]/g, '') * 1 :
-                        typeof i === 'number' ?
-                        i : 0;
-                };
-
-                total2 = api
-                    .column(5, {
-                        filter: 'applied'
-                    })
-                    .data()
-                    .reduce(function(a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-                var additionalDOM = 'Rs.' + total2.toFixed(2);
-                $(api.column(5).footer()).html(additionalDOM);
-            }
-        });
 
         $('.dtFiltersCal').on("click", function(e) {
             oTable.draw();

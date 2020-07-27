@@ -23,7 +23,7 @@ class Credit_Sales_Report extends CI_Controller
         $date = str_replace(" ", "", $date);
 
         //$newDate = date("Y-m-d", strtotime($date));
-        $strUrl = site_url('Sales_Summary/ajax_manage_page/' . $date);
+        $strUrl = site_url('Credit_Sales_Report/ajax_manage_page/' . $date);
         $this->common_view($strUrl, $date);
       } else {
         return redirect('Sales_Summary');
