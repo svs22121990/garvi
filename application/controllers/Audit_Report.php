@@ -154,10 +154,10 @@ class Audit_Report extends CI_Controller {
     $array['book_quantity'] = $row->quantity;
     $array['book_total'] = $row->quantity * $row->product_mrp;
 
-    $array['1year'] = "";
-    $array['2year'] = "";
-    $array['3year'] = "";
-    $array['4year'] = "";
+    $array['1year'] = 0;
+    $array['2year'] = 0;
+    $array['3year'] = 0;
+    $array['4year'] = 0;
 
     $startDate = $row->purchase_date;
     $endDate = date('Y-m-d');
@@ -165,52 +165,57 @@ class Audit_Report extends CI_Controller {
     $datetime1 = date_create($startDate);
     $datetime2 = date_create($endDate);
     $interval = date_diff($datetime1, $datetime2, false);
-    if ($interval->y < 1) {
-      $array['1year'] = $row->quantity * $row->product_mrp;
-    } else if ($interval->y > 1 && $interval->y < 2) {
+    if ($interval->y > 1 && $interval->y < 2) {
       $array['2year'] = $row->quantity * $row->product_mrp;
     } else if ($interval->y > 2 && $interval->y < 3) {
       $array['3year'] = $row->quantity * $row->product_mrp;
     } else if ($interval->y > 3) {
       $array['4year'] = $row->quantity * $row->product_mrp;
+    } else {
+      $array['1year'] = $row->quantity * $row->product_mrp;
     }
     
-    $array['physical_quantity'] = $row->physical_qty;
     if($row->physical_qty == "")
     {
-      $array['physical_total'] = "";
-      $array['shortage_quantity'] = "";
-      $array['shortage_total'] = "";
-      $array['excess_quantity'] = "";
-      $array['excess_total'] = "";
+      $array['physical_quantity'] = $row->quantity;
+      $array['physical_total'] = $row->quantity * $row->product_mrp;
+      $array['shortage_quantity'] = 0;
+      $array['shortage_total'] = 0;
+      $array['excess_quantity'] = 0;
+      $array['excess_total'] = 0;
     } else {
+      $array['physical_quantity'] = $row->physical_qty;
       $array['physical_total'] = $row->physical_qty * $row->product_mrp;
-      $array['shortage_quantity'] = "";
-      $array['shortage_total'] = "";
-      $array['excess_quantity'] = "";
-      $array['excess_total'] = "";
+      $array['shortage_quantity'] = 0;
+      $array['shortage_total'] = 0;
+      $array['excess_quantity'] = 0;
+      $array['excess_total'] = 0;
 
       if($row->quantity > $row->physical_qty)
       {
         $array['shortage_quantity'] = $row->quantity - $row->physical_qty;
         $array['shortage_total'] = ($row->quantity - $row->physical_qty) * $row->product_mrp;
+        $array['excess_quantity'] = 0;
+        $array['excess_total'] = 0;
       } else if($row->quantity < $row->physical_qty) {
         $array['excess_quantity'] = $row->physical_qty - $row->quantity;
         $array['excess_total'] = ($row->physical_qty -$row->quantity) * $row->product_mrp;
+        $array['shortage_quantity'] = 0;
+        $array['shortage_total'] = 0;
       }
       
     }
     if($row->damage_qty == 0)
     {
-      $array['damage_quantity'] = "";
-      $array['damage_total'] = "";
+      $array['damage_quantity'] = 0;
+      $array['damage_total'] = 0;
     } else {
       $array['damage_quantity'] = $row->damage_qty;
       $array['damage_total'] = $row->damage_qty * $row->product_mrp;
     }
     $this->db->select('quantity');
-    $this->db->from("purchase_returns");
-    $this->db->where('asset_id',$row->id);
+    $this->db->from("dispatch_details");
+    $this->db->where('product_id',$row->id);
     $query = $this->db->get();
     $purchase_return = $query->result();
     if(count($purchase_return) > 0)
@@ -218,8 +223,8 @@ class Audit_Report extends CI_Controller {
       $array['return_quantity'] = $purchase_return[0]->quantity;
       $array['return_total'] = $row->product_mrp * $purchase_return[0]->quantity;
     } else {
-      $array['return_quantity'] = "";
-      $array['return_total'] = "";
+      $array['return_quantity'] = 0;
+      $array['return_total'] = 0;
     }
     
     $this->db->select('quantity, rate_per_item');
@@ -232,8 +237,8 @@ class Audit_Report extends CI_Controller {
       $array['sales_quantity'] = $sales[0]->quantity;
       $array['sales_total'] = $sales[0]->rate_per_item * $sales[0]->quantity;
     } else {
-      $array['sales_quantity'] = "";
-      $array['sales_total'] = "";
+      $array['sales_quantity'] = 0;
+      $array['sales_total'] = 0;
     }
 
     $this->db->select('quantity, price');
@@ -246,21 +251,21 @@ class Audit_Report extends CI_Controller {
       $array['sales_return_quantity'] = $sales_return[0]->quantity;
       $array['sales_return_total'] = $sales_return[0]->price * $sales_return[0]->quantity;
     } else {
-      $array['sales_return_quantity'] = "";
-      $array['sales_return_total'] = "";
+      $array['sales_return_quantity'] = 0;
+      $array['sales_return_total'] = 0;
     }
 
     if($row->purchase_date > $purchaseDate)
     {
-      $array['quantity'] = "";
-      $array['total'] = "";
+      $array['quantity'] = 0;
+      $array['total'] = 0;
       $array['received_quantity'] = $row->quantity;
       $array['received_total'] = $row->product_mrp * $row->quantity;
     } else {
       $array['quantity'] = $row->quantity;
       $array['total'] = $row->product_mrp * $row->quantity;
-      $array['received_quantity'] = "";
-      $array['received_total'] = "";
+      $array['received_quantity'] = 0;
+      $array['received_total'] = 0;
     }
     if($row->physical_status == 0)
       $btn = ('<a href="#myModaledit" title="Edit" class="btn btn-info btn-circle btn-sm" data-toggle="modal"  onclick="getEditvalue('.$row->id.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>');
@@ -359,133 +364,141 @@ class Audit_Report extends CI_Controller {
         $data = array();       
         $no=0; 
     
-        
-      foreach($Data as $row) 
-      {  
-        $no++;
-        $sr_no = $no;
-    
-        $array = array();
-        $array['no'] = $sr_no;
-        $array['lf_no'] = $row->lf_no;
-        $array['asset_name'] = $row->asset_name;
-        $array['product_mrp'] = $row->product_mrp;
-        $array['book_quantity'] = $row->quantity;
-        $array['book_total'] = $row->quantity * $row->product_mrp;
-    
-        $array['1year'] = "";
-        $array['2year'] = "";
-        $array['3year'] = "";
-        $array['4year'] = "";
-    
-        $startDate = $row->purchase_date;
-        $endDate = date('Y-m-d');
-    
-        $datetime1 = date_create($startDate);
-        $datetime2 = date_create($endDate);
-        $interval = date_diff($datetime1, $datetime2, false);
-        if ($interval->y < 1) {
-          $array['oneyear'] = $row->quantity * $row->product_mrp;
-        } else if ($interval->y > 1 && $interval->y < 2) {
-          $array['twoyear'] = $row->quantity * $row->product_mrp;
-        } else if ($interval->y > 2 && $interval->y < 3) {
-          $array['threeyear'] = $row->quantity * $row->product_mrp;
-        } else if ($interval->y > 3) {
-          $array['fouryear'] = $row->quantity * $row->product_mrp;
-        }
-        
-        $array['physical_quantity'] = $row->physical_qty;
-        if($row->physical_qty == "")
-        {
-          $array['physical_total'] = "";
-          $array['shortage_quantity'] = "";
-          $array['shortage_total'] = "";
-          $array['excess_quantity'] = "";
-          $array['excess_total'] = "";
-        } else {
-          $array['physical_total'] = $row->physical_qty * $row->product_mrp;
-          $array['shortage_quantity'] = "";
-          $array['shortage_total'] = "";
-          $array['excess_quantity'] = "";
-          $array['excess_total'] = "";
-    
-          if($row->quantity > $row->physical_qty)
-          {
-            $array['shortage_quantity'] = $row->quantity - $row->physical_qty;
-            $array['shortage_total'] = ($row->quantity - $row->physical_qty) * $row->product_mrp;
-          } else if($row->quantity < $row->physical_qty) {
-            $array['excess_quantity'] = $row->physical_qty - $row->quantity;
-            $array['excess_total'] = ($row->physical_qty -$row->quantity) * $row->product_mrp;
+        foreach($Data as $row) 
+        { 
+          $no++;
+          $sr_no = $no;
+      
+          $array = array();
+          $array['no'] = $sr_no;
+          $array['lf_no'] = $row->lf_no;
+          $array['asset_name'] = $row->asset_name;
+          $array['product_mrp'] = $row->product_mrp;
+          $array['book_quantity'] = $row->quantity;
+          $array['book_total'] = $row->quantity * $row->product_mrp;
+      
+          $array['1year'] = 0;
+          $array['2year'] = 0;
+          $array['3year'] = 0;
+          $array['4year'] = 0;
+      
+          $startDate = $row->purchase_date;
+          $endDate = date('Y-m-d');
+      
+          $datetime1 = date_create($startDate);
+          $datetime2 = date_create($endDate);
+          $interval = date_diff($datetime1, $datetime2, false);
+          if ($interval->y > 1 && $interval->y < 2) {
+            $array['2year'] = $row->quantity * $row->product_mrp;
+          } else if ($interval->y > 2 && $interval->y < 3) {
+            $array['3year'] = $row->quantity * $row->product_mrp;
+          } else if ($interval->y > 3) {
+            $array['4year'] = $row->quantity * $row->product_mrp;
+          } else {
+            $array['1year'] = $row->quantity * $row->product_mrp;
           }
           
-        }
-        if($row->damage_qty == 0)
-        {
-          $array['damage_quantity'] = "";
-          $array['damage_total'] = "";
-        } else {
-          $array['damage_quantity'] = $row->damage_qty;
-          $array['damage_total'] = $row->damage_qty * $row->product_mrp;
-        }
-        $this->db->select('quantity');
-        $this->db->from("purchase_returns");
-        $this->db->where('asset_id',$row->id);
-        $query = $this->db->get();
-        $purchase_return = $query->result();
-        if(count($purchase_return) > 0)
-        {
-          $array['return_quantity'] = $purchase_return[0]->quantity;
-          $array['return_total'] = $row->product_mrp * $purchase_return[0]->quantity;
-        } else {
-          $array['return_quantity'] = "";
-          $array['return_total'] = "";
+          if($row->physical_qty == "")
+          {
+            $array['physical_quantity'] = $row->quantity;
+            $array['physical_total'] = $row->quantity * $row->product_mrp;
+            $array['shortage_quantity'] = 0;
+            $array['shortage_total'] = 0;
+            $array['excess_quantity'] = 0;
+            $array['excess_total'] = 0;
+          } else {
+            $array['physical_quantity'] = $row->physical_qty;
+            $array['physical_total'] = $row->physical_qty * $row->product_mrp;
+            $array['shortage_quantity'] = 0;
+            $array['shortage_total'] = 0;
+            $array['excess_quantity'] = 0;
+            $array['excess_total'] = 0;
+      
+            if($row->quantity > $row->physical_qty)
+            {
+              $array['shortage_quantity'] = $row->quantity - $row->physical_qty;
+              $array['shortage_total'] = ($row->quantity - $row->physical_qty) * $row->product_mrp;
+              $array['excess_quantity'] = 0;
+              $array['excess_total'] = 0;
+            } else if($row->quantity < $row->physical_qty) {
+              $array['excess_quantity'] = $row->physical_qty - $row->quantity;
+              $array['excess_total'] = ($row->physical_qty -$row->quantity) * $row->product_mrp;
+              $array['shortage_quantity'] = 0;
+              $array['shortage_total'] = 0;
+            }
+            
+          }
+          if($row->damage_qty == 0)
+          {
+            $array['damage_quantity'] = 0;
+            $array['damage_total'] = 0;
+          } else {
+            $array['damage_quantity'] = $row->damage_qty;
+            $array['damage_total'] = $row->damage_qty * $row->product_mrp;
+          }
+          $this->db->select('quantity');
+          $this->db->from("dispatch_details");
+          $this->db->where('product_id',$row->id);
+          $query = $this->db->get();
+          $purchase_return = $query->result();
+          if(count($purchase_return) > 0)
+          {
+            $array['return_quantity'] = $purchase_return[0]->quantity;
+            $array['return_total'] = $row->product_mrp * $purchase_return[0]->quantity;
+          } else {
+            $array['return_quantity'] = 0;
+            $array['return_total'] = 0;
+          }
+          
+          $this->db->select('quantity, rate_per_item');
+          $this->db->from("invoice_details");
+          $this->db->where('product_id',$row->id);
+          $query = $this->db->get();
+          $sales = $query->result();
+          if(count($sales) > 0)
+          {
+            $array['sales_quantity'] = $sales[0]->quantity;
+            $array['sales_total'] = $sales[0]->rate_per_item * $sales[0]->quantity;
+          } else {
+            $array['sales_quantity'] = 0;
+            $array['sales_total'] = 0;
+          }
+      
+          $this->db->select('quantity, price');
+          $this->db->from("sales_return_details");
+          $this->db->where('product_id',$row->id);
+          $query = $this->db->get();
+          $sales_return = $query->result();
+          if(count($sales_return) > 0)
+          {
+            $array['sales_return_quantity'] = $sales_return[0]->quantity;
+            $array['sales_return_total'] = $sales_return[0]->price * $sales_return[0]->quantity;
+          } else {
+            $array['sales_return_quantity'] = 0;
+            $array['sales_return_total'] = 0;
+          }
+      
+          if($row->purchase_date > $purchaseDate)
+          {
+            $array['quantity'] = 0;
+            $array['total'] = 0;
+            $array['received_quantity'] = $row->quantity;
+            $array['received_total'] = $row->product_mrp * $row->quantity;
+          } else {
+            $array['quantity'] = $row->quantity;
+            $array['total'] = $row->product_mrp * $row->quantity;
+            $array['received_quantity'] = 0;
+            $array['received_total'] = 0;
+          }
+          if($row->physical_status == 0)
+            $btn = ('<a href="#myModaledit" title="Edit" class="btn btn-info btn-circle btn-sm" data-toggle="modal"  onclick="getEditvalue('.$row->id.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>');
+          else
+            $btn = "";
+          $array['btn'] = $btn;
+          $data[] = $array;
+          
         }
         
-        $this->db->select('quantity, rate_per_item');
-        $this->db->from("invoice_details");
-        $this->db->where('product_id',$row->id);
-        $query = $this->db->get();
-        $sales = $query->result();
-        if(count($sales) > 0)
-        {
-          $array['sales_quantity'] = $sales[0]->quantity;
-          $array['sales_total'] = $sales[0]->rate_per_item * $sales[0]->quantity;
-        } else {
-          $array['sales_quantity'] = "";
-          $array['sales_total'] = "";
-        }
-    
-        $this->db->select('quantity, price');
-        $this->db->from("sales_return_details");
-        $this->db->where('product_id',$row->id);
-        $query = $this->db->get();
-        $sales_return = $query->result();
-        if(count($sales_return) > 0)
-        {
-          $array['sales_return_quantity'] = $sales_return[0]->quantity;
-          $array['sales_return_total'] = $sales_return[0]->price * $sales_return[0]->quantity;
-        } else {
-          $array['sales_return_quantity'] = "";
-          $array['sales_return_total'] = "";
-        }
-    
-        if($row->purchase_date > $dateCheck->format('Y-m-d'))
-        {
-          $array['quantity'] = "";
-          $array['total'] = "";
-          $array['received_quantity'] = $row->total_quantity;
-          $array['received_total'] = $row->product_mrp * $row->total_quantity;
-        } else {
-          $array['quantity'] = $row->total_quantity;
-          $array['total'] = $row->product_mrp * $row->total_quantity;
-          $array['received_quantity'] = "";
-          $array['received_total'] = "";
-        }
-        $btn = ('<a href="#myModaledit" title="Edit" class="btn btn-info btn-circle btn-sm" data-toggle="modal"  onclick="getEditvalue('.$row->id.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>');
-        $array['btn'] = $btn;
-        $data[] = $array;
-        
-      }
       
       $results = $data;
       $FileTitle='Audit Report';

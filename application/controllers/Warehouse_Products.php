@@ -332,6 +332,7 @@ class Warehouse_Products extends CI_Controller {
           'asset_name' => $detail[$i]->asset_name,
           'quantity' => $detail[$i]->quantity,
           'total_quantity' => $detail[$i]->quantity,
+          'physical_qty' => $detail[$i]->quantity,
           'product_mrp' => $detail[$i]->price,
           'gst_percent' => $detail[$i]->gst_percent,
           'barcode_number' => $detail[$i]->barcode_number,

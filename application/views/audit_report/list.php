@@ -94,7 +94,7 @@ $this->load->view('common/left_panel');
                                 <th colspan="4"></th>
                                 <th colspan="2">Opening Stock as of <?php echo $openingStockDate; ?></th>
                                 <th colspan="2">Received during the year</th>
-                                <th colspan="2">Purchase Return</th>
+                                <th colspan="2">Dispatch / Purchase Return</th>
                                 <th colspan="2">Sales Amount</th>
                                 <th colspan="2">Sales Return</th>
                                 <th colspan="2">Book Stock</th>
