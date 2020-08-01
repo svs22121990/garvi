@@ -126,7 +126,7 @@ class Audit_Report extends CI_Controller {
 
     $this->db->select(
     'a.id,a.asset_name,a.product_mrp,a.quantity,a.total_quantity,a.lf_no,a.purchase_date,a.physical_qty,a.damage_qty,
-     a.physical_status,a.qty_before_physical,p.purchase_date
+     a.physical_status,a.qty_before_physical,p.bill_date as purchase_date
     ');
     $this->db->from("assets a");
     $this->db->join("products p","a.product_id = p.id","left");
@@ -353,7 +353,7 @@ class Audit_Report extends CI_Controller {
 
       $this->db->select(
       'a.id,a.asset_name,a.product_mrp,a.quantity,a.total_quantity,a.lf_no,a.purchase_date,a.physical_qty,a.damage_qty,
-      a.physical_status,a.qty_before_physical,,p.purchase_date
+      a.physical_status,a.qty_before_physical,,p.bill_date as purchase_date
       ');
       $this->db->from("assets a");
       $this->db->join("products p","a.product_id = p.id","left");
