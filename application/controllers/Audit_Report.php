@@ -126,7 +126,7 @@ class Audit_Report extends CI_Controller {
 
     $this->db->select(
     'a.id,a.asset_name,a.product_mrp,a.quantity,a.total_quantity,a.lf_no,a.purchase_date,a.physical_qty,a.damage_qty,
-     a.physical_status,a.qty_before_physical,p.bill_date as purchase_date
+     a.physical_status,a.qty_before_physical,p.bill_date
     ');
     $this->db->from("assets a");
     $this->db->join("products p","a.product_id = p.id","left");
@@ -167,13 +167,13 @@ class Audit_Report extends CI_Controller {
     $datetime2 = date_create($endDate);
     $interval = date_diff($datetime1, $datetime2, false);
     if ($interval->y > 1 && $interval->y < 2) {
-      $array['2year'] = $row->quantity * $row->product_mrp;
+      $array['2year'] = $row->total_quantity * $row->product_mrp;
     } else if ($interval->y > 2 && $interval->y < 3) {
-      $array['3year'] = $row->quantity * $row->product_mrp;
+      $array['3year'] = $row->total_quantity * $row->product_mrp;
     } else if ($interval->y > 3) {
-      $array['4year'] = $row->quantity * $row->product_mrp;
+      $array['4year'] = $row->total_quantity * $row->product_mrp;
     } else {
-      $array['1year'] = $row->quantity * $row->product_mrp;
+      $array['1year'] = $row->total_quantity * $row->product_mrp;
     }
     
     if($row->physical_qty == "")
@@ -256,15 +256,15 @@ class Audit_Report extends CI_Controller {
       $array['sales_return_total'] = 0;
     }
 
-    if($row->purchase_date > $purchaseDate)
+    if($row->bill_date > $purchaseDate)
     {
       $array['quantity'] = 0;
       $array['total'] = 0;
-      $array['received_quantity'] = $row->quantity;
-      $array['received_total'] = $row->product_mrp * $row->quantity;
+      $array['received_quantity'] = $row->total_quantity;
+      $array['received_total'] = $row->product_mrp * $row->total_quantity;
     } else {
-      $array['quantity'] = $row->quantity;
-      $array['total'] = $row->product_mrp * $row->quantity;
+      $array['quantity'] = $row->total_quantity;
+      $array['total'] = $row->product_mrp * $row->total_quantity;
       $array['received_quantity'] = 0;
       $array['received_total'] = 0;
     }
@@ -353,7 +353,7 @@ class Audit_Report extends CI_Controller {
 
       $this->db->select(
       'a.id,a.asset_name,a.product_mrp,a.quantity,a.total_quantity,a.lf_no,a.purchase_date,a.physical_qty,a.damage_qty,
-      a.physical_status,a.qty_before_physical,,p.bill_date as purchase_date
+      a.physical_status,a.qty_before_physical,,p.bill_date
       ');
       $this->db->from("assets a");
       $this->db->join("products p","a.product_id = p.id","left");
@@ -394,13 +394,13 @@ class Audit_Report extends CI_Controller {
       $datetime2 = date_create($endDate);
       $interval = date_diff($datetime1, $datetime2, false);
       if ($interval->y > 1 && $interval->y < 2) {
-        $array['2year'] = $row->quantity * $row->product_mrp;
+        $array['2year'] = $row->total_quantity * $row->product_mrp;
       } else if ($interval->y > 2 && $interval->y < 3) {
-        $array['3year'] = $row->quantity * $row->product_mrp;
+        $array['3year'] = $row->total_quantity * $row->product_mrp;
       } else if ($interval->y > 3) {
-        $array['4year'] = $row->quantity * $row->product_mrp;
+        $array['4year'] = $row->total_quantity * $row->product_mrp;
       } else {
-        $array['1year'] = $row->quantity * $row->product_mrp;
+        $array['1year'] = $row->total_quantity * $row->product_mrp;
       }
       
       if($row->physical_qty == "")
@@ -483,15 +483,15 @@ class Audit_Report extends CI_Controller {
         $array['sales_return_total'] = 0;
       }
 
-      if($row->purchase_date > $purchaseDate)
+      if($row->bill_date > $purchaseDate)
       {
         $array['quantity'] = 0;
         $array['total'] = 0;
-        $array['received_quantity'] = $row->quantity;
-        $array['received_total'] = $row->product_mrp * $row->quantity;
+        $array['received_quantity'] = $row->total_quantity;
+        $array['received_total'] = $row->product_mrp * $row->total_quantity;
       } else {
-        $array['quantity'] = $row->quantity;
-        $array['total'] = $row->product_mrp * $row->quantity;
+        $array['quantity'] = $row->total_quantity;
+        $array['total'] = $row->product_mrp * $row->total_quantity;
         $array['received_quantity'] = 0;
         $array['received_total'] = 0;
       }
