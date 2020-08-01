@@ -490,7 +490,7 @@ $this->load->view('common/left_panel');
                      .reduce( function (a, b) {
                          return intVal(a) + intVal(b);
                      }, 0 );
-                 var additionalDOM = 'Rs.'+total2.toFixed(2)+'</div>';
+                 var additionalDOM = total2.toFixed(2)+'</div>';
                  $( api.column( 27 ).footer() ).html(additionalDOM);
 
         }
