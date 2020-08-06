@@ -86,7 +86,7 @@ td{
                 <h3><span id="successStateEntry"></span></h3>
                     <ul class="panel-controls">
                         <?php if($exportPermission=='1'){?>
-						<li><a href="<?= base_url("index.php/GST_Summary/listpdf/$formatted_date/$selected_type/$selected_type2/$selected_type3"); ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>
+<!--						<li><a href="--><?//= base_url("index.php/GST_Summary/listpdf/$formatted_date/$selected_type/$selected_type2/$selected_type3"); ?><!--" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a></li>-->
                           <li><?=$export; ?></li>
                           <button type="submit" style="display: none" id="subbtn"></button>
                           <?php }?>

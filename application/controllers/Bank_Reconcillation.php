@@ -364,34 +364,31 @@ class Bank_Reconcillation extends CI_Controller
     $this->excel->getActiveSheet()->setCellValue('F5', 'TYPE 2');
     $this->excel->getActiveSheet()->setCellValue('G5', 'Quantity');
     $this->excel->getActiveSheet()->setCellValue('H5', 'Selling Price');
-    $this->excel->getActiveSheet()->setCellValue('I5', 'Sales Type');
-    $this->excel->getActiveSheet()->setCellValue('J5', 'Payment Mode');
-    $this->excel->getActiveSheet()->setCellValue('K5', 'Rebate 5%');
-    $this->excel->getActiveSheet()->setCellValue('L5', 'Corporation Discount');
-    $this->excel->getActiveSheet()->setCellValue('M5', 'Taxable Amount ');
-
-    $this->excel->getActiveSheet()->setCellValue('N5', 'GST');
-    $this->excel->getActiveSheet()->setCellValue('O5', 'GST Amount');
-
-    $this->excel->getActiveSheet()->setCellValue('P5', 'CGST Rate');
-    $this->excel->getActiveSheet()->setCellValue('Q5', 'CGST Amount');
-    $this->excel->getActiveSheet()->setCellValue('R5', 'SGST Rate');
-    $this->excel->getActiveSheet()->setCellValue('S5', 'SGST Amount');
-    $this->excel->getActiveSheet()->setCellValue('T5', 'IGST Rate');
-    $this->excel->getActiveSheet()->setCellValue('U5', 'IGST Amount');
-
-    $this->excel->getActiveSheet()->setCellValue('V5', 'Adj +');
-    $this->excel->getActiveSheet()->setCellValue('W5', 'Adj -');
-    $this->excel->getActiveSheet()->setCellValue('X5', 'Amount after GST');
-    $this->excel->getActiveSheet()->setCellValue('Y5', 'COD /Shipping');
-    $this->excel->getActiveSheet()->setCellValue('Z5', 'Sub total');
-
-    $this->excel->getActiveSheet()->setCellValue('AA5', 'Net Amount');
-    $this->excel->getActiveSheet()->setCellValue('AB5', 'Amount Deposited in Bank ');
-    $this->excel->getActiveSheet()->setCellValue('AC5', 'Type of Deposit');
-    $this->excel->getActiveSheet()->setCellValue('AD5', 'GST on Bank Commission');
-    $this->excel->getActiveSheet()->setCellValue('AE5', 'Bank Commission');
-    $this->excel->getActiveSheet()->setCellValue('AF5', 'Date of Deposit');
+    $this->excel->getActiveSheet()->setCellValue('I5', 'Total Amount');
+    $this->excel->getActiveSheet()->setCellValue('J5', 'Sales Type');
+    $this->excel->getActiveSheet()->setCellValue('K5', 'Payment Mode');
+    $this->excel->getActiveSheet()->setCellValue('L5', 'Rebate 5%');
+    $this->excel->getActiveSheet()->setCellValue('M5', 'Corporation Discount');
+    $this->excel->getActiveSheet()->setCellValue('N5', 'Taxable Amount ');
+    $this->excel->getActiveSheet()->setCellValue('O5', 'GST');
+    $this->excel->getActiveSheet()->setCellValue('P5', 'GST Amount');
+    $this->excel->getActiveSheet()->setCellValue('Q5', 'CGST Rate');
+    $this->excel->getActiveSheet()->setCellValue('R5', 'CGST Amount');
+    $this->excel->getActiveSheet()->setCellValue('S5', 'SGST Rate');
+    $this->excel->getActiveSheet()->setCellValue('T5', 'SGST Amount');
+    $this->excel->getActiveSheet()->setCellValue('U5', 'IGST Rate');
+    $this->excel->getActiveSheet()->setCellValue('V5', 'IGST Amount');
+    $this->excel->getActiveSheet()->setCellValue('W5', 'Adj +');
+    $this->excel->getActiveSheet()->setCellValue('X5', 'Adj -');
+    $this->excel->getActiveSheet()->setCellValue('Y5', 'Amount after GST');
+    $this->excel->getActiveSheet()->setCellValue('Z5', 'COD /Shipping');
+    $this->excel->getActiveSheet()->setCellValue('AA5', 'Sub total');
+    $this->excel->getActiveSheet()->setCellValue('AB5', 'Net Amount');
+    $this->excel->getActiveSheet()->setCellValue('AC5', 'Amount Deposited in Bank ');
+    $this->excel->getActiveSheet()->setCellValue('AD5', 'Type of Deposit');
+    $this->excel->getActiveSheet()->setCellValue('AE5', 'GST on Bank Commission');
+    $this->excel->getActiveSheet()->setCellValue('AF5', 'Bank Commission');
+    $this->excel->getActiveSheet()->setCellValue('AG5', 'Date of Deposit');
     $a = '6';
     $no = 1;
     //print_r($results);exit;
@@ -416,6 +413,7 @@ class Bank_Reconcillation extends CI_Controller
         $sr_no = '';
         $invoice_no = '';
         $total_amount = '';
+        $total_amt='';
         $amount_deposited_in_bank = '';
         $gst_on_bank_commission = '';
         $bank_commission = '';
@@ -453,46 +451,39 @@ class Bank_Reconcillation extends CI_Controller
       $this->excel->getActiveSheet()->setCellValue('E' . $a, $result->productType);
       $this->excel->getActiveSheet()->setCellValue('F' . $a, $result->assetType);
       $this->excel->getActiveSheet()->setCellValue('G' . $a, $result->invoice_quantity);
-
       $this->excel->getActiveSheet()->setCellValue('H' . $a, "Rs. " . number_format($result->rate_per_item, 2));
-      $this->excel->getActiveSheet()->setCellValue('I' . $a, $result->salesType);
+      $this->excel->getActiveSheet()->setCellValue('I' . $a, "Rs. " . number_format($result->invoice_quantity * $result->rate_per_item));
+      $this->excel->getActiveSheet()->setCellValue('J' . $a, $result->salesType);
+      $this->excel->getActiveSheet()->setCellValue('K' . $a, $result->paymentMode);
+      $this->excel->getActiveSheet()->setCellValue('L' . $a, "Rs. " . (($result->rate_per_item * $result->invoice_quantity * $result->discount_1) / 100));
+      $this->excel->getActiveSheet()->setCellValue('M' . $a, "Rs. " . (($result->rate_per_item * $result->invoice_quantity * $result->discount_3) / 100 ));
+      $this->excel->getActiveSheet()->setCellValue('N' . $a, "Rs. " . number_format($result->taxable, 2));
+      $this->excel->getActiveSheet()->setCellValue('O' . $a, $result->gst_rate);
+      $this->excel->getActiveSheet()->setCellValue('P' . $a, "Rs. " . number_format($result->gst_amount, 2));
+      $this->excel->getActiveSheet()->setCellValue('Q' . $a, $result->cgst_rate);
+      $this->excel->getActiveSheet()->setCellValue('R' . $a, "Rs. " . number_format($result->cgst_amount, 2));
 
-      $this->excel->getActiveSheet()->setCellValue('J' . $a, $result->paymentMode);
-      $this->excel->getActiveSheet()->setCellValue('K' . $a, "Rs. " . (($result->rate_per_item * $result->invoice_quantity * $result->discount_1) / 100));
-      $this->excel->getActiveSheet()->setCellValue('L' . $a, "Rs. " . (($result->rate_per_item * $result->invoice_quantity * $result->discount_3) / 100 ));
-      $this->excel->getActiveSheet()->setCellValue('M' . $a, "Rs. " . number_format($result->taxable, 2));
+      $this->excel->getActiveSheet()->setCellValue('S' . $a, $result->sgst_rate);
+      $this->excel->getActiveSheet()->setCellValue('T' . $a, "Rs " . number_format($result->sgst_amount, 2));
 
-      $this->excel->getActiveSheet()->setCellValue('N' . $a, $result->gst_rate);
-      $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($result->gst_amount, 2));
-
-      $this->excel->getActiveSheet()->setCellValue('P' . $a, $result->cgst_rate);
-      $this->excel->getActiveSheet()->setCellValue('Q' . $a, "Rs. " . number_format($result->cgst_amount, 2));
-
-      $this->excel->getActiveSheet()->setCellValue('R' . $a, $result->sgst_rate);
-      $this->excel->getActiveSheet()->setCellValue('S' . $a, "Rs " . number_format($result->sgst_amount, 2));
-
-      $this->excel->getActiveSheet()->setCellValue('T' . $a, $result->igst_rate);
-      $this->excel->getActiveSheet()->setCellValue('U' . $a, "Rs " . number_format($result->igst_amount, 2));
+      $this->excel->getActiveSheet()->setCellValue('U' . $a, $result->igst_rate);
+      $this->excel->getActiveSheet()->setCellValue('V' . $a, "Rs " . number_format($result->igst_amount, 2));
 
 
 
-      $this->excel->getActiveSheet()->setCellValue('V' . $a, $result->adjustment_plus);
-      $this->excel->getActiveSheet()->setCellValue('W' . $a, $result->adjustment_minus);
-      $this->excel->getActiveSheet()->setCellValue('X' . $a, "Rs " . number_format($result->net_amount, 2));
-
-
-      $this->excel->getActiveSheet()->setCellValue('Y' . $a, $result->shipping_charges, 2);
-
-      $this->excel->getActiveSheet()->setCellValue('Z' . $a, "Rs. " . number_format($result->net_amount, 2));
-      $this->excel->getActiveSheet()->setCellValue('AA' . $a, $total_amount);
+      $this->excel->getActiveSheet()->setCellValue('W' . $a, $result->adjustment_plus);
+      $this->excel->getActiveSheet()->setCellValue('X' . $a, $result->adjustment_minus);
+      $this->excel->getActiveSheet()->setCellValue('Y' . $a, "Rs " . number_format($result->net_amount, 2));
+      $this->excel->getActiveSheet()->setCellValue('Z' . $a, $result->shipping_charges, 2);
+      $this->excel->getActiveSheet()->setCellValue('AA' . $a, "Rs. " . number_format($result->net_amount, 2));
+      $this->excel->getActiveSheet()->setCellValue('AB' . $a, $total_amount);
       if ($amount_deposited_in_bank) {
-        $this->excel->getActiveSheet()->setCellValue('AB' . $a, "Rs. " . number_format($amount_deposited_in_bank, 2));
+        $this->excel->getActiveSheet()->setCellValue('AC' . $a, "Rs. " . number_format($amount_deposited_in_bank, 2));
       }
-      $this->excel->getActiveSheet()->setCellValue('AC' . $a, $type_of_deposit);
-      $this->excel->getActiveSheet()->setCellValue('AD' . $a, $gst_on_bank_commission);
-      $this->excel->getActiveSheet()->setCellValue('AE' . $a, $bank_commission);
-
-      $this->excel->getActiveSheet()->setCellValue('AF' . $a, $date_of_deposit);
+      $this->excel->getActiveSheet()->setCellValue('AD' . $a, $type_of_deposit);
+      $this->excel->getActiveSheet()->setCellValue('AE' . $a, $gst_on_bank_commission);
+      $this->excel->getActiveSheet()->setCellValue('AF' . $a, $bank_commission);
+      $this->excel->getActiveSheet()->setCellValue('AG' . $a, $date_of_deposit);
 
 
       $sr++;
@@ -509,26 +500,34 @@ class Bank_Reconcillation extends CI_Controller
       $total_ad_minus += $result->adjustment_minus;
       $total_rebate += (($result->rate_per_item * $result->invoice_quantity * $result->discount_1) / 100);
       $total_crop_discount += (($result->rate_per_item * $result->invoice_quantity * $result->discount_3) / 100);
-      //$all_amount += $total_amount;
+      $total_amt += ($result->invoice_quantity * $result->rate_per_item);
       $amount_deposited_in_bank2 += $amount_deposited_in_bank;
     }
     $this->excel->getActiveSheet()->setCellValue('G' . $a, $invoice_quantity);
     $this->excel->getActiveSheet()->setCellValue('H' . $a, "Rs. " . number_format($rate_per_item, 2));
-    $this->excel->getActiveSheet()->setCellValue('K' . $a, "Rs. " . number_format($total_rebate, 2));
-    $this->excel->getActiveSheet()->setCellValue('L' . $a, "Rs. " . number_format($total_crop_discount, 2));
-    $this->excel->getActiveSheet()->setCellValue('M' . $a, "Rs. " . number_format($taxable, 2));
-    $this->excel->getActiveSheet()->setCellValue('O' . $a, "Rs. " . number_format($gst_amount, 2));
+    $this->excel->getActiveSheet()->setCellValue('I' . $a, "Rs. " . number_format($total_amt, 2));
+    $this->excel->getActiveSheet()->setCellValue('L' . $a, "Rs. " . number_format($total_rebate, 2));
+    $this->excel->getActiveSheet()->setCellValue('M' . $a, "Rs. " . number_format($total_crop_discount, 2));
+    $this->excel->getActiveSheet()->setCellValue('N' . $a, "Rs. " . number_format($taxable, 2));
+    $this->excel->getActiveSheet()->setCellValue('P' . $a, "Rs. " . number_format($gst_amount, 2));
 
-    $this->excel->getActiveSheet()->setCellValue('Q' . $a, "Rs. " . number_format($cgst_amount, 2));
-    $this->excel->getActiveSheet()->setCellValue('S' . $a, "Rs. " . number_format($sgst_amount, 2));
-    $this->excel->getActiveSheet()->setCellValue('U' . $a, "Rs. " . number_format($igst_amount, 2));
-    $this->excel->getActiveSheet()->setCellValue('V' . $a, "Rs " . number_format($total_ad_plus, 2));
-    $this->excel->getActiveSheet()->setCellValue('W' . $a, "Rs " . number_format($total_ad_minus, 2));
-    $this->excel->getActiveSheet()->setCellValue('X' . $a, "Rs " . number_format($net_amount, 2));
-    $this->excel->getActiveSheet()->setCellValue('Z' . $a, "Rs. " . number_format($net_amount, 2));
-    $this->excel->getActiveSheet()->setCellValue('AA' . $a, "Rs. " . number_format($all_amount, 2));
-    $this->excel->getActiveSheet()->setCellValue('AB' . $a, "Rs. " . number_format($amount_deposited_in_bank2, 2));
-
+    $this->excel->getActiveSheet()->setCellValue('R' . $a, "Rs. " . number_format($cgst_amount, 2));
+    $this->excel->getActiveSheet()->setCellValue('T' . $a, "Rs. " . number_format($sgst_amount, 2));
+    $this->excel->getActiveSheet()->setCellValue('V' . $a, "Rs. " . number_format($igst_amount, 2));
+    $this->excel->getActiveSheet()->setCellValue('W' . $a, "Rs " . number_format($total_ad_plus, 2));
+    $this->excel->getActiveSheet()->setCellValue('X' . $a, "Rs " . number_format($total_ad_minus, 2));
+    $this->excel->getActiveSheet()->setCellValue('Y' . $a, "Rs " . number_format($net_amount, 2));
+    $this->excel->getActiveSheet()->setCellValue('AA' . $a, "Rs. " . number_format($net_amount, 2));
+    $this->excel->getActiveSheet()->setCellValue('AB' . $a, "Rs. " . number_format($all_amount, 2));
+//    $this->excel->getActiveSheet()->setCellValue('AC' . $a, "Rs. " . number_format($amount_deposited_in_bank2, 2));
+    $this->excel->getActiveSheet()->getStyle('L' . $a)->getFont()->setBold(true);
+    $this->excel->getActiveSheet()->getStyle('N' . $a)->getFont()->setBold(true);
+    $this->excel->getActiveSheet()->getStyle('P' . $a)->getFont()->setBold(true);
+    $this->excel->getActiveSheet()->getStyle('R' . $a)->getFont()->setBold(true);
+    $this->excel->getActiveSheet()->getStyle('U' . $a)->getFont()->setBold(true);
+    $this->excel->getActiveSheet()->getStyle('W' . $a)->getFont()->setBold(true);
+    $this->excel->getActiveSheet()->getStyle('AA' . $a)->getFont()->setBold(true);
+    $this->excel->getActiveSheet()->getStyle('AB' . $a)->getFont()->setBold(true);
     $this->excel->getActiveSheet()->getStyle('F' . $a)->getFont()->setBold(true);
     $this->excel->getActiveSheet()->getStyle('J' . $a)->getFont()->setBold(true);
     $this->excel->getActiveSheet()->getStyle('I' . $a)->getFont()->setBold(true);

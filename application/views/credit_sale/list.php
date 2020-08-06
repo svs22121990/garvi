@@ -46,9 +46,9 @@ $this->load->view('common/left_panel');
                         <h3 class="panel-title"><strong><?= $heading ?></strong></h3>
                         <h3 class="panel-title"><span class="msghide"><?= $this->session->userdata('message') <> '' ? $this->session->userdata('message') : ''; ?></span></h3>
                         <ul class="panel-controls">
-                            <li>
-                                <a href="<?= base_url(); ?>index.php/Credit_Sales_Report/sales_pdf/<?= $formatted_date ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
-                            </li>
+<!--                            <li>-->
+<!--                                <a href="--><?//= base_url(); ?><!--index.php/Credit_Sales_Report/sales_pdf/--><?//= $formatted_date ?><!--" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>-->
+<!--                            </li>-->
                             <li>
                                 <a href="<?= base_url(); ?>index.php/Credit_Sales_Report/export_sales_summary/<?= $formatted_date ?>" target="_blank"><span title="Excel" class="fa fa-file-excel-o"></span></a>
                             </li>

@@ -274,13 +274,24 @@ class Daily_Sales extends CI_Controller {
         $this->excel->getActiveSheet()->setCellValue('M5', 'Amt After Dic.');
         $this->excel->getActiveSheet()->setCellValue('N5', 'CGST');
         $this->excel->getActiveSheet()->setCellValue('O5', 'SGST');
-        $this->excel->getActiveSheet()->setCellValue('P5', 'Total Amount');
+        $this->excel->getActiveSheet()->setCellValue('P5', 'IGST');
+        $this->excel->getActiveSheet()->setCellValue('Q5', 'Total Amount');
             
         $a='6'; $sr = 1;    
         //print_r($results);exit;
         $total_sum = 0;
         $qty = 0;
         $net_amount = 0;
+        $sale_price = 0;
+        $dis1 = 0;
+        $dis2 = 0;
+        $dis3 = 0;
+        $tax = 0;
+        $dis_amt = 0;
+        $cgst = 0;
+        $sgst = 0;
+        $igst=0;
+
         $arrId = array();
         foreach ($results as $result) 
         {    
@@ -310,8 +321,9 @@ class Daily_Sales extends CI_Controller {
             $this->excel->getActiveSheet()->setCellValue('L'.$a, $result->discount_amount);
             $this->excel->getActiveSheet()->setCellValue('M'.$a, $result->taxable);
             $this->excel->getActiveSheet()->setCellValue('N'.$a, $result->cgst_amount);
-            $this->excel->getActiveSheet()->setCellValue('O'.$a, $result->sgst_amount);             
-            $this->excel->getActiveSheet()->setCellValue('P'.$a, "Rs. ".number_format($result->net_amount,2));
+            $this->excel->getActiveSheet()->setCellValue('O'.$a, $result->sgst_amount);
+            $this->excel->getActiveSheet()->setCellValue('P'.$a, $result->igst_amount);
+            $this->excel->getActiveSheet()->setCellValue('Q'.$a, "Rs. ".number_format($result->net_amount,2));
             
              $a++;  
 			$sale_price += $result->rate_per_item;
@@ -325,6 +337,7 @@ class Daily_Sales extends CI_Controller {
 			$tax += $result->taxable;
 			$cgst += $result->cgst_amount;
 			$sgst += $result->sgst_amount;
+            $igst += $result->igst_amount;
 			
         }
 		$this->excel->getActiveSheet()->setCellValue('F'.$a,"Rs. ".number_format($sale_price,2)); 
@@ -337,8 +350,8 @@ class Daily_Sales extends CI_Controller {
 		$this->excel->getActiveSheet()->setCellValue('M'.$a, "Rs. ".number_format($tax,2)); 
 		$this->excel->getActiveSheet()->setCellValue('N'.$a, "Rs. ".number_format($cgst,2));  
 		$this->excel->getActiveSheet()->setCellValue('O'.$a, "Rs. ".number_format($sgst,2));
-
-        $this->excel->getActiveSheet()->setCellValue('P'.$a, "Rs. ".number_format($net_amount,2));
+        $this->excel->getActiveSheet()->setCellValue('P'.$a, "Rs. ".number_format($igst,2));
+        $this->excel->getActiveSheet()->setCellValue('Q'.$a, "Rs. ".number_format($net_amount,2));
         
         $this->excel->getActiveSheet()->getStyle('F'.$a)->getFont()->setBold(true); 
 		$this->excel->getActiveSheet()->getStyle('G'.$a)->getFont()->setBold(true);                
@@ -350,9 +363,9 @@ class Daily_Sales extends CI_Controller {
 		$this->excel->getActiveSheet()->getStyle('L'.$a)->getFont()->setBold(true); 
 		$this->excel->getActiveSheet()->getStyle('M'.$a)->getFont()->setBold(true); 
 		$this->excel->getActiveSheet()->getStyle('N'.$a)->getFont()->setBold(true);  
-		$this->excel->getActiveSheet()->getStyle('O'.$a)->getFont()->setBold(true);  
-
+		$this->excel->getActiveSheet()->getStyle('O'.$a)->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('P'.$a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('Q'.$a)->getFont()->setBold(true);
         
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
@@ -375,6 +388,7 @@ class Daily_Sales extends CI_Controller {
         $this->excel->getActiveSheet()->getStyle('N5')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('O5')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('P5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('Q5')->getFont()->setBold(true);
         
         //$this->excel->getActiveSheet()->mergeCells('A1:H1');
         $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);

@@ -286,7 +286,9 @@ class Daily_Sales_Summary extends CI_Controller {
         $this->excel->getActiveSheet()->setCellValue('H5', 'Amt After Dic.');
         $this->excel->getActiveSheet()->setCellValue('I5', 'CGST');
         $this->excel->getActiveSheet()->setCellValue('J5', 'SGST');
-        $this->excel->getActiveSheet()->setCellValue('K5', 'Total Amount');
+        $this->excel->getActiveSheet()->setCellValue('K5', 'IGST');
+        $this->excel->getActiveSheet()->setCellValue('L5', 'Total GST');
+        $this->excel->getActiveSheet()->setCellValue('M5', 'Total Amount');
             
         $a='6'; $sr = 1;    
         //print_r($results);exit;
@@ -297,6 +299,10 @@ class Daily_Sales_Summary extends CI_Controller {
         $discount_sum = 0;
         $taxable_sum = 0;
         $net_amount = 0;
+        $tgst=0;
+        $igst=0;
+        $sgst=0;
+        $cgst=0;
         $arrId = array();
         foreach ($results as $result) 
         {    
@@ -320,10 +326,11 @@ class Daily_Sales_Summary extends CI_Controller {
           $this->excel->getActiveSheet()->setCellValue('G'.$a, number_format($result->discount_amount,2));
           $this->excel->getActiveSheet()->setCellValue('H'.$a, number_format($result->taxable,2));
           $this->excel->getActiveSheet()->setCellValue('I'.$a, number_format($result->cgst_amount,2));
-          $this->excel->getActiveSheet()->setCellValue('J'.$a, number_format($result->sgst_amount,2));             
-          $this->excel->getActiveSheet()->setCellValue('K'.$a, "Rs. ".number_format($result->net_amount,2));
-
-             $a++;   
+          $this->excel->getActiveSheet()->setCellValue('J'.$a, number_format($result->sgst_amount,2));
+            $this->excel->getActiveSheet()->setCellValue('K'.$a, number_format($result->igst_amount,2));
+            $this->excel->getActiveSheet()->setCellValue('L'.$a, number_format($result->cgst_amount + $result->sgst_amount + $result->igst_amount,2));
+            $this->excel->getActiveSheet()->setCellValue('M'.$a, "Rs. ".number_format($result->net_amount,2));
+             $a++;
              $total_sum += $result->total;
              $disc1_sum += $result->discount_1;
              $disc2_sum += $result->discount_2;
@@ -332,6 +339,8 @@ class Daily_Sales_Summary extends CI_Controller {
              $taxable_sum += $result->taxable;
 			$cgst += $result->cgst_amount;
 			$sgst += $result->sgst_amount;
+            $igst += $result->igst_amount;
+            $tgst += $result->cgst_amount + $result->sgst_amount + $result->igst_amount;
              $net_amount += $result->net_amount;         
         }
         $this->excel->getActiveSheet()->setCellValue('C'.$a, "Rs. ".number_format($total_sum,2));
@@ -342,10 +351,11 @@ class Daily_Sales_Summary extends CI_Controller {
         $this->excel->getActiveSheet()->setCellValue('H'.$a, "Rs. ".number_format($taxable_sum,2)); 
 		$this->excel->getActiveSheet()->setCellValue('I'.$a, "Rs. ".number_format($cgst,2));  
 		$this->excel->getActiveSheet()->setCellValue('J'.$a, "Rs. ".number_format($sgst,2));
-
+        $this->excel->getActiveSheet()->setCellValue('K'.$a, "Rs. ".number_format($igst,2));
+        $this->excel->getActiveSheet()->setCellValue('L'.$a, "Rs. ".number_format($tgst,2));
 
 		
-        $this->excel->getActiveSheet()->setCellValue('K'.$a, "Rs. ".number_format($net_amount,2));
+        $this->excel->getActiveSheet()->setCellValue('M'.$a, "Rs. ".number_format($net_amount,2));
         
         $this->excel->getActiveSheet()->getStyle('C'.$a)->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('D'.$a)->getFont()->setBold(true);
@@ -355,9 +365,10 @@ class Daily_Sales_Summary extends CI_Controller {
         $this->excel->getActiveSheet()->getStyle('H'.$a)->getFont()->setBold(true); 
 		$this->excel->getActiveSheet()->getStyle('I'.$a)->getFont()->setBold(true);   
 		$this->excel->getActiveSheet()->getStyle('J'.$a)->getFont()->setBold(true);
-
-
         $this->excel->getActiveSheet()->getStyle('K'.$a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('L'.$a)->getFont()->setBold(true);
+
+        $this->excel->getActiveSheet()->getStyle('M'.$a)->getFont()->setBold(true);
         
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
@@ -375,6 +386,8 @@ class Daily_Sales_Summary extends CI_Controller {
         $this->excel->getActiveSheet()->getStyle('I5')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('J5')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('K5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('L5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('M5')->getFont()->setBold(true);
         
         //$this->excel->getActiveSheet()->mergeCells('A1:H1');
         $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);

@@ -101,9 +101,9 @@ $this->load->view('common/left_panel');
                         </li>
                         <?php } ?>
                         <?php if($exportPermission=='1'){?>
-						              <li>
-                            <a href="<?= base_url(); ?>index.php/Daily_Sales_Summary/listpdf/<?= $formatted_date ?>/<?= $selected_type ?>/<?= $selected_type2 ?>/<?= $selected_type3 ?>" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>
-                          </li>
+<!--						              <li>-->
+<!--                            <a href="--><?//= base_url(); ?><!--index.php/Daily_Sales_Summary/listpdf/--><?//= $formatted_date ?><!--/--><?//= $selected_type ?><!--/--><?//= $selected_type2 ?><!--/--><?//= $selected_type3 ?><!--" target="_blank"><span title="PDF" class="fa fa-file-pdf-o"></span></a>-->
+<!--                          </li>-->
                           <li><?=$export; ?></li>
                           <button type="submit" style="display: none" id="subbtn"></button>
                           <?php }?>
