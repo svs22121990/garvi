@@ -170,7 +170,7 @@
                 <th rowspan="2">Price</th>
                 <th rowspan="2">Total</th>
                 <th rowspan="2" colspan="2">&nbsp;&nbsp;&nbsp;Discount&nbsp;&nbsp;&nbsp;</th>
-                <!-- <th rowspan="2">Discount amount</th> -->
+                 <th rowspan="2">Shipping/Other Charges</th> 
 
                 <th rowspan="2">Taxable Amount</th>
                 <th colspan="2" style="text-align: center">GST</th>
@@ -200,6 +200,7 @@
             $total = 0;
             $discount_amount = 0;
             $taxable = 0;
+			$shipping_charges =0;
             foreach ($invoice_details as $detail) {
                 $product = $this->Crud_model->GetData("assets", "", "id='" . $detail->product_id . "'", "", "", "", "1");
                 ?>
@@ -222,6 +223,9 @@
                 </td>
                 <td style="border-left: 0;"><?php echo "Rs " . number_format($detail->discount_amount, 2);
                     $discount_amount += $detail->discount_amount; ?></td>
+				
+				<td><?php echo "Rs " . number_format($detail->shipping_charges, 2);
+                    $shipping_charges += $detail->shipping_charges; ?></td>
 
                 <td><?php echo "Rs " . number_format($detail->taxable, 2);
                     $taxable += $detail->taxable; ?></td>
@@ -261,6 +265,11 @@
                 <th rowspan="2" colspan="2">
                     <?php echo "Rs " . number_format($discount_amount, 2); ?>
                 </th>
+				 <th rowspan="2">
+                    <?php echo "Rs " . number_format($shipping_charges, 2); ?>
+                </th>
+				
+				
                 <th rowspan="2"><?php echo "Rs " . number_format($taxable, 2); ?></th>
                 <th rowspan="2">
                     CGST:<?= $allCGST ?>

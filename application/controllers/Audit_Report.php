@@ -166,14 +166,14 @@ class Audit_Report extends CI_Controller {
     $datetime1 = date_create($startDate);
     $datetime2 = date_create($endDate);
     $interval = date_diff($datetime1, $datetime2, false);
-    if ($interval->y > 1 && $interval->y < 2) {
-      $array['2year'] = $row->total_quantity * $row->product_mrp;
-    } else if ($interval->y > 2 && $interval->y < 3) {
-      $array['3year'] = $row->total_quantity * $row->product_mrp;
-    } else if ($interval->y > 3) {
-      $array['4year'] = $row->total_quantity * $row->product_mrp;
+    if ($interval->y >= 1 && $interval->d >= 0 && $interval->y < 2) {
+      $array['2year'] = $row->quantity * $row->product_mrp;
+    } else if ($interval->y >= 2 && $interval->d >= 0 && $interval->y < 3) {
+      $array['3year'] = $row->quantity * $row->product_mrp;
+    } else if ($interval->y >= 3 && $interval->d >= 0) {
+      $array['4year'] = $row->quantity * $row->product_mrp;
     } else {
-      $array['1year'] = $row->total_quantity * $row->product_mrp;
+      $array['1year'] = $row->quantity * $row->product_mrp;
     }
     
     if($row->physical_qty == "")

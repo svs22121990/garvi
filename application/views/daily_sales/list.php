@@ -147,7 +147,12 @@ $this->load->view('common/left_panel');
                              <tr>
                                 <th colspan="6"></th>
                                 <th >Quantity</th>
-                                <th colspan="6"></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+								 <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -246,6 +251,70 @@ $this->load->view('common/left_panel');
                     return intVal(a) + intVal(b);
                 }, 0 );
             $( api.column( 7 ).footer() ).html('Rs. '+total1.toFixed(2));
+				
+				 total3 = api
+                .column(8, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 8 ).footer() ).html('Rs. '+total3.toFixed(2));
+				 
+				  total4 = api
+                .column(9, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 9 ).footer() ).html('Rs. '+total4.toFixed(2));
+				 
+				  total5 = api
+                .column(10, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 10 ).footer() ).html('Rs. '+total5.toFixed(2));
+				 
+				  total6 = api
+                .column(11, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 11 ).footer() ).html('Rs. '+total6.toFixed(2));
+				 
+				  total7 = api
+                .column(12, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 12 ).footer() ).html('Rs. '+total7.toFixed(2));
+				 
+				  total8 = api
+                .column(13, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 13 ).footer() ).html('Rs. '+total8.toFixed(2));
+				 
+				  total9 = api
+                .column(14, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 14 ).footer() ).html('Rs. '+total9.toFixed(2));
+				 
+				  total10 = api
+                .column(15, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 15 ).footer() ).html('Rs. '+total10.toFixed(2));
 
             total2 = api
                 .column(16, {filter: 'applied'})

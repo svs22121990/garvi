@@ -72,10 +72,19 @@
                                 $adjustment_minus = 0;
                                 $net_amount = 0;
                                 $total_amount = 0;
+                                $arrId = array();
                                 foreach($view as $key): ?>
                                 <tr>
                                 <td><?= $key['no']; ?></td>
-                                <td><?= $key['invoice_no']; ?></td>
+                                <?php 
+                                  if(in_array($result->iid, $arrId))
+                                  {?>
+                                    <td><?= $key['invoice_no']; ?></td>
+                                  <?php } else {
+                                    ?><td><?= $key['invoice_no']; ?></td>
+                                  <?php $arrId[] = $result->iid;
+                                  }
+                                ?>
                                 <td><?= $key['date_of_invoice']; ?></td>
                                 <td><?= $key['asset_name']; ?></td>
                                 <td><?= $key['productType']; ?></td>

@@ -305,6 +305,38 @@ $this->load->view('common/left_panel');
                     return intVal(a) + intVal(b);
                 }, 0 );
             $( api.column( 7 ).footer() ).html('Rs. '+total.toFixed(2));
+				  
+				 total = api
+                .column(8, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 8 ).footer() ).html('Rs. '+total.toFixed(2));
+				 
+				   total = api
+                .column(9, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 9 ).footer() ).html('Rs. '+total.toFixed(2));
+				 
+				   total = api
+                .column(10, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 10 ).footer() ).html('Rs. '+total.toFixed(2));
+				 
+				   total = api
+                .column(11, {filter: 'applied'})
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            $( api.column( 11 ).footer() ).html('Rs. '+total.toFixed(2));
 
             total2 = api
                 .column(12, {filter: 'applied'})
