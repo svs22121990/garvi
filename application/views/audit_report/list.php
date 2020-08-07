@@ -76,17 +76,19 @@ $this->load->view('common/left_panel');
                           <?php  echo  $importaction; ?>
                         </li>
                         <?php } ?>
+                        <?php if($download != 1) { ?>
                         <li><?=$export; ?></li>
                           <button type="submit" style="display: none" id="subbtn"></button>
                         <?php if($addPermission=='1'){?>
                          <li><a href="<?php echo site_url("Daily_Sales/create")?>" ><span class="fa fa-plus"></span></a></li>
                         <?php }?>
                         <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
+                        <?php } ?>
                     </ul>                                
                 </div>
                 <div class="panel-body ">
                 <div class="row">
-                
+                <?php if($download != 1) { ?>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-actions example_datatable2" style="width:100%">
                         <thead>
@@ -173,6 +175,7 @@ $this->load->view('common/left_panel');
                         </tfoot>
                     </table>
                 </div>
+                <?php } ?>   
                 </div>
               </form>
             </div>

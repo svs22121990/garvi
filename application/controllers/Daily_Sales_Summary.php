@@ -289,9 +289,70 @@ class Daily_Sales_Summary extends CI_Controller {
         $this->excel->getActiveSheet()->setCellValue('K5', 'IGST');
         $this->excel->getActiveSheet()->setCellValue('L5', 'Total GST');
         $this->excel->getActiveSheet()->setCellValue('M5', 'Total Amount');
-            
+
+        $data = array();       
+        $no=0; 
+        $arrId = array();
+    
+        foreach($results as $row) 
+        {  
+        if(in_array($row->id, $arrId))
+            {
+                $sumAmount = '';
+                $invoice_no = '';
+                $sr_no = '';
+            }
+            else
+            {
+              $no++;
+              $arrId[] = $row->id;
+              //$sumAmount = number_format($row->sumAmount,2);
+              $invoice_no = $row->invoice_no;
+              $sr_no = $no;
+            }
+            if(array_search(date('d-m-Y', strtotime($row->date_of_invoice)), array_column($data, 'date_of_invoice')) !== False)
+            {
+              foreach($data as $key => $d)
+              {
+                if ( $d['date_of_invoice'] === date('d-m-Y', strtotime($row->date_of_invoice)) ) {
+                  $data[$key]['total'] += $row->total;
+                  $data[$key]['discount_1'] += $row->discount_1;
+                  $data[$key]['discount_2'] += $row->discount_2;
+                  $data[$key]['discount_3'] += $row->discount_3;
+                  $data[$key]['discount_amount'] += $row->discount_amount;
+                  $data[$key]['taxable'] += $row->taxable;
+                  $data[$key]['net_amount'] += $row->net_amount;
+                  $data[$key]['cgst_amount'] += $row->cgst_amount;
+                  $data[$key]['sgst_amount'] += $row->sgst_amount;
+                  $data[$key]['igst_amount'] += $row->igst_amount;
+                  $data[$key]['gst_amount'] += $row->cgst_amount + $row->sgst_amount + $row->igst_amount;
+                  break;
+                }
+              }
+            } else {
+              $data[] = array(
+                'no' => $sr_no,
+                'date_of_invoice' => date('d-m-Y', strtotime($row->date_of_invoice)),
+                'invoice_sales_type' => $row->salesType,
+                'paymentMode' => $row->paymentMode,
+                'quantity' => $row->quantity,
+                'rate_per_item' => $row->rate_per_item,
+                'total' => $row->total,
+                'discount_1' => ($row->discount_1),
+                'discount_2' => ($row->discount_2),
+                'discount_3' => ($row->discount_3),
+                'discount_amount' => $row->discount_amount,
+                'taxable' => $row->taxable,
+                'net_amount' => $row->net_amount,
+                'cgst_amount' => $row->cgst_amount,
+                'sgst_amount' => $row->sgst_amount,
+                'igst_amount' => $row->igst_amount,
+                'gst_amount' => $row->cgst_amount + $row->sgst_amount + $row->igst_amount,
+              );
+            }
+        }
+
         $a='6'; $sr = 1;    
-        //print_r($results);exit;
         $total_sum = 0;
         $disc1_sum = 0;
         $disc2_sum = 0;
@@ -304,44 +365,36 @@ class Daily_Sales_Summary extends CI_Controller {
         $sgst=0;
         $cgst=0;
         $arrId = array();
-        foreach ($results as $result) 
-        {    
-          if(in_array($result->id, $arrId))
-          {
-              $invoice ='';
-              $no = '';
-            }
-          else
-          {
-              $arrId[] = $result->id;
-              $no = $sr++;
-          }   
-            
-          $this->excel->getActiveSheet()->setCellValue('A'.$a, $no);
-          $this->excel->getActiveSheet()->setCellValue('B'.$a, date('d-m-Y', strtotime($result->date_of_invoice)));            
-          $this->excel->getActiveSheet()->setCellValue('C'.$a, "Rs. ".number_format($result->total,2));                
-          $this->excel->getActiveSheet()->setCellValue('D'.$a, $result->discount_1);
-          $this->excel->getActiveSheet()->setCellValue('E'.$a, $result->discount_2);
-          $this->excel->getActiveSheet()->setCellValue('F'.$a, $result->discount_3);   
-          $this->excel->getActiveSheet()->setCellValue('G'.$a, number_format($result->discount_amount,2));
-          $this->excel->getActiveSheet()->setCellValue('H'.$a, number_format($result->taxable,2));
-          $this->excel->getActiveSheet()->setCellValue('I'.$a, number_format($result->cgst_amount,2));
-          $this->excel->getActiveSheet()->setCellValue('J'.$a, number_format($result->sgst_amount,2));
-            $this->excel->getActiveSheet()->setCellValue('K'.$a, number_format($result->igst_amount,2));
-            $this->excel->getActiveSheet()->setCellValue('L'.$a, number_format($result->cgst_amount + $result->sgst_amount + $result->igst_amount,2));
-            $this->excel->getActiveSheet()->setCellValue('M'.$a, "Rs. ".number_format($result->net_amount,2));
+        $no=0; 
+
+        foreach ($data as $result) 
+        {      
+            $no++;
+            $this->excel->getActiveSheet()->setCellValue('A'.$a, $no);
+            $this->excel->getActiveSheet()->setCellValue('B'.$a, $result['date_of_invoice']);            
+            $this->excel->getActiveSheet()->setCellValue('C'.$a, "Rs. ".number_format($result['total'],2));                
+            $this->excel->getActiveSheet()->setCellValue('D'.$a, $result['discount_1']);
+            $this->excel->getActiveSheet()->setCellValue('E'.$a, $result['discount_2']);
+            $this->excel->getActiveSheet()->setCellValue('F'.$a, $result['discount_3']);   
+            $this->excel->getActiveSheet()->setCellValue('G'.$a, number_format($result['discount_amount'],2));
+            $this->excel->getActiveSheet()->setCellValue('H'.$a, number_format($result['taxable'],2));
+            $this->excel->getActiveSheet()->setCellValue('I'.$a, number_format($result['cgst_amount'],2));
+            $this->excel->getActiveSheet()->setCellValue('J'.$a, number_format($result['sgst_amount'],2));
+            $this->excel->getActiveSheet()->setCellValue('K'.$a, number_format($result['igst_amount'],2));
+            $this->excel->getActiveSheet()->setCellValue('L'.$a, number_format($result['cgst_amount'] + $result['sgst_amount'] + $result['igst_amount'],2));
+            $this->excel->getActiveSheet()->setCellValue('M'.$a, "Rs. ".number_format($result['net_amount'],2));
              $a++;
-             $total_sum += $result->total;
-             $disc1_sum += $result->discount_1;
-             $disc2_sum += $result->discount_2;
-             $disc3_sum += $result->discount_3;
-             $discount_sum += $result->discount_amount;
-             $taxable_sum += $result->taxable;
-			$cgst += $result->cgst_amount;
-			$sgst += $result->sgst_amount;
-            $igst += $result->igst_amount;
-            $tgst += $result->cgst_amount + $result->sgst_amount + $result->igst_amount;
-             $net_amount += $result->net_amount;         
+             $total_sum += $result['total'];
+             $disc1_sum += $result['discount_1'];
+             $disc2_sum += $result['discount_2'];
+             $disc3_sum += $result['discount_3'];
+             $discount_sum += $result['discount_amount'];
+             $taxable_sum += $result['taxable'];
+             $cgst += $result['cgst_amount'];
+             $sgst += $result['sgst_amount'];
+             $igst += $result['igst_amount'];
+             $tgst += $result['cgst_amount'] + $result['sgst_amount'] + $result['igst_amount'];
+             $net_amount += $result['net_amount'];         
         }
         $this->excel->getActiveSheet()->setCellValue('C'.$a, "Rs. ".number_format($total_sum,2));
         $this->excel->getActiveSheet()->setCellValue('D'.$a, "Rs. ".number_format($disc1_sum,2));
