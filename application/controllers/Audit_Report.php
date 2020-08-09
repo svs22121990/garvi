@@ -230,6 +230,7 @@ class Audit_Report extends CI_Controller {
     
     $this->db->select('quantity, rate_per_item');
     $this->db->from("invoice_details");
+    $this->db->join("products p","a.product_id = p.id","left");
     $this->db->where('product_id',$row->id);
     $query = $this->db->get();
     $sales = $query->result();
