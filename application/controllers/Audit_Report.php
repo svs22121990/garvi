@@ -73,13 +73,13 @@ class Audit_Report extends CI_Controller {
 
       $this->db->select('YEAR(min(purchase_date)) as min_date, YEAR(max(purchase_date)) as max_date');
       $this->db->from("assets");
-      if($_SESSION[SESSION_NAME]['type'] != 'SuperAdmin')
-        $this->db->where('created_by',$_SESSION[SESSION_NAME]['id']);
+      //if($_SESSION[SESSION_NAME]['type'] != 'SuperAdmin')
+      //  $this->db->where('created_by',$_SESSION[SESSION_NAME]['id']);
       
       $query = $this->db->get();
       $dateRange = $query->result();
       $min_year = 2017;
-      $max_year = 2020;
+      $max_year = $dateRange[0]->max_date;
 
       $dateCheck = new DateTime();
       $openingStockDate = $dateCheck->setDate($date, 4, 1)->format('Y-m-d');
