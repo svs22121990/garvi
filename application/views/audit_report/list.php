@@ -27,7 +27,6 @@ $this->load->view('common/left_panel');
             <?= form_open('Audit_Report/search',['id'=>'serch_date']); ?>
                     <div class="col-md-3">
                         <select name="date" id="date" class="form-control">
-                            <option value="">Select Year</option>
                             <?php
                             if(!empty($max_year)) {
                                 while ($max_year > $min_year) {
@@ -46,10 +45,12 @@ $this->load->view('common/left_panel');
                     </div>
               <?= form_close(); ?>
               <?= form_open('Audit_Report/submit_physical_stock',['id'=>'serch_date']); ?>
+                <?php if($download != 1) { ?>
                     <div class="col-md-2">
                       <input type="hidden" class="form-control" name="dateYear" value="<?= $selected_year; ?>">
                       <button type="submit" class="btn btn-warning">Submit Physical Stock</button>
                     </div>
+                <?php } ?>
               <?= form_close(); ?>
                   <?php if($download == 1) { ?>
                     <div class="col-md-2">
@@ -76,19 +77,12 @@ $this->load->view('common/left_panel');
                           <?php  echo  $importaction; ?>
                         </li>
                         <?php } ?>
-                        <?php if($download != 1) { ?>
-                        <li><?=$export; ?></li>
-                          <button type="submit" style="display: none" id="subbtn"></button>
-                        <?php if($addPermission=='1'){?>
-                         <li><a href="<?php echo site_url("Daily_Sales/create")?>" ><span class="fa fa-plus"></span></a></li>
-                        <?php }?>
+                        
                         <li><a href="#" class="panel-collapse"><span class="fa fa-angle-down"></span></a></li>
-                        <?php } ?>
                     </ul>                                
                 </div>
                 <div class="panel-body ">
                 <div class="row">
-                <?php if($download != 1) { ?>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-actions example_datatable2" style="width:100%">
                         <thead>
@@ -175,7 +169,6 @@ $this->load->view('common/left_panel');
                         </tfoot>
                     </table>
                 </div>
-                <?php } ?>   
                 </div>
               </form>
             </div>

@@ -78,11 +78,11 @@ class Audit_Report extends CI_Controller {
       
       $query = $this->db->get();
       $dateRange = $query->result();
-      $min_year = 2015;
-      $max_year = $dateRange[0]->max_date;
+      $min_year = 2017;
+      $max_year = 2020;
 
       $dateCheck = new DateTime();
-      $openingStockDate = $dateCheck->setDate($date, 3, 31)->format('Y-m-d');
+      $openingStockDate = $dateCheck->setDate($date, 4, 1)->format('Y-m-d');
 
       if(file_exists('admin/assets/audit_report/Audit Report'.'-'.$date.'-'.($date+1).'.xlsx'))
         $download = 1; 
@@ -228,10 +228,12 @@ class Audit_Report extends CI_Controller {
       $array['return_total'] = 0;
     }
     
-    $this->db->select('quantity, rate_per_item');
-    $this->db->from("invoice_details");
-    $this->db->join("products p","a.product_id = p.id","left");
-    $this->db->where('product_id',$row->id);
+    $this->db->select('sum(d.quantity) as quantity, d.rate_per_item');
+    $this->db->from("invoice_details d");
+    $this->db->join("invoice i","d.invoice_id = i.id","left");
+    $this->db->where('d.product_id',$row->id);
+    $this->db->where('i.date_of_invoice >', $purchaseDate);
+    $this->db->where('i.date_of_invoice <', $purchaseDateUpper);
     $query = $this->db->get();
     $sales = $query->result();
     if(count($sales) > 0)
@@ -243,9 +245,12 @@ class Audit_Report extends CI_Controller {
       $array['sales_total'] = 0;
     }
 
-    $this->db->select('quantity, price');
-    $this->db->from("sales_return_details");
-    $this->db->where('product_id',$row->id);
+    $this->db->select('sum(d.quantity) as quantity, d.price');
+    $this->db->from("sales_return_details d");
+    $this->db->join("sales_return i","d.return_id = i.id","left");
+    $this->db->where('d.product_id',$row->id);
+    $this->db->where('i.return_date >', $purchaseDate);
+    $this->db->where('i.return_date <', $purchaseDateUpper);
     $query = $this->db->get();
     $sales_return = $query->result();
     if(count($sales_return) > 0)
@@ -269,10 +274,16 @@ class Audit_Report extends CI_Controller {
       $array['received_quantity'] = 0;
       $array['received_total'] = 0;
     }
-    if($row->physical_status == 0)
-      $btn = ('<a href="#myModaledit" title="Edit" class="btn btn-info btn-circle btn-sm" data-toggle="modal"  onclick="getEditvalue('.$row->id.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>');
-    else
+    if(!file_exists('admin/assets/audit_report/Audit Report'.'-'.$date.'-'.($date+1).'.xlsx'))
+    {
+      if($row->physical_status == 0)
+        $btn = ('<a href="#myModaledit" title="Edit" class="btn btn-info btn-circle btn-sm" data-toggle="modal"  onclick="getEditvalue('.$row->id.');"><i class="ace-icon fa fa-pencil bigger-130"></i></a>');
+      else
+        $btn = "";
+    } else {
       $btn = "";
+    }
+    
     $array['btn'] = $btn;
     $data[] = $array;
     
@@ -330,12 +341,15 @@ class Audit_Report extends CI_Controller {
 
     foreach($Data as $row) 
     {  
-
       $data_array = array(
         'qty_before_physical' => $row->quantity,
-        'quantity' => $row->physical_qty,
         'physical_status' => 1
       );
+      if($row->physical_qty != NULL)
+      {
+        $data_array['quantity'] = $row->physical_qty;
+        $data_array['total_quantity'] = $row->physical_qty;
+      }
 
       $this->Crud_model->SaveData("assets", $data_array, "id='" . $row->id . "'");
 
@@ -354,7 +368,7 @@ class Audit_Report extends CI_Controller {
 
       $this->db->select(
       'a.id,a.asset_name,a.product_mrp,a.quantity,a.total_quantity,a.lf_no,a.purchase_date,a.physical_qty,a.damage_qty,
-      a.physical_status,a.qty_before_physical,,p.bill_date
+      a.physical_status,a.qty_before_physical,p.bill_date
       ');
       $this->db->from("assets a");
       $this->db->join("products p","a.product_id = p.id","left");
@@ -394,14 +408,14 @@ class Audit_Report extends CI_Controller {
       $datetime1 = date_create($startDate);
       $datetime2 = date_create($endDate);
       $interval = date_diff($datetime1, $datetime2, false);
-      if ($interval->y > 1 && $interval->y < 2) {
-        $array['2year'] = $row->total_quantity * $row->product_mrp;
-      } else if ($interval->y > 2 && $interval->y < 3) {
-        $array['3year'] = $row->total_quantity * $row->product_mrp;
-      } else if ($interval->y > 3) {
-        $array['4year'] = $row->total_quantity * $row->product_mrp;
+      if ($interval->y >= 1 && $interval->d >= 0 && $interval->y < 2) {
+        $array['2year'] = $row->quantity * $row->product_mrp;
+      } else if ($interval->y >= 2 && $interval->d >= 0 && $interval->y < 3) {
+        $array['3year'] = $row->quantity * $row->product_mrp;
+      } else if ($interval->y >= 3 && $interval->d >= 0) {
+        $array['4year'] = $row->quantity * $row->product_mrp;
       } else {
-        $array['1year'] = $row->total_quantity * $row->product_mrp;
+        $array['1year'] = $row->quantity * $row->product_mrp;
       }
       
       if($row->physical_qty == "")
@@ -456,9 +470,12 @@ class Audit_Report extends CI_Controller {
         $array['return_total'] = 0;
       }
       
-      $this->db->select('quantity, rate_per_item');
-      $this->db->from("invoice_details");
-      $this->db->where('product_id',$row->id);
+      $this->db->select('sum(d.quantity) as quantity, d.rate_per_item');
+      $this->db->from("invoice_details d");
+      $this->db->join("invoice i","d.invoice_id = i.id","left");
+      $this->db->where('d.product_id',$row->id);
+      $this->db->where('i.date_of_invoice >', $purchaseDate);
+      $this->db->where('i.date_of_invoice <', $purchaseDateUpper);
       $query = $this->db->get();
       $sales = $query->result();
       if(count($sales) > 0)
@@ -470,9 +487,12 @@ class Audit_Report extends CI_Controller {
         $array['sales_total'] = 0;
       }
 
-      $this->db->select('quantity, price');
-      $this->db->from("sales_return_details");
-      $this->db->where('product_id',$row->id);
+      $this->db->select('sum(d.quantity) as quantity, d.price');
+      $this->db->from("sales_return_details d");
+      $this->db->join("sales_return i","d.return_id = i.id","left");
+      $this->db->where('d.product_id',$row->id);
+      $this->db->where('i.return_date >', $purchaseDate);
+      $this->db->where('i.return_date <', $purchaseDateUpper);
       $query = $this->db->get();
       $sales_return = $query->result();
       if(count($sales_return) > 0)
