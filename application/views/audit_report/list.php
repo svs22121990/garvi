@@ -82,6 +82,7 @@ $this->load->view('common/left_panel');
                     </ul>                                
                 </div>
                 <div class="panel-body ">
+                <?php if($download != 1) { ?>
                 <div class="row">
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped table-actions example_datatable2" style="width:100%">
@@ -170,6 +171,7 @@ $this->load->view('common/left_panel');
                     </table>
                 </div>
                 </div>
+                <?php } ?>
               </form>
             </div>
             <div class="modal fade" id="myModaledit" role="dialog">

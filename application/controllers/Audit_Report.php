@@ -333,8 +333,8 @@ class Audit_Report extends CI_Controller {
       $this->db->where('a.created_by',$_SESSION[SESSION_NAME]['id']);
     $this->db->where('a.purchase_date >', $purchaseDate);
     $this->db->where('a.purchase_date <', $purchaseDateLimit);
-    $this->db->where('a.physical_status =', 0);
-    $this->db->where('a.physical_qty !=', NULL);
+    //$this->db->where('a.physical_status =', 0);
+    //$this->db->where('a.physical_qty !=', NULL);
     $this->db->order_by('id', "desc");
     $query = $this->db->get();
     $Data = $query->result();
@@ -349,6 +349,8 @@ class Audit_Report extends CI_Controller {
       {
         $data_array['quantity'] = $row->physical_qty;
         $data_array['total_quantity'] = $row->physical_qty;
+      } else {
+        $data_array['total_quantity'] = $row->quantity;
       }
 
       $this->Crud_model->SaveData("assets", $data_array, "id='" . $row->id . "'");
