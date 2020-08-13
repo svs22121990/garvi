@@ -99,7 +99,7 @@ class Sales_return_model extends CI_Model
         $this->db->where('s.return_id',$id);
         $query = $this->db->get('sales_return_details s');*/
         $query = $this->db
-                        ->select('*')
+                        ->select('a.asset_name, s.*')
                         ->from('sales_return_details as s')
                         ->join("assets a","a.id = s.product_id","left")
                         ->where('s.return_id',$id)

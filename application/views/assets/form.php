@@ -94,7 +94,7 @@
           <tbody id="professorTableBody">
             <tr class="trRow">
             <td>
-            <input type="text" name="product_purchase_date[]" id="product_purchase_date1" class="form-control datepicker" placeholder="Purchase Date">
+            <input type="text" name="product_purchase_date[]" id="product_purchase_date1" class="form-control datepicker" autocomplete="off" placeholder="Purchase Date">
             </td>
               <td>
                 <select class="form-control" name="category_id[]" id="category_id1" onchange="getGST(this.value,$(this).closest('tr').index());">
