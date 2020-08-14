@@ -34,7 +34,8 @@
                                 <th>Code</th>
                                 <th>HSN</th>
                                 <th>GST %</th>
-                                <th>Markup %</th>
+                                <th>Markup1 %</th>
+                                <th>Markup2 %</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -89,8 +90,13 @@
               <input class="form-control"  type="text" name="gst_percent" id="gst_percent" placeholder="GST %" value="" size="35"/> &nbsp;   
             </div>
              <div class="form-line">
-                 <label>Markup %<span style="color:red">*</span>&nbsp;<span id="city_nameError2" style="color:red"></span></label>
+                 <label>Markup1 % <span style="color:red">*</span>&nbsp;<span id="city_nameError2" style="color:red"></span></label>
                  <input class="form-control"  type="text" name="markup_percent" id="markup_percent" placeholder="Markup %" value="" size="35"/> &nbsp;
+
+             </div>
+             <div class="form-line">
+                 <label>Markup2 %<span style="color:red">*</span>&nbsp;<span id="city_nameError2" style="color:red"></span></label>
+                 <input class="form-control"  type="text" name="markup_percent2" id="markup_percent2" placeholder="Markup2 %" value="" size="35"/> &nbsp;
 
              </div>
         </div> 
@@ -192,6 +198,7 @@
       var hsn = $("#hsn").val();
       var gst_percent = $("#gst_percent").val();
       var markup_percent = $("#markup_percent").val();
+      var markup_percent2 = $("#markup_percent2").val();
       //var city_name1 = /^[a-zA-Z -]+$/;
 
       if($.trim(category_id) == "")
@@ -240,12 +247,21 @@
       }
       if($.trim(markup_percent) == "")
       {
-          $("#city_nameError2").fadeIn().html("Please enter Markup %");
+          $("#city_nameError2").fadeIn().html("Please enter Markup1 %");
           setTimeout(function(){$("#city_nameError2").fadeOut();},2000);
           $("#markup_percent").focus();
           return false;
       }
-      var datastring  = "category_id="+category_id+"&code="+code+"&hsn="+hsn+"&gst_percent="+gst_percent+"&markup_percent="+markup_percent;
+
+        if($.trim(markup_percent2) == "")
+        {
+            $("#city_nameError3").fadeIn().html("Please enter Markup2 %");
+            setTimeout(function(){$("#city_nameError3").fadeOut();},2000);
+            $("#markup_percent2").focus();
+            return false;
+        }
+
+      var datastring  = "category_id="+category_id+"&code="+code+"&hsn="+hsn+"&gst_percent="+gst_percent+"&markup_percent="+markup_percent+"&markup_percent2="+markup_percent2;
       var table = $('.example_datatable').DataTable();
       $.ajax({
         type : "post",
@@ -253,7 +269,7 @@
         data : datastring,
         success : function(response)
         {
-        //alert(response);return false;
+        alert(response);return false;
           if(response == 1)
           {
             $("#city_nameError").fadeIn().html("GST % already exist");
@@ -273,6 +289,7 @@
             $("#hsn").val("");
             $("#gst_percent").val("");
             $("#markup_percent").val("");
+              $("#markup_percent2").val("");
             table.ajax.reload();
             //setTimeout(function(){ window.location.reload(); },1000); 
          }
@@ -308,6 +325,7 @@ function updateData()
   var hsn = $("#hsn1").val();  
   var gst_percent = $("#gst_percent1").val();
     var markup_percent = $("#markup_percent1").val();
+    var markup_percent2 = $("#markup_percent_2").val();
     var updateId = $("#updateId").val();
    //var city_name2 = /^[a-zA-Z -]+$/;
 
@@ -341,13 +359,21 @@ function updateData()
   }
     if($.trim(markup_percent) == "")
     {
-        $("#EdittitleError3").fadeIn().html("Please enter Markup %");
-        setTimeout(function(){$("#EdittitleError3").fadeOut();},2000);
+        $("#EdittitleError4").fadeIn().html("Please enter Markup1 %");
+        setTimeout(function(){$("#EdittitleError4").fadeOut();},2000);
         $("#markup_percent").focus();
         return false;
     }
 
-  var datastring  = "category_id="+category_id+"&code="+code+"&id="+"&hsn="+hsn+"&id="+updateId+"&gst_percent="+gst_percent+"&markup_percent="+markup_percent;
+    if($.trim(markup_percent2) == "")
+    {
+        $("#EdittitleError5").fadeIn().html("Please enter Markup2 %");
+        setTimeout(function(){$("#EdittitleError5").fadeOut();},2000);
+        $("#markup_percent2").focus();
+        return false;
+    }
+
+    var datastring  = "category_id="+category_id+"&code="+code+"&id="+"&hsn="+hsn+"&id="+updateId+"&gst_percent="+gst_percent+"&markup_percent="+markup_percent+"&markup_percent2="+markup_percent2;
   var table = $('.example_datatable').DataTable();
   $.ajax({
     type : "post",

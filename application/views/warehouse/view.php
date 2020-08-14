@@ -70,10 +70,13 @@ $this->load->view('common/left_panel');
                                         <th>Product Price</th>
                                         <th>GST %</th>
                                         <th>HSN</th>
-                                        <th>Markup %</th>
-                                        <th>Total Cost Amount</th>
-                                        <th>SP</th>
-                                        <th>Total SP Amount</th>
+                                        <th>Markup1 %</th>
+                                        <th>Markup2 %</th>
+                                        <th>Total CP Amt</th>
+                                        <th>SP1</th>
+                                        <th>SP2</th>
+                                        <th>Total SP Amt 1</th>
+                                        <th>Total SP Amt 2</th>
                                         <th colspan="2">Action</th>
                                     </tr>
                                     </thead>
@@ -81,6 +84,7 @@ $this->load->view('common/left_panel');
                                     <?php
                                     $qty = 0;
                                     $product_mrp = 0;
+                                    $product_mrp_2 = 0;
                                     $total = 0;
                                     $totalGST = 0;
                                     $finalTotal = 0;
@@ -103,9 +107,14 @@ $this->load->view('common/left_panel');
                                             <td>
                                                 <div class=scrollable><?php echo $getData->markup_percent ?></div>
                                             </td>
+                                            <td>
+                                                <div class=scrollable><?php echo $getData->markup_percent2 ?></div>
+                                            </td>
                                             <td><?php echo "Rs. " . $getData->cost_total; ?></td>
                                             <td><?php echo "Rs. " . $getData->product_mrp; ?></td>
+                                            <td><?php echo "Rs. " . $getData->product_mrp_2; ?></td>
                                             <td><?php echo "Rs. " . $getData->sp_total; ?></td>
+                                            <td><?php echo "Rs. " . $getData->sp_total_2; ?></td>
 
                                               <td><a href="<?= site_url('Warehouse/export_single_pdf/' . $getData->id) ?>" title="PDF" target="_blank" class="btn btn-danger btn-circle btn-sm"><i class="fa fa-file-pdf-o"></i></a></td>
 <!--                                                 <td>  <a href="--><?//= site_url('Warehouse/export_summary/' . $getData->id) ?><!--" title="Export" ><i class="fa fa-file-excel-o"></i></a></td>-->
@@ -115,9 +124,12 @@ $this->load->view('common/left_panel');
                                         <?php
                                         //$qty += $getData->quantity;
                                         $product_mrp += $getData->product_mrp;
+                                        $product_mrp_2 += $getData->product_mrp_2;
                                         $totalGST += (($getData->gst_percent/100) * $getData->cost_total);
-                                        $totalmarkup += ($getData->product_mrp - $getData->price);
+                                            $totalmarkup += ($getData->product_mrp - $getData->price);
+                                        $totalmarkup_2 += ($getData->product_mrp_2 - $getData->price);
                                         $selling += $getData->sp_total;
+                                        $selling_2 += $getData->sp_total_2;
                                        // print_r($totalmarkup);exit;
                                     }
                                     ?>
@@ -146,15 +158,28 @@ $this->load->view('common/left_panel');
 <!--                                        <th colspan="2"></th>-->
 <!--                                    </tr>-->
                                     <tr>
-                                        <td colspan="15" >&nbsp;<span class="pull-right">Total Markup Amount</span></td>
+                                        <td colspan="15" >&nbsp;<span class="pull-right">Total Markup Amount 1</span></td>
                                         <th>
                                             <?= "Rs. " . number_format($totalmarkup, 2); ?>
                                         </th>
                                         <th colspan="2"></th>
                                     </tr>
                                     <tr>
-                                        <td colspan="15">&nbsp;<span class="pull-right">Final Selling Amount</span></td>
+                                        <td colspan="15" >&nbsp;<span class="pull-right">Total Markup Amount 2</span></td>
+                                        <th>
+                                            <?= "Rs. " . number_format($totalmarkup_2, 2); ?>
+                                        </th>
+                                        <th colspan="2"></th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="15">&nbsp;<span class="pull-right"> Selling Amount 1</span></td>
                                         <th><?= "Rs. " . number_format($selling, 2); ?></th>
+                                        <td colspan="3"></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="15">&nbsp;<span class="pull-right"> Selling Amount 2</span></td>
+                                        <th><?= "Rs. " . number_format($selling_2, 2); ?></th>
                                         <td colspan="3"></td>
                                     </tr>
 

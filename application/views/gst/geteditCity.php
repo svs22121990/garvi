@@ -35,11 +35,16 @@
   </div> 
 
   <div class="form-line">
-   <label>Markup %&nbsp;<span style="color:red">*</span>&nbsp;<span id="EdittitleError4" style="color:red"></span> </label>
-  <input class="form-control" type="text" name="markup_percent" id="markup_percent1" placeholder="Markup %" value="<?= $markup_percent ?>" size="35"/> &nbsp;
-  </div> 
+   <label>Markup1 %&nbsp;<span style="color:red">*</span>&nbsp;<span id="EdittitleError4" style="color:red"></span> </label>
+  <input class="form-control" type="text" name="markup_percent" id="markup_percent1" placeholder="Markup1 %" value="<?= $markup_percent ?>" size="35"/> &nbsp;
+  </div>
 
-  <input type="hidden" name="id" id="updateId" value="<?= $id ?>" size="35"/> &nbsp; 
+<div class="form-line">
+    <label>Markup2 %&nbsp;<span style="color:red">*</span>&nbsp;<span id="EdittitleError5" style="color:red"></span> </label>
+    <input class="form-control" type="text" name="markup_percent2" id="markup_percent_2" placeholder="Markup2 %" value="<?= $markup_percent2 ?>" size="35"/> &nbsp;
+</div>
+
+<input type="hidden" name="id" id="updateId" value="<?= $id ?>" size="35"/> &nbsp;
 
 
 <script type="text/javascript" src="<?=base_url(); ?>assets/js/plugins/bootstrap/bootstrap-select.js"></script>

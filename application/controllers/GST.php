@@ -130,6 +130,7 @@ class GST extends CI_Controller {
             $nestedData[] = $row->hsn;
             $nestedData[] = $row->gst_percent;
             $nestedData[] = $row->markup_percent;
+            $nestedData[] = $row->markup_percent2;
             $nestedData[] = $status;
             $nestedData[] = $btn;
             $data[] = $nestedData;
@@ -170,7 +171,7 @@ class GST extends CI_Controller {
         if (count($chkdupliasset) > 0) {
           echo "3";
         } else {
-          $condDuplication = "category_id='".$this->input->post('category_id')."' && hsn='".$this->input->post('hsn')."' && gst_percent='".$this->input->post('gst_percent')."'&& markup_percent='".$this->input->post('markup_percent')."'";
+          $condDuplication = "category_id='".$this->input->post('category_id')."' && hsn='".$this->input->post('hsn')."' && gst_percent='".$this->input->post('gst_percent')."'&& markup_percent='".$this->input->post('markup_percent')."'&& markup_percent2='".$this->input->post('markup_percent2')."'";
           $duplication = $this->Crud_model->GetData('mst_gst','', $condDuplication);
 
           if(count($duplication) > 0 )
@@ -185,6 +186,7 @@ class GST extends CI_Controller {
                 'hsn' => $this->input->post('hsn'),
                 'gst_percent' => $this->input->post('gst_percent'),
                   'markup_percent' => $this->input->post('markup_percent'),
+                  'markup_percent2' => $this->input->post('markup_percent2'),
                 'status' => 'Active',
                 'created' => date('Y-m-d H:i:s'),
                 'modified' => date('Y-m-d H:i:s'),
@@ -204,7 +206,7 @@ class GST extends CI_Controller {
         if (count($chkdupliasset) > 0) {
           echo "3";
         } else {
-          $condDuplication = "category_id='".$this->input->post('category_id')."' and hsn='".$this->input->post('hsn')."' and gst_percent='".$this->input->post('gst_percent')."' and markup_percent='".$this->input->post('markup_percent')."' and id !='".$this->input->post('id')."'";
+          $condDuplication = "category_id='".$this->input->post('category_id')."' and hsn='".$this->input->post('hsn')."' and gst_percent='".$this->input->post('gst_percent')."' and markup_percent='".$this->input->post('markup_percent')."' and markup_percent2='".$this->input->post('markup_percent2')."' and id !='".$this->input->post('id')."'";
           $duplication = $this->Crud_model->GetData('mst_gst','',$condDuplication);
           //print_r($this->db->last_query());exit();
           if(count($duplication) > 0 )
@@ -219,6 +221,7 @@ class GST extends CI_Controller {
                 'hsn' => $this->input->post('hsn'),           
                 'gst_percent' => $this->input->post('gst_percent'),
                 'markup_percent' => $this->input->post('markup_percent'),
+                'markup_percent2' => $this->input->post('markup_percent2'),
                 'modified' => date('Y-m-d H:i:s'),                   
               );
                // print_r($data);exit;
@@ -246,9 +249,11 @@ class GST extends CI_Controller {
           'hsn' => set_value('hsn', $row->hsn),
           'gst_percent' => set_value('gst_percent', $row->gst_percent),
           'markup_percent' => set_value('markup_percent', $row->markup_percent),
+          'markup_percent2' => set_value('markup_percent2', $row->markup_percent2),
           'modified' => date("Y-m-d H:i:s"),
-          
+
            );
+           // print_r($data);
               $this->load->view('GST/list', $data);
             } else {
             $this->session->set_flashdata('message', 'No Record Found..!!');
@@ -303,7 +308,7 @@ class GST extends CI_Controller {
 
         //  echo "$country->name";
 
-         $data = array('gst_percent'=> $row->gst_percent,'markup_percent'=> $row->markup_percent,'id'=> $row->id,'category_id'=> $row->category_id, 'categories'=> $categories,'hsn'=> $row->hsn,'code'=> $row->code);
+         $data = array('gst_percent'=> $row->gst_percent,'markup_percent'=> $row->markup_percent,'markup_percent2'=> $row->markup_percent2,'id'=> $row->id,'category_id'=> $row->category_id, 'categories'=> $categories,'hsn'=> $row->hsn,'code'=> $row->code);
        
           $this->load->view('GST/geteditCity',$data);
       }

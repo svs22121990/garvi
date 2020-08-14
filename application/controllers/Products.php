@@ -2754,6 +2754,7 @@ class Products extends CI_Controller
       $response['gst_percent'] = $select->gst_percent;
       $response['hsn'] = $select->hsn;
       $response['markup'] = $select->markup_percent;
+      $response['markup_2'] = $select->markup_percent2;
     } else {
       $response['success'] = '0';
     }

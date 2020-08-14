@@ -168,9 +168,9 @@ class Warehouse extends CI_Controller
             if (!empty($view)) {
                 $btn .= '<a href=' . site_url("Warehouse/view/" . $row->id) . ' title="Details" class="btn btn-primary btn-circle btn-sm"><i class="fa fa-eye"></i></a>';
             }
-            if (!empty($view)) {
-                $btn .= '&nbsp;|&nbsp;' . '<a href=' . site_url("Warehouse/export_pdf/" . $row->id) . ' title="PDF" target="_blank" class="btn btn-danger btn-circle btn-sm"><i class="fa fa-file-pdf-o"></i></a>';
-            }
+//            if (!empty($view)) {
+//                $btn .= '&nbsp;|&nbsp;' . '<a href=' . site_url("Warehouse/export_pdf/" . $row->id) . ' title="PDF" target="_blank" class="btn btn-danger btn-circle btn-sm"><i class="fa fa-file-pdf-o"></i></a>';
+//            }
 
             if (!empty($view)) {
                 $btn .= '&nbsp;|&nbsp;' .'<a href=' . site_url("Warehouse/update/" . $row->id) . ' title="Details" class="btn btn-primary btn-info btn-sm"><i class="fa fa-pencil bigger-130"></i></a>';
@@ -330,13 +330,16 @@ class Warehouse extends CI_Controller
                         'asset_type_id' => $_POST['asset_type_id'][$i],
                         'product_type_id' => $_POST['asset_type_2_id'][$i],
                         'markup_percent' => $_POST['markup'][$i],
+                        'markup_percent2' => $_POST['markup_2'][$i],
                         'asset_name' => $_POST['asset_name'][$i],
                         'quantity' => $_POST['quantity'][$i],
                         'available_qty' => $_POST['quantity'][0],
                         'price' =>$_POST['product_mrp'][$i],
                         'cost_total' =>$_POST['cost_total'][$i],
                         'product_mrp' => $_POST['sp'][$i],
+                        'product_mrp_2' => $_POST['sp_2'][$i],
                         'sp_total' => $_POST['sp_total'][$i],
+                        'sp_total_2' => $_POST['sp_total_2'][$i],
                         'gst_percent' => $_POST['gst_percent'][$i],
                         'hsn' => $_POST['hsn'][$i],
                         'category_id' =>$_POST['category_id'][$i],
@@ -417,13 +420,16 @@ class Warehouse extends CI_Controller
                         'asset_type_id' => $_POST['asset_type_id'][0],
                         'product_type_id' => $_POST['asset_type_2_id'][0],
                         'markup_percent' => $_POST['markup'][0],
+                        'markup_percent2' => $_POST['markup_2'][0],
                         'asset_name' => $_POST['asset_name'][0],
                         'quantity' => $_POST['quantity'][0],
                         'available_qty' => $_POST['quantity'][0],
                         'price' =>$_POST['product_mrp'][0],
                         'cost_total' =>$_POST['cost_total'][0],
                         'product_mrp' => $_POST['sp'][0],
+                         'product_mrp_2' => $_POST['sp_2'][0],
                         'sp_total' => $_POST['sp_total'][0],
+                         'sp_total_2' => $_POST['sp_total_2'][0],
                         'gst_percent' => $_POST['gst_percent'][0],
                         'hsn' => $_POST['hsn'][0],
                         'category_id' =>$_POST['category_id'][0],
@@ -587,13 +593,16 @@ class Warehouse extends CI_Controller
                     'asset_type_id' => $_POST['asset_type_id'][$i],
                     'product_type_id' => $_POST['asset_type_2_id'][$i],
                     'markup_percent' => $_POST['markup'][$i],
+                    'markup_percent2' => $_POST['markup_2'][$i],
                     'asset_name' => $_POST['asset_name'][$i],
                     'quantity' => $_POST['quantity'][$i],
                     'available_qty' => $_POST['quantity'][0],
                     'price' =>$_POST['price'][$i],
                     'cost_total' =>$_POST['cost_total'][$i],
                     'product_mrp' => $_POST['sp'][$i],
+                    'product_mrp_2' => $_POST['sp_2'][$i],
                     'sp_total' => $_POST['sp_total'][$i],
+                    'sp_total_2' => $_POST['sp_total_2'][0],
                     'gst_percent' => $_POST['gst_percent'][$i],
                     'hsn' => $_POST['hsn'][$i],
                     'category_id' =>$_POST['category_id'][$i],
