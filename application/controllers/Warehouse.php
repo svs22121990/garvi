@@ -192,6 +192,7 @@ class Warehouse extends CI_Controller
                 'employee_name' => $row->employee_name,
                 'cost_total' => $row->cost_total,
                 'sp_total' => $row->sp_total,
+                'sp_total_2' => $row->sp_total_2,
                 'cgst' => number_format($row->gst / 2, 2),
                 'gst' => number_format($row->gst, 2),
                 'btn' => $btn,

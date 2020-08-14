@@ -90,7 +90,8 @@ $this->load->view('common/left_panel');
                                 <!--<th class="text-center">Amount</th>-->
                                 <th class="text-center">Received from</th>
                                 <th class="text-center">Total CP Amt.</th>
-                                <th class="text-center">Total SP Amt.</th>
+                                <th class="text-center">Total SP Amt.1</th>
+                                <th class="text-center">Total SP Amt.2</th>
                                 <th class="text-center">CGST</th>
                                 <th class="text-center">SGST</th>
                                 <th class="text-center">Total GST</th>
@@ -251,6 +252,12 @@ $this->load->view('common/left_panel');
                     }
                 },
                 {
+                    "data": "sp_total_2",
+                    "render": function ( data, type, row, meta ) {
+                        return 'Rs. '+data;
+                    }
+                },
+                {
                     "data": "cgst",
                     "render": function ( data, type, row, meta ) {
                         return 'Rs. '+data;
@@ -311,6 +318,16 @@ $this->load->view('common/left_panel');
 
                 // Update footer
                 $( api.column(5).footer() ).html('Rs. '+total.toFixed(2));
+
+                total = api
+                    .column(6, {filter: 'applied'})
+                    .data()
+                    .reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+
+                // Update footer
+                $( api.column(6).footer() ).html('Rs. '+total.toFixed(2));
 
             }
         });
