@@ -32,7 +32,7 @@
             <div class="title-center"><?= $_SESSION[SESSION_NAME]['address'] ?></div>
             <!--<div style="text-align: center;">GST Number: <?/*= $_SESSION[SESSION_NAME]['gst_number'] */?></div>-->
             <h4 style="text-align: center;">Warehouse Products</h4>
-            <?php $qty=0; $product_mrp=0; $sr = 1; $data = array(); $total_cost = 0; ; $total_sp = 0;  ?>
+            <?php $qty=0; $product_mrp=0; $sr = 1; $data = array(); $total_cost = 0;  $total_sp = 0; $total_sp_2=0; $sp_total_2 = 0;  ?>
             <?php foreach ($results as $result) { 
                 $data[] = array(
                     'no' => $sr++,
@@ -41,11 +41,12 @@
                     'employee_name' =>$result->employee_name,
                     'cost_total' =>$result->cost_total,
                     'sp_total' =>$result->sp_total,
+                    'sp_total_2' => $result->sp_total_2,
                 );
 
                 $total_cost += $result->cost_total;
                 $total_sp += $result->sp_total;
-                
+                $total_sp_2 += $result->sp_total_2;
              } 
 
              ?>
@@ -59,7 +60,8 @@
                 <th class="text-center"> Date</th>
                 <th class="text-center">Received from</th>
                 <th class="text-center">Total CP Amt.</th>
-                <th class="text-center">Total SP Amt.</th>
+                <th class="text-center">Total SP Amt.1</th>
+                <th class="text-center">Total SP Amt.2</th>
                 </tr>
             </thead>
             
@@ -73,18 +75,22 @@
                     <td><?php echo $result->employee_name; ?></td>
                     <td><?php echo "Rs. ".number_format($result->cost_total,2); ?></td>
                     <td> <?php echo "Rs. ".number_format($result->sp_total,2); ?></td>
+                    <td> <?php echo "Rs. ".number_format($result->sp_total_2,2); ?></td>
 
                 </tr>    
                 <?php } ?>                  
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="4" style="text-align:right;">Total</td>
+                <td colspan="4" style="text-align:right;"><b>Total</b></td>
                 <th>
                     <?php echo "Rs. " . number_format($total_cost, 2); ?>
                 </th>  
                 <th>
                     <?php echo "Rs. " . number_format($total_sp, 2); ?>
+                </th>
+                <th>
+                    <?php echo "Rs. " . number_format($total_sp_2, 2); ?>
                 </th>
             </tr>
             
