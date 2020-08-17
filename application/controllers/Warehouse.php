@@ -504,7 +504,7 @@ class Warehouse extends CI_Controller
         </ul>";
 
             $getAssetData = $this->Warehouse_model->getAllDetails($id);
-            
+
             $data = array(
                 'breadcrumbs' => $breadcrumbs,
                 'heading' => 'View Warehouse',
@@ -536,9 +536,6 @@ class Warehouse extends CI_Controller
         $getAssetData = $this->Crud_model->GetData("warehouse_details", "", "warehouse_id='" . $id . "'");
         $users = $this->Crud_model->GetData('employees', "", "status='Active'", '', 'name asc');
         
-     //   $users=$products->received_from;
-        // echo"<pre>"; print_r($users);exit();
-//         print_r($users);exit;
         $action =  site_url("Warehouse/update_action/" . $id);
 
         $data = array(

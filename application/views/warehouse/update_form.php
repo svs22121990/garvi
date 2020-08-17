@@ -177,7 +177,7 @@ $this->load->view('common/left_panel'); ?>
                                             <input type="text" class="form-control markup" name="markup[]" id="markup<?php echo $i; ?>" value="<?php echo $getAssetData[$i]->markup_percent; ?>" readonly="readonly" placeholder="Enter Markup" autocomplete="off">
                                         </td>
                                         <td>
-                                            <input type="text" class="form-control markup_2" name="markup_2[]" id="markup_21<?php echo $i; ?>" value="<?php echo $getAssetData[$i]->markup_percent2; ?>" readonly="readonly" placeholder="Enter Markup" autocomplete="off">
+                                            <input type="text" class="form-control markup_2" name="markup_2[]" id="markup_2<?php echo $i; ?>" value="<?php echo $getAssetData[$i]->markup_percent2; ?>" readonly="readonly" placeholder="Enter Markup" autocomplete="off">
                                         </td>
                                         <td>
                                             <input type="text" class="form-control markup_amt" name="markup_amt[]" id="markup_amt1" readonly="readonly" autocomplete="off">
@@ -373,7 +373,7 @@ $this->load->view('common/left_panel'); ?>
     function price()
     {
         var markup = 0;
-        var markupp2 = 0;
+        var markup2 = 0;
         var mult = 0;
         var totalGST = 0;
         var finalTotal = 0;
@@ -388,21 +388,20 @@ $this->load->view('common/left_panel'); ?>
             mult += $total;
 
             var $markup = $('.markup', this).val();
-            $('.markup_amt', this).val(($val1 * 1) * ($val2 * 1) * (($markup * 1)/100));
+            $('.markup_amt', this).val($total * (($markup * 1)/100));
 
-            var $markupp2 = $('.markup_2', this).val();
-            $('.markup_amt_2', this).val(($val1 * 1) * ($val2 * 1) * (($markupp2 * 1)/100));
+            var $markup2 = $('.markup_2', this).val();
+            $('.markup_amt_2', this).val($total * (($markup2 * 1)/100));
 
             var $sp = ($val1 * 1) + (($val1 * 1) * (($markup * 1)/100));
             $('.sp', this).val($sp);
 
-            var $sp_2 = ($val1 * 1) + (($val1 * 1) * (($markupp2 * 1)/100));
+            var $sp_2 = ($val1 * 1) + (($val1 * 1) * (($markup2 * 1)/100));
             $('.sp_2', this).val($sp_2);
-
 
             var $sp_total_2 = ($sp_2 * 1) * ($val2 * 1);
             $('.sp_total_2', this).val($sp_total_2);
-            markupp2+= ($markupp2 / 100) * $total;
+            markup2+= ($markup2 / 100) * $total;
 
             var $sp_total = ($sp * 1) * ($val2 * 1);
             $('.sp_total', this).val($sp_total);
@@ -412,12 +411,12 @@ $this->load->view('common/left_panel'); ?>
             totalGST+= ($gstPercent / 100) * $total;
         });
         $("#grandTotal").val(markup);
-        $("#grand_2Total").val(markupp2);
+        $("#grand_2Total").val(markup2);
         $("#totalCGST").val(totalGST / 2);
         $("#totalSGST").val(totalGST / 2);
         $("#costTotal").val(mult);
         $("#spTotal").val(mult+markup);
-        $("#spTotal_2").val(mult+markupp2);
+        $("#spTotal_2").val(mult+markup2);
     }
 </script>
 <script>
@@ -553,11 +552,10 @@ $this->load->view('common/left_panel'); ?>
         $.post(url, dataString, function(returndata){
             //alert(returndata);
             var obj = jQuery.parseJSON(returndata);
-
-            $('#gst_percent'+(len+1)).val(obj.gst_percent);
-            $('#hsn'+(len+1)).val(obj.hsn);
-            $('#markup'+(len+1)).val(obj.markup);
-            $('#markup_2'+(len+1)).val(obj.markup_2);
+            $('#gst_percent'+(len-1)).val(obj.gst_percent);
+            $('#hsn'+(len-1)).val(obj.hsn);
+            $('#markup'+(len-1)).val(obj.markup);
+            $('#markup_2'+(len-1)).val(obj.markup_2);
         });
         price();
     }

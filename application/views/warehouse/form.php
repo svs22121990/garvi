@@ -298,7 +298,7 @@ $this->load->view('common/left_panel'); ?>
     function price()
     {
         var markup = 0;
-        var markupp2 = 0;
+        var markup2 = 0;
         var mult = 0;
         var totalGST = 0;
         var finalTotal = 0;
@@ -312,17 +312,16 @@ $this->load->view('common/left_panel'); ?>
             $('.cost_total', this).val($total);
 
             mult += $total;
-
             var $markup = $('.markup', this).val();
-            $('.markup_amt', this).val(($val1 * 1) * ($val2 * 1) * (($markup * 1)/100));
+            $('.markup_amt', this).val($total * (($markup * 1)/100));
 
-            var $markupp2 = $('.markup_2', this).val();
-            $('.markup_amt_2', this).val(($val1 * 1) * ($val2 * 1) * (($markupp2 * 1)/100));
-//alert($markupp2);
+            var $markup2 = $('.markup_2', this).val();
+            $('.markup_amt_2', this).val($total * (($markup2 * 1)/100));
+//alert($markup2);
             var $sp = ($val1 * 1) + (($val1 * 1) * (($markup * 1)/100));
             $('.sp', this).val($sp);
 
-            var $sp_2 = ($val1 * 1) + (($val1 * 1) * (($markupp2 * 1)/100));
+            var $sp_2 = ($val1 * 1) + (($val1 * 1) * (($markup2 * 1)/100));
             $('.sp_2', this).val($sp_2);
 
             var $sp_total = ($sp * 1) * ($val2 * 1);
@@ -331,18 +330,18 @@ $this->load->view('common/left_panel'); ?>
 
             var $sp_total_2 = ($sp_2 * 1) * ($val2 * 1);
             $('.sp_total_2', this).val($sp_total_2);
-            markupp2+= ($markupp2 / 100) * $total;
+            markup2+= ($markup2 / 100) * $total;
             
             var $gstPercent = $('.gstPercent', this).val();
             totalGST+= ($gstPercent / 100) * $total;
         });
         $("#grandTotal").val(markup);
-        $("#grand_2Total").val(markupp2);
+        $("#grand_2Total").val(markup2);
         $("#totalCGST").val(totalGST / 2);
         $("#totalSGST").val(totalGST / 2);
         $("#costTotal").val(mult);
         $("#spTotal").val(mult+markup);
-        $("#spTotal_2").val(mult+markupp2);
+        $("#spTotal_2").val(mult+markup2);
         //$("#finalTotal").val(mult+totalGST+markup);
     }
 </script>
@@ -512,6 +511,7 @@ $this->load->view('common/left_panel'); ?>
             $('#markup'+(len+1)).val(obj.markup);
             $('#markup_2'+(len+1)).val(obj.markup_2);
         });
+        price();
     }
 
 
