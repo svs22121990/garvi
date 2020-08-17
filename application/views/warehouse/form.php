@@ -312,6 +312,7 @@ $this->load->view('common/left_panel'); ?>
             $('.cost_total', this).val($total);
 
             mult += $total;
+
             var $markup = $('.markup', this).val();
             $('.markup_amt', this).val($total * (($markup * 1)/100));
 
