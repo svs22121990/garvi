@@ -55,9 +55,12 @@
                     'gst_percent' => $key->gst_percent,
                     'hsn' => $key->hsn,
                     'markup_percent' => $key->markup_percent,
+                    'markup_percent2' => $key->markup_percent2,
                         'cost_total' =>  "Rs. " . $key->cost_total,
                         'product_mrp' =>"Rs. " . $key->product_mrp,
+                    'product_mrp_2' =>"Rs. " . $key->product_mrp_2,
                         'sp_total' => "Rs. " . $key->sp_total,
+                    'sp_total_2' => "Rs. " . $key->sp_total_2,
 
 
                 );
@@ -68,12 +71,16 @@
                 $totalGST = 0;
                 $finalTotal = 0;
                 $totalmarkup = 0;
+                $totalmarkup_2 = 0;
                 $selling = 0;
+                $selling_2 = 0;
 //                $total_amount += $key->total_amount;
                 $product_mrp += $key->product_mrp;
                 $totalGST += (($key->gst_percent/100) * $key->cost_total);
                 $totalmarkup += ($key->product_mrp - $key->price);
+                $totalmarkup_2 += ($key->product_mrp_2 - $key->price);
                 $selling += $key->sp_total;
+                $selling_2 += $key->sp_total_2;
             }
             ?>
         <table id="customers">
@@ -115,10 +122,13 @@
                 <th>Product Price</th>
                 <th>GST %</th>
                 <th>HSN</th>
-                <th>Markup %</th>
+                <th>Markup 1 %</th>
+                <th>Markup 2 %</th>
                 <th>Total Cost Amount</th>
-                <th>SP</th>
-                <th>Total SP Amount</th>
+                <th>SP 1</th>
+                <th>SP 2</th>
+                <th>Total SP Amount 1</th>
+                <th>Total SP Amount 2</th>
 
                 <!--                    <th>Total Amount</th> -->
             </tr>
@@ -140,23 +150,26 @@
                     <td><?= $result['gst_percent']; ?></td>
                     <td><?= $result['hsn']; ?></td>
                     <td><?= $result['markup_percent']; ?></td>
+                    <td><?= $result['markup_percent2']; ?></td>
                     <td><?= $result['cost_total']; ?></td>
                     <td><?= $result['product_mrp']; ?></td>
+                    <td><?= $result['product_mrp_2']; ?></td>
                     <td><?= $result['sp_total']; ?></td>
+                    <td><?= $result['sp_total_2']; ?></td>
                 </tr>
             <?php } ?>
             </tbody>
             <tfoot>
 
             <tr>
-                <td colspan="15" >&nbsp;<span class="pull-right">Total CGST Amount</span></td>
+                <td colspan="18" >&nbsp;<span class="pull-right">Total CGST Amount</span></td>
                 <th>
                     <?= "Rs. " . number_format($totalGST/2, 2); ?>
                 </th>
                 <th colspan="2"></th>
             </tr>
             <tr>
-                <td colspan="15" >&nbsp;<span class="pull-right">Total SGST Amount</span></td>
+                <td colspan="18" >&nbsp;<span class="pull-right">Total SGST Amount</span></td>
                 <th>
                     <?= "Rs. " . number_format($totalGST/2, 2); ?>
                 </th>
@@ -164,18 +177,29 @@
             </tr>
 
             <tr>
-                <td colspan="15" >&nbsp;<span class="pull-right">Total Markup Amount</span></td>
+                <td colspan="18" >&nbsp;<span class="pull-right">Total Markup Amount 1</span></td>
                 <th>
                     <?= "Rs. " . number_format($totalmarkup, 2); ?>
                 </th>
                 <th colspan="2"></th>
             </tr>
             <tr>
-                <td colspan="15">&nbsp;<span class="pull-right">Final Selling Amount</span></td>
+                <td colspan="18" >&nbsp;<span class="pull-right">Total Markup Amount 2</span></td>
+                <th>
+                    <?= "Rs. " . number_format($totalmarkup_2, 2); ?>
+                </th>
+                <th colspan="2"></th>
+            </tr>
+            <tr>
+                <td colspan="18">&nbsp;<span class="pull-right">Final Selling Amount 1</span></td>
                 <th><?= "Rs. " . number_format($selling, 2); ?></th>
                 <td colspan="3"></td>
             </tr>
-
+            <tr>
+                <td colspan="18">&nbsp;<span class="pull-right">Final Selling Amount 2</span></td>
+                <th><?= "Rs. " . number_format($selling, 2); ?></th>
+                <td colspan="3"></td>
+            </tr>
             </tfoot>
         </table>
     </body>

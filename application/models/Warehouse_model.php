@@ -156,6 +156,7 @@ class Warehouse_model extends CI_Model
             ast.cost_total,
             ast.purchase_date,
             ast.markup_percent,
+            ast.markup_percent2,
             p.dn_number,
             p.warehouse_date,
             p.received_from,

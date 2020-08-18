@@ -183,7 +183,7 @@ class Warehouse_Dispatch extends CI_Controller
 	  $where = array('created_by'=>$_SESSION[SESSION_NAME]['id']);
       //$products = $this->Crud_model->GetData("assets","",$where); 
       //$this->load->model('Invoice_model');
-        $query =  $this->db->select('a.asset_name,a.barcode_number,a.quantity,a.available_qty,a.product_mrp,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
+        $query =  $this->db->select('a.asset_name,a.barcode_number,a.quantity,a.available_qty,a.product_mrp,a.product_mrp_2,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
                 ->join("size siz","siz.id = a.size_id","left")
                 ->join("color col","col.id = a.color_id","left")
                 ->join("fabric fab","fab.id = a.fabric_id","left")
@@ -193,7 +193,7 @@ class Warehouse_Dispatch extends CI_Controller
                 ->where('a.available_qty>',0)
                 ->get();
         $products = $query->result();
-
+//        dd($products);
         $query =  $this->db->select('dn_number')
                     ->from('warehouse_dispatch')
                     ->order_by(key(array('id' => 'DESC')))
@@ -369,7 +369,7 @@ class Warehouse_Dispatch extends CI_Controller
         $where = array('created_by'=>$_SESSION[SESSION_NAME]['id']);
         //$products = $this->Crud_model->GetData("assets","",$where); 
         //$this->load->model('Invoice_model');
-            $query =  $this->db->select('a.asset_name,a.barcode_number,a.quantity,a.available_qty,a.product_mrp,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
+            $query =  $this->db->select('a.asset_name,a.barcode_number,a.quantity,a.available_qty,a.product_mrp,a.product_mrp_2,a.purchase_date,a.id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,')
                     ->join("size siz","siz.id = a.size_id","left")
                     ->join("color col","col.id = a.color_id","left")
                     ->join("fabric fab","fab.id = a.fabric_id","left")
@@ -555,7 +555,7 @@ class Warehouse_Dispatch extends CI_Controller
         if(!empty($select)) {
           $response['success'] = '1';
           $response['gst_percent'] = $select[0]->gst_percent;
-          $response['price'] = $select[0]->product_mrp;
+          $response['price'] = array($select[0]->product_mrp,$select[0]->product_mrp_2);
           $response['title'] = $select[0]->title;
           $response['type'] = $select[0]->type;
           $response['size'] = $select[0]->size;

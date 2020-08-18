@@ -111,9 +111,9 @@
           <thead>
             <tr>
               <th> Product Name <span style="color: red">*</span><span id="error_asset_name"></span></th>
-              <th> Quantity <span style="color: red">*</span><span id="error_quantity"></span></th>
+                <th> Selling Price <span style="color: red">*</span><span id="error_price"></span></th>
+                <th> Quantity <span style="color: red">*</span><span id="error_quantity"></span></th>
               <th> Attributes </th>
-              <th> Price <span style="color: red">*</span><span id="error_price"></span></th>
               <th> GST % <span style="color: red">*</span><span id="error_gst_percent"></span></th>
               <th> Total GST <span style="color: red">*</span><span id="error_gst_total"></span></th>
             </tr>
@@ -130,6 +130,15 @@
                   <option value="<?php echo $dispatch_details[$i]->product_id; ?>"><?php echo $dispatch_details[$i]->asset_name; ?></option>
                 </select>
               </td>
+
+                <td>
+<!--                    <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" value="--><?php //echo $dispatch_details[$i]->price; ?><!--" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">-->
+                    <select type="text" class="form-control product_mrp" name="product_mrp[]" value="<?php echo $dispatch_details[$i]->price; ?>" autocomplete="off" onkeypress="return only_number(event)">
+                        <option value=""><?php echo $dispatch_details[$i]->price; ?> </option>
+                    </select>
+                    <span style="color: red" class="price_error"></span>
+                </td>
+
               <td>
                 <input type="text" class="form-control quantity" name="quantity[]" data-available="<?php echo $dispatch_details[$i]->available_qty; ?>" value="<?php echo $dispatch_details[$i]->quantity; ?>" placeholder="Enter Quantity" autocomplete="off">
                 <span style="color: red" class="quantity_error"></span>
@@ -137,10 +146,7 @@
               <td>
                 <div class="attribute_div"><b>Category : </b><?php echo $dispatch_details[$i]->title; ?></br><b>Type : </b><?php echo $dispatch_details[$i]->type; ?></br><b>Color : </b><?php echo $dispatch_details[$i]->color; ?></br><b>Size : </b><?php echo $dispatch_details[$i]->size; ?></br><b>Fabric : </b><?php echo $dispatch_details[$i]->fabric; ?></br><b>Craft : </b><?php echo $dispatch_details[$i]->craft; ?></br><b>Available Qty : </b><?php echo $dispatch_details[$i]->available_qty; ?></br><b>Barcode Number : </b><?php echo $dispatch_details[$i]->barcode_number; ?></div>
               </td>
-              <td>
-                <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" value="<?php echo $dispatch_details[$i]->price; ?>" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">
-                <span style="color: red" class="price_error"></span>
-              </td>
+
               <td>
                 <input type="text" class="form-control gst_percent" name="gst_percent[]" readonly="readonly" value="<?php echo $dispatch_details[$i]->gst_percent; ?>" placeholder="Enter GST %" autocomplete="off">
                 <span style="color: red" class="gst_error"></span>
@@ -157,9 +163,9 @@
           </tbody>
           <tfoot>                   
             <tr>
-                <th colspan="3" >&nbsp;<span class="pull-right">Total</span></th>
+                <th colspan="1" >&nbsp;<span class="pull-right">Total</span></th>
                 <th><input type="text" class="form-control" id="priceTotal" readonly="readonly" value="<?php echo $priceTotal; ?>"></th>
-                <th>&nbsp;<span class="pull-right">Total CGST</span></th>
+                <th colspan="3" >&nbsp;<span class="pull-right">Total CGST</span></th>
                 <th><input type="text" class="form-control" id="CGSTTotal" readonly="readonly" value="<?php if($dispatch_details[0]->state_id == 13) echo ($GSTTotal/2); else echo 0; ?>"></th>
             </tr>
             <tr>
@@ -210,7 +216,8 @@
                     <th>Barcode</th>
                     <th>Total Quantity</th>
                     <th>Available Quantity</th>
-                    <th>Price</th>
+                    <th>Price 1</th>
+                    <th>Price 2</th>
                     <th>Category</th>
                     <th>Color</th>
                     <th>Size</th>
@@ -246,6 +253,7 @@
                                     <td><?= $product->quantity; ?></td>
                                     <td><?= $product->available_qty; ?></td>
                                     <td><?= $product->product_mrp; ?></td>
+                                    <td><?= $product->product_mrp_2; ?></td>
                                     <td><?= $product->title; ?></td>
                                     <td><?= $product->color; ?></td>
                                     <td><?= $product->size; ?></td>
@@ -300,7 +308,7 @@ $('#sent_to').on('change', function() {
 //jQuery(document).on('click','#asset_name1',function(){
 //	$('#myModal').modal({backdrop: 'static', keyboard: false});
 //});
-$("table").on('click', 'tr select', function(e){
+$("table").on('click', 'tr .asset_name', function(e){
    $('.add_product').attr('data-row', $(this).closest('td').parent()[0].sectionRowIndex);
    $('#myModal').modal({backdrop: 'static', keyboard: false});
 });
@@ -455,9 +463,13 @@ function getGST(val,len) {
 	$.post(url, dataString, function(returndata){
 		//alert(returndata);
 		var obj = jQuery.parseJSON(returndata);
-
+        var price = obj.price;
       $('table .gst_percent').slice(len, len + 1).val(obj.gst_percent);
       $('table .product_mrp').slice(len, len + 1).val(obj.price);
+
+        price.forEach(function(rel){
+            $('.product_mrp').append('<option value="'+rel+'"> '+rel+'</option>')
+        });
 
       $('table .attribute_div').slice(len, len + 1).empty();
       $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);

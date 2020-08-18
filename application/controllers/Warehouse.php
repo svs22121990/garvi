@@ -676,12 +676,15 @@ class Warehouse extends CI_Controller
         $this->excel->getActiveSheet()->setCellValue('C5', ' Date');
         $this->excel->getActiveSheet()->setCellValue('D5', 'Received From');
         $this->excel->getActiveSheet()->setCellValue('E5', 'Total CP. Amount');
-        $this->excel->getActiveSheet()->setCellValue('F5', 'Total SP. Amount');
+        $this->excel->getActiveSheet()->setCellValue('F5', 'Total SP. Amount 1');
+        $this->excel->getActiveSheet()->setCellValue('G5', 'Total SP. Amount 2');
+
 
         $a = '6';
         $sr = 1;
         $total_cp = 0;
         $total_sp = 0;
+        $total_sp_2 =0;
         //print_r($results);exit;
         foreach ($Data as $result) {
             $this->excel->getActiveSheet()->setCellValue('A' . $a, $sr);
@@ -690,16 +693,21 @@ class Warehouse extends CI_Controller
             $this->excel->getActiveSheet()->setCellValue('D' . $a, $result->employee_name);
             $this->excel->getActiveSheet()->setCellValue('E' . $a, "Rs. " . number_format($result->cost_total, 2));
             $this->excel->getActiveSheet()->setCellValue('F' . $a, "Rs. " . number_format($result->sp_total, 2));
+            $this->excel->getActiveSheet()->setCellValue('G' . $a, "Rs. " . number_format($result->sp_total_2, 2));
+
             $sr++;
             $a++;
             $total_cp += $result->cost_total;
             $total_sp += $result->sp_total;
+            $total_sp_2 += $result->sp_total_2;
         }
         $this->excel->getActiveSheet()->setCellValue('E' . $a, "Rs. " . number_format($total_cp, 2));
         $this->excel->getActiveSheet()->setCellValue('F' . $a, "Rs. " . number_format($total_sp, 2));
-        
+        $this->excel->getActiveSheet()->setCellValue('G' . $a, "Rs. " . number_format($total_sp_2, 2));
+
         $this->excel->getActiveSheet()->getStyle('E' . $a)->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('F' . $a)->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('G' . $a)->getFont()->setBold(true);
 
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(14);
         $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
@@ -712,6 +720,8 @@ class Warehouse extends CI_Controller
         $this->excel->getActiveSheet()->getStyle('D5')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('E5')->getFont()->setBold(true);
         $this->excel->getActiveSheet()->getStyle('F5')->getFont()->setBold(true);
+        $this->excel->getActiveSheet()->getStyle('G5')->getFont()->setBold(true);
+
         $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
         $filename = '' . $FileTitle . '.xlsx'; //save our workbook as this file name
@@ -819,7 +829,9 @@ class Warehouse extends CI_Controller
         $this->excel->getActiveSheet()->setCellValue('F5', 'Total Amount');
         $this->excel->getActiveSheet()->setCellValue('G5', 'GST %');
         $this->excel->getActiveSheet()->setCellValue('H5', 'HSN');
-        $this->excel->getActiveSheet()->setCellValue('I5', 'Markup %.');
+        $this->excel->getActiveSheet()->setCellValue('I5', 'Markup 1 %.');
+        $this->excel->getActiveSheet()->setCellValue('J5', 'Markup 2 %.');
+
 
         $a = '6';
         $sr = 1;
@@ -844,6 +856,8 @@ class Warehouse extends CI_Controller
             $this->excel->getActiveSheet()->setCellValue('G' . $a, $result->gst_percent);
             $this->excel->getActiveSheet()->setCellValue('H' . $a, $result->hsn);
             $this->excel->getActiveSheet()->setCellValue('I' . $a, $result->markup_percent);
+            $this->excel->getActiveSheet()->setCellValue('J' . $a, $result->markup_percent_2);
+
             //$this->excel->getActiveSheet()->setCellValue('G'.$a, $result->status);
             //$this->excel->getActiveSheet()->setCellValue('H'.$a, $total);
             $sr++;

@@ -110,12 +110,13 @@
         <table class="table table-striped table-bordered" id="thetable">
           <thead>
             <tr>
-              <th> Barcode <span style="color: red">*</span><span id="error_barcode"></span></th>
+<!--              <th> Barcode <span style="color: red">*</span><span id="error_barcode"></span></th>-->
               <th> Product Name <span style="color: red">*</span><span id="error_asset_name"></span></th>
-              <th> Quantity <span style="color: red">*</span><span id="error_quantity"></span></th>
-              <th> Attributes </th>
-              <th> Selling Price <span style="color: red">*</span><span id="error_price"></span></th>
-              <th> Total SP Amt.  <span style="color: red">*</span><span id="error_amt"></span></th>
+                <th> Selling Price <span style="color: red">*</span><span id="error_price"></span></th>
+                <th> Attributes </th>
+<!--                <th> Selling Price <span style="color: red">*</span><span id="error_price"></span></th>-->
+                <th> Quantity <span style="color: red">*</span><span id="error_quantity"></span></th>
+                <th> Total SP Amt.  <span style="color: red">*</span><span id="error_amt"></span></th>
               <th> GST % <span style="color: red">*</span><span id="error_gst_percent"></span></th>
               <th> Total GST <span style="color: red">*</span><span id="error_gst_total"></span></th>
               <th class="text-center"> <a href="javascript:void(0)" class="btn btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>
@@ -124,26 +125,38 @@
 		  
           <tbody id="professorTableBody">  
             <tr class="trRow">
-              <td>
-                  <input type="text" class="form-control barcode" name="barcode[]" placeholder="Enter Barcode No." autocomplete="off">
-                  <span style="color: red" class="barcode_error"></span>
-              </td>
+<!--              <td>-->
+<!--                  <input type="text" class="form-control barcode" name="barcode[]" placeholder="Enter Barcode No." autocomplete="off">-->
+<!--                  <span style="color: red" class="barcode_error"></span>-->
+<!--              </td>-->
               <td>
                 <select class="form-control asset_name" name="asset_name[]">
                   <option value="0">Select Product</option>
                 </select>
               </td>
-              <td>
-                <input type="text" class="form-control quantity" data-available="" name="quantity[]" placeholder="Enter Quantity" autocomplete="off">
-                <span style="color: red" class="quantity_error"></span>
-              </td>
+                <td>
+                    <select type="text" class="form-control product_mrp" name="product_mrp[]"  autocomplete="off" onkeypress="return only_number(event)">
+                        <option value="">Select Selling Price </option>
+                    </select>
+                    <span style="color: red" class="price_error"></span>
+                </td>
               <td>
                 <div class="attribute_div">Attributes</div>
               </td>
-              <td>
-                <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">
-                <span style="color: red" class="price_error"></span>
-              </td>
+<!--                <td>-->
+<!--                    <select class="form-control selling_price" name="selling_price_id[]" id="selling_price_id1">-->
+<!--                        <option value="">Select Selling Price </option>-->
+<!--                    </select>-->
+<!--                </td>-->
+
+                <td>
+                    <input type="text" class="form-control quantity" data-available="" name="quantity[]" placeholder="Enter Quantity" autocomplete="off">
+                    <span style="color: red" class="quantity_error"></span>
+                </td>
+<!--              <td>-->
+<!--                <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">-->
+<!--                <span style="color: red" class="price_error"></span>-->
+<!--              </td>-->
               <td>
                 <input type="text" class="form-control amount" name="amount[]" readonly="readonly" placeholder="Enter Amount" autocomplete="off">
                 <span style="color: red" class="amount_error"></span>
@@ -163,18 +176,19 @@
           </tbody>
           <tfoot>                   
             <tr>
-                <th colspan="4" >&nbsp;<span class="pull-right">Total</span></th>
+                <th colspan="1" >&nbsp;<span class="pull-right">Total</span></th>
                 <th><input type="text" class="form-control" id="priceTotal" readonly="readonly" value="0"></th>
+                <th colspan="2" >&nbsp;<span class="pull-right"></span></th>
                 <th><input type="text" class="form-control" id="amountTotal" readonly="readonly" value="0"></th>
                 <th>&nbsp;<span class="pull-right">Total CGST</span></th>
                 <th><input type="text" class="form-control" id="CGSTTotal" readonly="readonly" value="0"></th>
             </tr>
             <tr>
-                <th colspan="7">&nbsp;<span class="pull-right">Total SGST</span></th>
+                <th colspan="6">&nbsp;<span class="pull-right">Total SGST</span></th>
                 <th><input type="text" class="form-control" id="SGSTTotal" readonly="readonly" value="0"></th>
             </tr>
             <tr>
-                <th colspan="7">&nbsp;<span class="pull-right">Total IGST</span></th>
+                <th colspan="6">&nbsp;<span class="pull-right">Total IGST</span></th>
                 <th><input type="text" class="form-control" id="IGSTTotal" readonly="readonly" value="0"></th>
             </tr>
             
@@ -215,10 +229,11 @@
 				<table id="myTable" style="max-height:600px;overflow-x:scroll">
 				  <tr class="header"> 
             <th>Name</th>
-            <th>Barcode</th>
+<!--            <th>Barcode</th>-->
             <th>Total Quantity</th>
-				    <th>Available Quantity</th>
-				    <th>Price</th>
+			<th>Available Quantity</th>
+			<th>Price1</th>
+            <th>Price2</th>
             <th>Category</th>
             <th>Color</th>
             <th>Size</th>
@@ -247,10 +262,11 @@
 		              ?>
 						  <tr>
 						    <td><?= $product->asset_name; ?></td>
-                <td><?= $product->barcode_number; ?></td>
-                <td><?= $product->quantity; ?></td>
+<!--                <td><?/*= $product->barcode_number; */?></td>
+-->                <td><?= $product->quantity; ?></td>
                 <td><?= $product->available_qty; ?></td>
                 <td><?= $product->product_mrp; ?></td>
+                <td><?= $product->product_mrp_2; ?></td>
                 <td><?= $product->title; ?></td>
                 <td><?= $product->color; ?></td>
                 <td><?= $product->size; ?></td>
@@ -324,7 +340,7 @@ jQuery(document).on('click','#save_finish',function(){
 //jQuery(document).on('click','#asset_name1',function(){
 //	$('#myModal').modal({backdrop: 'static', keyboard: false});
 //});
-$("table").on('click', 'tr select', function(e){
+$("table").on('click', 'tr .asset_name', function(e){
    $('.add_product').attr('data-row', $(this).closest('td').parent()[0].sectionRowIndex);
    $('#myModal').modal({backdrop: 'static', keyboard: false});
 });
@@ -453,11 +469,14 @@ function addrow() {
   var new_row = y.rows[0].cloneNode(true); 
   var len = y.rows.length; 
   
-  var inp3 = new_row.cells[0].getElementsByTagName('input')[0];
+  var inp1 = new_row.cells[0].getElementsByTagName('input')[0];
   inp3.value = '';
 
   var inp2 = new_row.cells[1].getElementsByTagName('select')[0];
   inp2.value = '';
+
+    var inp3 = new_row.cells[3].getElementsByTagName('select')[0];
+    inp2.value = '';
 
   var inp5 = new_row.cells[2].getElementsByTagName('input')[0];
   inp5.value = '';
@@ -496,6 +515,7 @@ function addrow() {
           // get the values from this row:
           var $qty = $('.quantity', this).val();
           var $sp = $('.product_mrp', this).val();
+//          $('.classname').val()
           var $gst = $('.gst_percent', this).val();
           var $total = ($qty * 1) * ($sp * 1) * (($gst * 1) / 100);
           var $amttotal = ($qty * 1) * ($sp * 1);
@@ -531,9 +551,17 @@ function getGST(val,len) {
 	$.post(url, dataString, function(returndata){
 		//alert(returndata);
 		var obj = jQuery.parseJSON(returndata);
-
+        var price = obj.price;
+//console.log(obj);
       $('table .gst_percent').slice(len, len + 1).val(obj.gst_percent);
       $('table .product_mrp').slice(len, len + 1).val(obj.price);
+        /*obj.price.foreach(function(e){
+           alert(e);
+        });*/
+//for selling price drop dropdown
+        price.forEach(function(rel){
+            $('.product_mrp').append('<option value="'+rel+'"> '+rel+'</option>')
+        });
 
       $('table .attribute_div').slice(len, len + 1).empty();
       $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
