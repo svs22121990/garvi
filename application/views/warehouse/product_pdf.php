@@ -74,7 +74,7 @@
                         DN No.: <strong><?php echo !empty($results) ? $results[0]->dn_number : ""; ?></strong>
                     </div>
                     <div class="col-md-4">
-                        Warehouse Bill Date: <strong><?php echo !empty($results) ? $results[0]->warehouse_date : ""; ?></strong>
+                        Warehouse Bill Date: <strong><?php echo !empty($results) ? $results[0]->dispatch_date : ""; ?></strong>
                     </div>
                     <div class="col-md-4">
                         Received From: <strong><?php echo !empty($results) ? $results[0]->employee_name : ""; ?></strong>

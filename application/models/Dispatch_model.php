@@ -127,7 +127,8 @@ class Dispatch_model extends CI_Model
     public function warehouse_getAllDetails($id)
     {
         $this->db->select('a.asset_name,a.purchase_date,d.dn_number,mat.type,pro.label,d.dispatch_date,e.name as employee_name,e.state_id,ast.id,a.price,a.product_mrp,a.hsn,a.markup_percent,
-        ast.quantity,ast.gst_percent,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,a.product_mrp,a.sp_total,a.cost_total');
+        ast.quantity,ast.gst_percent,cat.title,siz.title as size,col.title as color,
+        fab.title as fabric,cra.title as craft,a.product_mrp,a.sp_total,a.cost_total,wd.barcode_number,wd.barcode_image');
         $this->db->where("ast.dispatch_id='".$id."'"); 
         $this->db->join("warehouse_dispatch d","d.id = ast.dispatch_id","left");    
         $this->db->join("warehouse_details a","a.id = ast.product_id","left");
@@ -139,6 +140,7 @@ class Dispatch_model extends CI_Model
         $this->db->join("mst_asset_types mat","mat.id = a.asset_type_id","left");
         $this->db->join("product_type pro","pro.id = a.product_type_id","left");
         $this->db->join("employees e","e.id = d.sent_to","left");
+        $this->db->join("warehouse_details wd","wd.id = ast.dispatch_id","left");
         return $this->db->get('warehouse_dispatch_details ast')->result();        
     }
 

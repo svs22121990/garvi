@@ -41,7 +41,7 @@ $this->load->view('common/left_panel'); ?>
                                     <div class="form-group">
                                         <label class="col-md-11">  Date <span style="color: red">*</span> <span  id="warehouse_date_error" style="color: red"></span></label>
                                         <div class="col-md-11">
-                                            <input type="text" name="warehouse_date" id="warehouse_date" class="form-control rangepicker" autocomplete="off" placeholder=" Date">
+                                            <input type="text" name="warehouse_date" id="warehouse_date" class="form-control datepicker" autocomplete="off" placeholder=" Date">
                                         </div>
                                     </div>
                                 </div>
@@ -102,7 +102,7 @@ $this->load->view('common/left_panel'); ?>
                                     <tbody id="professorTableBody">
                                     <tr class="trRow">
                                         <td>
-                                            <input type="text" name="product_purchase_date[]" id="product_purchase_date1" class="form-control rangepicker" autocomplete="off" placeholder="Purchase Date">
+                                            <input type="text" name="product_purchase_date[]" id="product_purchase_date1" class="form-control datepicker" autocomplete="off" placeholder="Purchase Date">
                                         </td>
                                         <td>
                                             <select class="form-control" name="category_id[]" id="category_id1" onchange="getGST(this.value,$(this).closest('tr').index());">
@@ -279,16 +279,16 @@ $this->load->view('common/left_panel'); ?>
 <!-- END PAGE CONTENT WRAPPER -->
 
 <?php $this->load->view('common/footer');?>
-<script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
-<script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
+<!--<script type="text/javascript" src="--><?//= base_url(); ?><!--assets/date_r_picker/moment.min.js"></script>-->
+<!--<script type="text/javascript" src="--><?//= base_url(); ?><!--assets/date_r_picker/daterangepicker.min.js"></script>-->
 <script>
-    $(".rangepicker").daterangepicker({
-            singleDatePicker: true,
-            showDropdowns: true,
-            locale: {
-                format: 'DD/MM/YYYY'
-            }
-        });
+//    $(".rangepicker").daterangepicker({
+//            singleDatePicker: true,
+//            showDropdowns: true,
+//            locale: {
+//                format: 'DD/MM/YYYY'
+//            }
+//        });
     $(document).on('keyup','.price',function(){
         price();
     });

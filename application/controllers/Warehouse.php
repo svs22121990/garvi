@@ -283,6 +283,7 @@ class Warehouse extends CI_Controller
                 'status' => 'Active',
                 'created' => date('Y-m-d H:i:s'),
             );
+            // echo"<pre>"; print_r($data_array);exit();
             $this->Crud_model->SaveData("warehouse", $data_array);
             $last_id = $this->db->insert_id();
 //            echo"<pre>"; print_r($last_id);exit();
@@ -751,7 +752,7 @@ class Warehouse extends CI_Controller
     public function export_pdf($id)
     {
         $data['results'] = $this->Warehouse_model->getAllDetails($id);
-        
+        print_r( $data['results']);
         //$this->db->select('barcode_number, barcode_image, status');
         //$this->db->where("warehouse_id='".$id."'");
         //$data['barcodes'] = $this->db->get('warehouse_barcodes')->result();
@@ -775,6 +776,10 @@ class Warehouse extends CI_Controller
         $mpdf->WriteHTML($html);
         $mpdf->Output('Warehouse Product_Details', 'I');
     }
+
+
+
+    
 
     public function export_single_pdf($id)
     {

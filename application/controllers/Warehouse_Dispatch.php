@@ -144,6 +144,13 @@ class Warehouse_Dispatch extends CI_Controller
             if($row->status != 'Approved'){
                 $btn .= '&nbsp;|&nbsp;' .'<a href=' . site_url("Warehouse_Dispatch/update/" . $row->id) . ' title="Details" class="btn btn-primary btn-info btn-sm"><i class="fa fa-pencil bigger-130"></i></a>';
             }
+
+
+           if (!empty($view)) {
+               $btn .= '&nbsp;|&nbsp;' . '<a href=' . site_url("Warehouse_Dispatch/export_pdf_barcode/" . $row->id) . ' title="PDF" target="_blank" class="btn btn-danger btn-circle btn-sm"><i class="fa fa-file-pdf-o"></i></a>';
+            }
+
+
             //if(!empty($delete)){
             //    $btn .='&nbsp;|&nbsp;'.'<a href="#deleteData" data-toggle="modal" title="Delete" class="btn btn-danger btn-circle btn-sm" onclick="checkStatus('.$row->id.')"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>';
             //}
@@ -697,6 +704,34 @@ class Warehouse_Dispatch extends CI_Controller
         $mpdf->Output('Warehouse Product_Details', 'I');
     }
 
+
+    public function export_pdf_barcode($id)
+    {
+        $data['results'] = $this->Dispatch_model->warehouse_getAllDetails($id);
+        print_r( $data['results']);
+        //$this->db->select('barcode_number, barcode_image, status');
+        //$this->db->where("warehouse_id='".$id."'");
+        //$data['barcodes'] = $this->db->get('warehouse_barcodes')->result();
+
+        $this->db->select('
+            b.barcode_number,
+            b.barcode_image,
+            b.available_qty,
+            b.asset_name,
+            b.product_mrp,
+            b.sp_total,
+            b.asset_type_id'
+        );
+        //$this->db->join("warehouse_details d","d.id = b.warehouse_detail_id","left");
+        //$this->db->join("mast_asset_types m","m.id = d.asset_type_id","left");
+        $this->db->where("b.warehouse_id='".$id."'");
+        $data['barcodes'] = $this->db->get('warehouse_details b')->result();
+
+        $html = $this->load->view('warehouse/product_pdf', $data, TRUE);
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML($html);
+        $mpdf->Output('Warehouse Product_Details', 'I');
+    }
     /* ----- Export functionality start ----- */
     public function export_summary($id)
     {

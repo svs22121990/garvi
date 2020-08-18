@@ -77,7 +77,7 @@
                   <div class="form-group">
                     <label class="col-md-11"> Date <span style="color: red">*</span> <span  id="date_error" style="color: red"></span></label>
                     <div class="col-md-11">
-                      <input type="text" name="date" id="date" class="form-control rangepicker" placeholder="Date" autocomplete="off" value="<?php if(isset($dispatch)){ echo $dispatch->dispatch_date; } ?>">
+                      <input type="text" name="date" id="date" class="form-control datepicker" placeholder="Date" autocomplete="off" value="<?php if(isset($dispatch)){ echo $dispatch->dispatch_date; } ?>">
                     </div>
                   </div>
                 </div>
@@ -292,7 +292,7 @@
 
 
 <?php $this->load->view('common/footer');?>
-<script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
+<!-- <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
 <script>
     $(".rangepicker").daterangepicker({
@@ -302,7 +302,7 @@
             format: 'DD/MM/YYYY'
         }
     });
-    </script>
+    </script> -->
 
 <script>
 
