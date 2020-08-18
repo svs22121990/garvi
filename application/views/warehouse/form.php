@@ -41,7 +41,7 @@ $this->load->view('common/left_panel'); ?>
                                     <div class="form-group">
                                         <label class="col-md-11">  Date <span style="color: red">*</span> <span  id="warehouse_date_error" style="color: red"></span></label>
                                         <div class="col-md-11">
-                                            <input type="text" name="warehouse_date" id="warehouse_date" class="form-control datepicker" autocomplete="off" placeholder=" Date">
+                                            <input type="text" name="warehouse_date" id="warehouse_date" class="form-control rangepicker" autocomplete="off" placeholder=" Date">
                                         </div>
                                     </div>
                                 </div>
@@ -102,7 +102,7 @@ $this->load->view('common/left_panel'); ?>
                                     <tbody id="professorTableBody">
                                     <tr class="trRow">
                                         <td>
-                                            <input type="text" name="product_purchase_date[]" id="product_purchase_date1" class="form-control datepicker" autocomplete="off" placeholder="Purchase Date">
+                                            <input type="text" name="product_purchase_date[]" id="product_purchase_date1" class="form-control rangepicker" autocomplete="off" placeholder="Purchase Date">
                                         </td>
                                         <td>
                                             <select class="form-control" name="category_id[]" id="category_id1" onchange="getGST(this.value,$(this).closest('tr').index());">
@@ -282,7 +282,7 @@ $this->load->view('common/left_panel'); ?>
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
 <script>
-    $(".datepicker").daterangepicker({
+    $(".rangepicker").daterangepicker({
             singleDatePicker: true,
             showDropdowns: true,
             locale: {
@@ -415,7 +415,7 @@ $this->load->view('common/left_panel'); ?>
         inp1.value = ''; // _date.getDate() + '/' + _date.getMonth() + '/' + _date.getFullYear();
         inp1.id = 'product_purchase_date'+(len+1);
         inp1.class = '';
-        inp1.classList.remove('datepicker', 'hasDatepicker');
+        inp1.classList.remove('rangepicker', 'hasDatepicker');
 
         var inp2 = new_row.cells[1].getElementsByTagName('select')[0];
         inp2.value = '';

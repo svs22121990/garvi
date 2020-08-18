@@ -68,7 +68,7 @@
                   <div class="form-group">
                     <label class="col-md-11"> DN Number <span style="color: red">*</span> <span  id="dn_no_error" style="color: red"></span></label>
                     <div class="col-md-11">
-                      <input type="text" name="dn_no" id="dn_no" class="form-control" placeholder="DN Number" readonly="readonly" value="<?php if(isset($dn_number)){ echo $dn_number; } ?>">
+                      <input type="text" name="dn_no" id="dn_no" class="form-control" placeholder="DN Number" readonly="readonly" value="<?php if(isset($dispatch)){ echo $dispatch->dn_number; } ?>">
                     </div>
                   </div>
                 </div>
@@ -77,7 +77,7 @@
                   <div class="form-group">
                     <label class="col-md-11"> Date <span style="color: red">*</span> <span  id="date_error" style="color: red"></span></label>
                     <div class="col-md-11">
-                      <input type="text" name="date" id="date" class="form-control rangepicker" placeholder="Date" autocomplete="off" value="<?php if(isset($dispatch)){ echo $dispatch->dispatch_date; } ?>">
+                      <input type="text" name="date" id="date" class="form-control datepicker" placeholder="Date" autocomplete="off" value="<?php if(isset($dispatch)){ echo $dispatch->dispatch_date; } ?>">
                     </div>
                   </div>
                 </div>
@@ -92,7 +92,7 @@
                       	if(!empty($users)) {
                       		foreach ($users as $user) {
                       	?>
-                      	<option <?php if(isset($dispatch)){ if($dispatch->sent_to == $user->id) { echo "selected"; } } ?> data-state="<?php echo $user->state_id; ?>" value="<?php echo $user->id; ?>"><?php echo $user->name; ?></option>
+                      	<option <?php if(isset($dispatch)){ if($dispatch->sent_to == $user->id) { echo "selected"; } } ?> data-state="<?php echo $user->state_id; ?>"  value="<?php echo $user->id; ?>"><?php echo $user->name; ?></option>
                       	<?php 
                       		}
                       	}
@@ -110,88 +110,72 @@
         <table class="table table-striped table-bordered" id="thetable">
           <thead>
             <tr>
-<!--              <th> Barcode <span style="color: red">*</span><span id="error_barcode"></span></th>-->
               <th> Product Name <span style="color: red">*</span><span id="error_asset_name"></span></th>
                 <th> Selling Price <span style="color: red">*</span><span id="error_price"></span></th>
-                <th> Attributes </th>
-<!--                <th> Selling Price <span style="color: red">*</span><span id="error_price"></span></th>-->
                 <th> Quantity <span style="color: red">*</span><span id="error_quantity"></span></th>
-                <th> Total SP Amt.  <span style="color: red">*</span><span id="error_amt"></span></th>
+              <th> Attributes </th>
               <th> GST % <span style="color: red">*</span><span id="error_gst_percent"></span></th>
               <th> Total GST <span style="color: red">*</span><span id="error_gst_total"></span></th>
-              <th class="text-center"> <a href="javascript:void(0)" class="btn btn-sm btn-info"  onclick="addrow()" ><i class="fa fa-plus"></i></a></th>
             </tr>
           </thead>
 		  
           <tbody id="professorTableBody">  
+            <?php 
+                $priceTotal = 0;
+                $GSTTotal = 0;
+                for($i=0; $i<count($dispatch_details); $i++) { ?>
             <tr class="trRow">
-<!--              <td>-->
-<!--                  <input type="text" class="form-control barcode" name="barcode[]" placeholder="Enter Barcode No." autocomplete="off">-->
-<!--                  <span style="color: red" class="barcode_error"></span>-->
-<!--              </td>-->
               <td>
                 <select class="form-control asset_name" name="asset_name[]">
-                  <option value="0">Select Product</option>
+                  <option value="<?php echo $dispatch_details[$i]->product_id; ?>"><?php echo $dispatch_details[$i]->asset_name; ?></option>
                 </select>
               </td>
+
                 <td>
-                    <select type="text" class="form-control product_mrp" name="product_mrp[]"  autocomplete="off" onkeypress="return only_number(event)">
-                        <option value="">Select Selling Price </option>
+<!--                    <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" value="--><?php //echo $dispatch_details[$i]->price; ?><!--" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">-->
+                    <select type="text" class="form-control product_mrp" name="product_mrp[]" value="<?php echo $dispatch_details[$i]->price; ?>" autocomplete="off" onkeypress="return only_number(event)">
+                        <option value=""><?php echo $dispatch_details[$i]->price; ?> </option>
                     </select>
                     <span style="color: red" class="price_error"></span>
                 </td>
-              <td>
-                <div class="attribute_div">Attributes</div>
-              </td>
-<!--                <td>-->
-<!--                    <select class="form-control selling_price" name="selling_price_id[]" id="selling_price_id1">-->
-<!--                        <option value="">Select Selling Price </option>-->
-<!--                    </select>-->
-<!--                </td>-->
 
-                <td>
-                    <input type="text" class="form-control quantity" data-available="" name="quantity[]" placeholder="Enter Quantity" autocomplete="off">
-                    <span style="color: red" class="quantity_error"></span>
-                </td>
-<!--              <td>-->
-<!--                <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">-->
-<!--                <span style="color: red" class="price_error"></span>-->
-<!--              </td>-->
               <td>
-                <input type="text" class="form-control amount" name="amount[]" readonly="readonly" placeholder="Enter Amount" autocomplete="off">
-                <span style="color: red" class="amount_error"></span>
+                <input type="text" class="form-control quantity" name="quantity[]" data-available="<?php echo $dispatch_details[$i]->available_qty; ?>" value="<?php echo $dispatch_details[$i]->quantity; ?>" placeholder="Enter Quantity" autocomplete="off">
+                <span style="color: red" class="quantity_error"></span>
               </td>
               <td>
-                <input type="text" class="form-control gst_percent" name="gst_percent[]" readonly="readonly" placeholder="Enter GST %" autocomplete="off">
+                <div class="attribute_div"><b>Category : </b><?php echo $dispatch_details[$i]->title; ?></br><b>Type : </b><?php echo $dispatch_details[$i]->type; ?></br><b>Color : </b><?php echo $dispatch_details[$i]->color; ?></br><b>Size : </b><?php echo $dispatch_details[$i]->size; ?></br><b>Fabric : </b><?php echo $dispatch_details[$i]->fabric; ?></br><b>Craft : </b><?php echo $dispatch_details[$i]->craft; ?></br><b>Available Qty : </b><?php echo $dispatch_details[$i]->available_qty; ?></br><b>Barcode Number : </b><?php echo $dispatch_details[$i]->barcode_number; ?></div>
+              </td>
+
+              <td>
+                <input type="text" class="form-control gst_percent" name="gst_percent[]" readonly="readonly" value="<?php echo $dispatch_details[$i]->gst_percent; ?>" placeholder="Enter GST %" autocomplete="off">
                 <span style="color: red" class="gst_error"></span>
               </td>
               <td>
-                <input type="text" class="form-control gst_total" name="gst_total[]" readonly="readonly" placeholder="Enter GST" autocomplete="off">
+                <input type="text" class="form-control gst_total" name="gst_total[]" readonly="readonly" value="<?php echo (($dispatch_details[$i]->gst_percent/100) * $dispatch_details[$i]->price * $dispatch_details[$i]->quantity); ?>" placeholder="Enter GST" autocomplete="off">
                 <span style="color: red" class="gst_total_error"></span>
               </td>
-              <td class="text-center">
-                <a href="javascript:void(0)" onclick="remove_tr($(this).closest('tr').index())" class="btn btn-sm btn-danger"><i class="fa fa-minus"></i></a>
-              </td>
             </tr>
+            <?php 
+                $priceTotal += $dispatch_details[$i]->price;
+                $GSTTotal += (($dispatch_details[$i]->gst_percent/100) * $dispatch_details[$i]->price * $dispatch_details[$i]->quantity);
+            } ?>
           </tbody>
           <tfoot>                   
             <tr>
                 <th colspan="1" >&nbsp;<span class="pull-right">Total</span></th>
-                <th><input type="text" class="form-control" id="priceTotal" readonly="readonly" value="0"></th>
-                <th colspan="2" >&nbsp;<span class="pull-right"></span></th>
-                <th><input type="text" class="form-control" id="amountTotal" readonly="readonly" value="0"></th>
-                <th>&nbsp;<span class="pull-right">Total CGST</span></th>
-                <th><input type="text" class="form-control" id="CGSTTotal" readonly="readonly" value="0"></th>
+                <th><input type="text" class="form-control" id="priceTotal" readonly="readonly" value="<?php echo $priceTotal; ?>"></th>
+                <th colspan="3" >&nbsp;<span class="pull-right">Total CGST</span></th>
+                <th><input type="text" class="form-control" id="CGSTTotal" readonly="readonly" value="<?php if($dispatch_details[0]->state_id == 13) echo ($GSTTotal/2); else echo 0; ?>"></th>
             </tr>
             <tr>
-                <th colspan="6">&nbsp;<span class="pull-right">Total SGST</span></th>
-                <th><input type="text" class="form-control" id="SGSTTotal" readonly="readonly" value="0"></th>
+                <th colspan="5">&nbsp;<span class="pull-right">Total SGST</span></th>
+                <th><input type="text" class="form-control" id="SGSTTotal" readonly="readonly" value="<?php if($dispatch_details[0]->state_id == 13) echo ($GSTTotal/2); else echo 0; ?>"></th>
             </tr>
             <tr>
-                <th colspan="6">&nbsp;<span class="pull-right">Total IGST</span></th>
-                <th><input type="text" class="form-control" id="IGSTTotal" readonly="readonly" value="0"></th>
+                <th colspan="5">&nbsp;<span class="pull-right">Total IGST</span></th>
+                <th><input type="text" class="form-control" id="IGSTTotal" readonly="readonly" value="<?php if($dispatch_details[0]->state_id != 13) echo ($GSTTotal); else echo 0; ?>"></th>
             </tr>
-            
             </tfoot>
 
         </table>
@@ -228,54 +212,57 @@
 
 				<table id="myTable" style="max-height:600px;overflow-x:scroll">
 				  <tr class="header"> 
-            <th>Name</th>
-<!--            <th>Barcode</th>-->
-            <th>Total Quantity</th>
-			<th>Available Quantity</th>
-			<th>Price1</th>
-            <th>Price2</th>
-            <th>Category</th>
-            <th>Color</th>
-            <th>Size</th>
-            <th>Fabric</th>
-            <th>Craft</th>
-            <th>Purchase Date</th>
-            <th>Age</th>
-            <th>Add</th>
+                    <th>Name</th>
+                    <th>Barcode</th>
+                    <th>Total Quantity</th>
+                    <th>Available Quantity</th>
+                    <th>Price 1</th>
+                    <th>Price 2</th>
+                    <th>Category</th>
+                    <th>Color</th>
+                    <th>Size</th>
+                    <th>Fabric</th>
+                    <th>Craft</th>
+                    <th>Purchase Date</th>
+                    <th>Age</th>
+                    <th>Add</th>
 				  </tr>
 				  <?php if(!empty($products)) {
 		               foreach ($products as $product) {
-                    $startDate = $product->purchase_date; 
-                    $endDate = date('Y-m-d');
+                            $startDate = $product->purchase_date; 
+                            $endDate = date('Y-m-d');
 
-                    $datetime1 = date_create($startDate);
-                    $datetime2 = date_create($endDate);
-                    $interval = date_diff($datetime1, $datetime2);
-                    $arrTime = array();
-                    if($interval->y!=0){
-                      $arrTime[] =  $interval->y.' Year ';
-                    }
-                    if($interval->m!=0){
-                      $arrTime[] =  $interval->m .' Months ';
-                    }
-                    $arrTime[] =  $interval->d.' Days';
-		              ?>
-						  <tr>
-						    <td><?= $product->asset_name; ?></td>
-<!--                <td><?/*= $product->barcode_number; */?></td>
--->                <td><?= $product->quantity; ?></td>
-                <td><?= $product->available_qty; ?></td>
-                <td><?= $product->product_mrp; ?></td>
-                <td><?= $product->product_mrp_2; ?></td>
-                <td><?= $product->title; ?></td>
-                <td><?= $product->color; ?></td>
-                <td><?= $product->size; ?></td>
-                <td><?= $product->fabric; ?></td>
-                <td><?= $product->craft; ?></td>
-                <td><?= date("d-m-Y", strtotime($product->purchase_date)); ?></td> 
-                <td><?= implode(" ",$arrTime); ?></td>  
-						    <td><button id="add_product" class="btn btn-success add_product" data-row="" data-available="<?= $product->available_qty; ?>" data-name="<?= $product->asset_name; ?>" data-id="<?= $product->id; ?>"><i class="fa fa-plus"></i></button></td>
-						  </tr>
+                            $datetime1 = date_create($startDate);
+                            $datetime2 = date_create($endDate);
+                            $interval = date_diff($datetime1, $datetime2);
+                            $arrTime = array();
+                            if($interval->y!=0){
+                            $arrTime[] =  $interval->y.' Year ';
+                            }
+                            if($interval->m!=0){
+                            $arrTime[] =  $interval->m .' Months ';
+                            }
+                            $arrTime[] =  $interval->d.' Days';
+                            ?>
+                                <tr>
+                                <?php if($product->id == $dispatch_details->product_id) { ?>
+                                    <input type='hidden' id="selected_id" value="<?php echo $dispatch_details->product_id; ?>" />
+                                <?php } ?>
+                                    <td><?= $product->asset_name; ?></td>
+                                    <td><?= $product->barcode_number; ?></td>
+                                    <td><?= $product->quantity; ?></td>
+                                    <td><?= $product->available_qty; ?></td>
+                                    <td><?= $product->product_mrp; ?></td>
+                                    <td><?= $product->product_mrp_2; ?></td>
+                                    <td><?= $product->title; ?></td>
+                                    <td><?= $product->color; ?></td>
+                                    <td><?= $product->size; ?></td>
+                                    <td><?= $product->fabric; ?></td>
+                                    <td><?= $product->craft; ?></td>
+                                    <td><?= date("d-m-Y", strtotime($product->purchase_date)); ?></td> 
+                                    <td><?= implode(" ",$arrTime); ?></td>  
+                                    <td><button id="add_product" class="btn btn-success add_product" data-row="" data-name="<?= $product->asset_name; ?>" data-id="<?= $product->id; ?>"><i class="fa fa-plus"></i></button></td>
+                                </tr>
 					<?php } } ?>
 				</table>
 
@@ -292,28 +279,14 @@
 
 
 <?php $this->load->view('common/footer');?>
-<script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
-<script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
-<script>
-    $(".rangepicker").daterangepicker({
-        singleDatePicker: true,
-        showDropdowns: true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        }
-    });
-    </script>
 
 <script>
-
 $(document).on('click','.add_product',function(){
 		var id = $(this).attr('data-id');
 		var name = $(this).attr('data-name');
-    var available_qty = $(this).attr('data-available');
     var index = $(this).attr('data-row');
 		//$('#asset_name1').html('<option value="'+id+'">'+name+'</option>');
     $('table .asset_name').slice(index, index + 1).html('<option value="'+id+'">'+name+'</option>');
-    $('table .quantity').slice(index, index + 1).attr('data-available', available_qty);
 		$('#myModal').modal('hide');
     getGST(id,index);
 });
@@ -322,20 +295,15 @@ jQuery(document).on('click','#edit-action-button',function(){
     $( "#myForm" ).submit();
 
 });
-$('#sent_to').on('change', function() {
-  price();
-});
 jQuery(document).on('click','#save_next',function(){
 	$('#save_finish_body').html('');
     $( "#myForm" ).submit();
 });
 jQuery(document).on('click','#save_finish',function(){
-	//$('#save_finish_body').html('<input type="hidden" name="save_finish" value="save_finish">');
-    //
-	$("#myForm"). removeAttr("action");
-	$("#myForm").attr("action","<?= base_url(); ?>index.php/warehouse_dispatch/create_action/finish");
 	$( "#myForm" ).submit();
-	
+});
+$('#sent_to').on('change', function() {
+  price();
 });
 //jQuery(document).on('click','#asset_name1',function(){
 //	$('#myModal').modal({backdrop: 'static', keyboard: false});
@@ -371,55 +339,7 @@ function myFunction() {
 
 
     $(document).ready(function(e){
-      
-      $(document).on('keyup','.barcode',function(e){
-          /* ENTER PRESSED*/
-          if (e.keyCode == 13) {
-
-            var dataString = "barcode="+this.value;
-            var index = $(this).closest('td').parent()[0].sectionRowIndex;
-
-            var url = "<?php echo site_url('Warehouse_Dispatch/checkBarcode'); ?>";
-            $.post(url, dataString, function(returndata){
-              //alert(returndata);
-              var obj = jQuery.parseJSON(returndata);
-              
-              if(obj.success == "1")
-              {
-                $('table .asset_name').slice(index, index + 1).html('<option value="'+obj.id+'">'+obj.name+'</option>');
-                $('table .quantity').slice(index, index + 1).attr('data-available', obj.available_qty);
-
-                $('table .gst_percent').slice(index, index+1).val(obj.gst_percent);
-                $('table .product_mrp').slice(index, index+1).val(obj.price);
-
-                $('table .attribute_div').slice(index, index+1).empty();
-//                $('table .attribute_div').slice(index, index+1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
-                  $('table .attribute_div').slice(index, index+1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty);
-
-                  //$('#gst_percent1').val(obj.gst_percent);
-                //$('#product_mrp1').val(obj.price);
-                //$('#hsn'+(len+1)).val(obj.hsn);
-                price();
-              } else {
-                $('.barcode_error').eq(index).html("Invalid Barcode").fadeIn();
-                setTimeout(function(){$(".barcode_error").eq(index).fadeOut()},5000);
-              }
-
-            });
-          }
-      });
-
-      src = '<?= site_url('Products/getSubcategory'); ?>';
-      $("#subcategory_id").autocomplete({
-        appendTo: "#searchbox",
-        source: function(request, response) {
-          $("#check").val('');
-          $(".ui-autocomplete").html('<img src="<?= base_url('assets/default.gif'); ?>" alt="">');
-           $.getJSON(src, {search : request.term}, 
-            response);
-        },
-        select: function(event, ui) {$("#check").val(ui.item.sub_cat_title); }
-      });
+        
     });
 </script> 
 
@@ -471,16 +391,19 @@ function addrow() {
   var new_row = y.rows[0].cloneNode(true); 
   var len = y.rows.length; 
   
-  var inp1 = new_row.cells[0].getElementsByTagName('input')[0];
-  inp3.value = '';
-
-  var inp2 = new_row.cells[1].getElementsByTagName('select')[0];
+  var inp2 = new_row.cells[0].getElementsByTagName('select')[0];
   inp2.value = '';
+  //inp2.id = 'asset_name'+(len+1);
 
-    var inp3 = new_row.cells[3].getElementsByTagName('select')[0];
-    inp2.value = '';
+  var inp3 = new_row.cells[1].getElementsByTagName('input')[0];
+  inp3.value = '';
+  //inp3.id = 'quantity'+(len+1);
 
-  var inp5 = new_row.cells[2].getElementsByTagName('input')[0];
+  //var inp4 = new_row.cells[2].getElementsByClassName('attribute_div')[0];
+  //inp4.html = 'Attributes';
+  //inp4.id = 'product_mrp'+(len+1);
+
+  var inp5 = new_row.cells[3].getElementsByTagName('input')[0];
   inp5.value = '';
   //inp5.id = 'gst_percent'+(len+1);
 
@@ -491,13 +414,6 @@ function addrow() {
   //$('.asset_name').val(len+1);
 
   y.appendChild(new_row);
-    $('#'+inp2.id).daterangepicker({
-        singleDatePicker: true,
-        showDropdowns: true,
-        locale: {
-            format: 'DD/MM/YYYY'
-        }
-    });
 
   $('table .attribute_div').slice(len, len + 1).empty();
   $('table .attribute_div').slice(len, len + 1).html('Attributes');
@@ -511,26 +427,20 @@ function addrow() {
     {
       var GSTTotal = 0;
       var priceTotal = 0;
-      var amountTotal = 0;
       // for each row:
       $("tr.trRow").each(function () {
           // get the values from this row:
           var $qty = $('.quantity', this).val();
           var $sp = $('.product_mrp', this).val();
-//          $('.classname').val()
           var $gst = $('.gst_percent', this).val();
           var $total = ($qty * 1) * ($sp * 1) * (($gst * 1) / 100);
-          var $amttotal = ($qty * 1) * ($sp * 1);
           // set total for the row
           $('.gst_total', this).val($total);
-          $('.amount', this).val($amttotal);
 
           GSTTotal += $total;
           priceTotal += ($sp * 1);
-          amountTotal += ($amttotal * 1);
       });
       $("#priceTotal").val(priceTotal);
-      $("#amountTotal").val(amountTotal);
       if($('#sent_to').find(':selected').attr('data-state') != 13)
       {
         $("#IGSTTotal").val(GSTTotal);
@@ -554,22 +464,16 @@ function getGST(val,len) {
 		//alert(returndata);
 		var obj = jQuery.parseJSON(returndata);
         var price = obj.price;
-//console.log(obj);
       $('table .gst_percent').slice(len, len + 1).val(obj.gst_percent);
       $('table .product_mrp').slice(len, len + 1).val(obj.price);
-        /*obj.price.foreach(function(e){
-           alert(e);
-        });*/
-//for selling price drop dropdown
+
         price.forEach(function(rel){
             $('.product_mrp').append('<option value="'+rel+'"> '+rel+'</option>')
         });
 
       $('table .attribute_div').slice(len, len + 1).empty();
-//      $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
-        $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty);
-
-        //$('#gst_percent1').val(obj.gst_percent);
+      $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
+      //$('#gst_percent1').val(obj.gst_percent);
 			//$('#product_mrp1').val(obj.price);
 			//$('#hsn'+(len+1)).val(obj.hsn);
 		
@@ -790,12 +694,13 @@ function getGST(val,len) {
 
 <script type="text/javascript">
 function validateinfo() { 
+  //alert("hi");   
   var dn_no = $('#dn_no').val(); 
   var date = $('#date').val(); 
   var sent_to = $('#sent_to').val(); 
   var sectionA = $("#thetable td").closest("tr").length;
   //var sectionA = $('.asset_name').val();
-  4
+  
   if(dn_no=='') {
     $("#dn_no_error").html("Please enter DN Number").fadeIn();
     setTimeout(function(){$("#dn_no_error").fadeOut()},5000);
@@ -817,7 +722,7 @@ function validateinfo() {
       var product_mrp = $('.product_mrp').eq(i).val();
       var gst_percent = $('.gst_percent').eq(i).val();
       var lf_no = $('.lf_no').eq(i).val();
-      
+
       if(quantity=='') {
         $('.quantity_error').eq(i).html("Please enter Quantity").fadeIn();
         setTimeout(function(){$(".quantity_error").eq(i).fadeOut()},5000);

@@ -77,7 +77,7 @@
                   <div class="form-group">
                     <label class="col-md-11"> Date <span style="color: red">*</span> <span  id="date_error" style="color: red"></span></label>
                     <div class="col-md-11">
-                      <input type="text" name="date" id="date" class="form-control rangepicker" placeholder="Date" autocomplete="off" value="<?php if(isset($dispatch)){ echo $dispatch->dispatch_date; } ?>">
+                      <input type="text" name="date" id="date" class="form-control datepicker" placeholder="Date" autocomplete="off" value="<?php if(isset($dispatch)){ echo $dispatch->dispatch_date; } ?>">
                     </div>
                   </div>
                 </div>
@@ -295,7 +295,7 @@
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/moment.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/date_r_picker/daterangepicker.min.js"></script>
 <script>
-    $(".rangepicker").daterangepicker({
+    $(".datepicker").daterangepicker({
         singleDatePicker: true,
         showDropdowns: true,
         locale: {
@@ -393,10 +393,8 @@ function myFunction() {
                 $('table .product_mrp').slice(index, index+1).val(obj.price);
 
                 $('table .attribute_div').slice(index, index+1).empty();
-//                $('table .attribute_div').slice(index, index+1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
-                  $('table .attribute_div').slice(index, index+1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty);
-
-                  //$('#gst_percent1').val(obj.gst_percent);
+                $('table .attribute_div').slice(index, index+1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
+                //$('#gst_percent1').val(obj.gst_percent);
                 //$('#product_mrp1').val(obj.price);
                 //$('#hsn'+(len+1)).val(obj.hsn);
                 price();
@@ -566,10 +564,8 @@ function getGST(val,len) {
         });
 
       $('table .attribute_div').slice(len, len + 1).empty();
-//      $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
-        $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty);
-
-        //$('#gst_percent1').val(obj.gst_percent);
+      $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
+      //$('#gst_percent1').val(obj.gst_percent);
 			//$('#product_mrp1').val(obj.price);
 			//$('#hsn'+(len+1)).val(obj.hsn);
 		

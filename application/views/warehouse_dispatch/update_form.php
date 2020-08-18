@@ -133,8 +133,8 @@
 
                 <td>
 <!--                    <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" value="--><?php //echo $dispatch_details[$i]->price; ?><!--" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">-->
-                    <select type="text" class="form-control product_mrp" name="product_mrp[]" value="<?php echo $dispatch_details[$i]->price; ?>" autocomplete="off" onkeypress="return only_number(event)">
-                        <option value=""><?php echo $dispatch_details[$i]->price; ?> </option>
+                    <select type="text" class="form-control product_mrp" name="product_mrp[]"  onkeypress="return only_number(event)">
+                        <option value="<?php echo $dispatch_details[$i]->price; ?>"><?php echo $dispatch_details[$i]->price; ?> </option>
                     </select>
                     <span style="color: red" class="price_error"></span>
                 </td>
@@ -144,7 +144,9 @@
                 <span style="color: red" class="quantity_error"></span>
               </td>
               <td>
-                <div class="attribute_div"><b>Category : </b><?php echo $dispatch_details[$i]->title; ?></br><b>Type : </b><?php echo $dispatch_details[$i]->type; ?></br><b>Color : </b><?php echo $dispatch_details[$i]->color; ?></br><b>Size : </b><?php echo $dispatch_details[$i]->size; ?></br><b>Fabric : </b><?php echo $dispatch_details[$i]->fabric; ?></br><b>Craft : </b><?php echo $dispatch_details[$i]->craft; ?></br><b>Available Qty : </b><?php echo $dispatch_details[$i]->available_qty; ?></br><b>Barcode Number : </b><?php echo $dispatch_details[$i]->barcode_number; ?></div>
+                  <div class="attribute_div"><b>Category : </b><?php echo $dispatch_details[$i]->title; ?></br><b>Type : </b><?php echo $dispatch_details[$i]->type; ?></br><b>Color : </b><?php echo $dispatch_details[$i]->color; ?></br><b>Size : </b><?php echo $dispatch_details[$i]->size; ?></br><b>Fabric : </b><?php echo $dispatch_details[$i]->fabric; ?></br><b>Craft : </b><?php echo $dispatch_details[$i]->craft; ?></br><b>Available Qty : </b><?php echo $dispatch_details[$i]->available_qty; ?></div>
+
+<!--                  <div class="attribute_div"><b>Category : </b>--><?php //echo $dispatch_details[$i]->title; ?><!--</br><b>Type : </b>--><?php //echo $dispatch_details[$i]->type; ?><!--</br><b>Color : </b>--><?php //echo $dispatch_details[$i]->color; ?><!--</br><b>Size : </b>--><?php //echo $dispatch_details[$i]->size; ?><!--</br><b>Fabric : </b>--><?php //echo $dispatch_details[$i]->fabric; ?><!--</br><b>Craft : </b>--><?php //echo $dispatch_details[$i]->craft; ?><!--</br><b>Available Qty : </b>--><?php //echo $dispatch_details[$i]->available_qty; ?><!--</br><b>Barcode Number : </b>--><?php //echo $dispatch_details[$i]->barcode_number; ?><!--</div>-->
               </td>
 
               <td>
@@ -472,8 +474,10 @@ function getGST(val,len) {
         });
 
       $('table .attribute_div').slice(len, len + 1).empty();
-      $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
-      //$('#gst_percent1').val(obj.gst_percent);
+//      $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
+        $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty);
+
+        //$('#gst_percent1').val(obj.gst_percent);
 			//$('#product_mrp1').val(obj.price);
 			//$('#hsn'+(len+1)).val(obj.hsn);
 		
