@@ -287,15 +287,15 @@ class Warehouse_Dispatch extends CI_Controller
 
                     for ($i = 0; $i < count($_POST['asset_name']); $i++) {
 
-                        $this->db->select('quantity', 'barcode_number');
+                        $this->db->select('quantity, barcode_number');
                         $this->db->where('id', $_POST['asset_name'][$i]);
                         $query = $this->db->get('warehouse_details');
                         $product = $query->row();
-
+                        // print_r($product);exit();
                         $arr = explode(".", $_POST['product_mrp'][$i], 2);
                         $price = $arr[0];
-                        $barcode = $product->barcode_number+$price;
-
+                        $barcode = $product->barcode_number.$price;
+                        // print_r($barcode);exit();
                         $data = array(
                             'dispatch_id' => $last_id,
                             'product_id' => $_POST['asset_name'][$i],
@@ -737,22 +737,23 @@ class Warehouse_Dispatch extends CI_Controller
         $this->db->select('
             b.barcode_number,
             b.barcode_image,
-            b.available_qty,
-            b.asset_name,
-            b.product_mrp,
-            b.sp_total,
-            b.asset_type_id'
+   '
         );
         //$this->db->join("warehouse_details d","d.id = b.warehouse_detail_id","left");
         //$this->db->join("mast_asset_types m","m.id = d.asset_type_id","left");
-        $this->db->where("b.warehouse_id='".$id."'");
-        $data['barcodes'] = $this->db->get('warehouse_details b')->result();
+        $this->db->where("b.dispatch_id='".$id."'");
+        $data['barcodes'] = $this->db->get('warehouse_dispatch_details b')->result();
 
         $html = $this->load->view('warehouse/product_pdf', $data, TRUE);
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
         $mpdf->Output('Warehouse Product_Details', 'I');
     }
+    // b.available_qty,
+    // b.asset_name,
+    // b.product_mrp,
+    // b.sp_total,
+    // b.asset_type_id
     /* ----- Export functionality start ----- */
     public function export_summary($id)
     {

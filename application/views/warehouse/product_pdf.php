@@ -160,10 +160,10 @@
         <table id="barcode" border=1 style="width: 100%;">
             <thead>
                 <tr>
-                    <th style="width: 10%;">Sr. No.</th>
-                    <th style="width: 30%;">Barcode Number</th>
-                    <th style="width: 30%;">Barcode Image</th>
-					<!--<th style="width: 30%;">Status</th>-->
+                    <th>Sr. No.</th>
+                    <th>Barcode Number</th>
+                    <th>Barcode Image</th>
+					<th style="width:0%;"></th>
                 </tr>
             </thead>
 
@@ -178,8 +178,8 @@
                         $label .= 'HC';
                     ?>
                 <tr>
-                    <td><?php echo $sr ?></td>
-                    <td> <?= $barcode->barcode_number; ?></td>
+                    <td style="padding: 10px; text-align: center"><?php echo $sr ?></td>
+                    <td style="padding: 10px; text-align: center"> <?= $barcode->barcode_number; ?></td>
                     <td style="padding: 10px; text-align: center">
                         <div>
                             <div><?= $label; ?></div>
