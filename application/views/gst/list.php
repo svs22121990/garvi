@@ -269,7 +269,7 @@
         data : datastring,
         success : function(response)
         {
-        alert(response);return false;
+        // alert(response);return false;
           if(response == 1)
           {
             $("#city_nameError").fadeIn().html("GST % already exist");

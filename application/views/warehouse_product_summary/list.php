@@ -207,8 +207,10 @@ $this->load->view('common/left_panel');
                                         <th>Total CP Amt</th>
                                         <th>GST %</th>
                                         <th>GST Amt</th>
-                                        <th>Selling Price</th>
-                                        <th>Total SP Amt</th>
+                                        <th>Selling Price 1</th>
+                                        <th>Selling Price 2</th>
+                                        <th>Total SP Amt 1</th>
+                                        <th>Total SP Amt 2</th>
                                         <th>Barcode Number</th>
                                         <th>AGE</th>
                                         <!--<th>Selling Price</th>
@@ -428,7 +430,19 @@ $this->load->view('common/left_panel');
                     }
                 },
                 {
+                    "data": "product_mrp_2",
+                    "render": function ( data, type, row, meta ) {
+                        return 'Rs. '+data;
+                    }
+                },
+                {
                     "data": "sp_total",
+                    "render": function ( data, type, row, meta ) {
+                        return 'Rs. '+data;
+                    }
+                },
+                {
+                    "data": "sp_total_2",
                     "render": function ( data, type, row, meta ) {
                         return 'Rs. '+data;
                     }
@@ -490,21 +504,35 @@ $this->load->view('common/left_panel');
                     .reduce( function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0 );
-                $( api.column( 17 ).footer() ).html('Rs. '+total1);
+                $( api.column( 17 ).footer() ).html('Rs. '+total1.toFixed(2));
                 total1 = api
                     .column(18, {filter: 'applied'})
                     .data()
                     .reduce( function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0 );
-                $( api.column( 18 ).footer() ).html('Rs. '+total1);
+                $( api.column( 18 ).footer() ).html('Rs. '+total1.toFixed(2));
                 total1 = api
                     .column(19, {filter: 'applied'})
                     .data()
                     .reduce( function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0 );
-                $( api.column( 19 ).footer() ).html('Rs. '+total1);
+                $( api.column( 19 ).footer() ).html('Rs. '+total1.toFixed(2));
+                total1 = api
+                    .column(20, {filter: 'applied'})
+                    .data()
+                    .reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+                $( api.column( 20 ).footer() ).html('Rs. '+total1.toFixed(2));
+                total1 = api
+                    .column(21, {filter: 'applied'})
+                    .data()
+                    .reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+                $( api.column( 21 ).footer() ).html('Rs. '+total1.toFixed(2));
 
             }
         });

@@ -242,7 +242,9 @@ class Warehouse_Product_Summary extends CI_Controller
                 'price' => $row->price,
                 'cost_total' => $row->cost_total,
                 'product_mrp' => number_format($row->product_mrp, 2),
+                'product_mrp_2' => number_format($row->product_mrp_2, 2),
                 'sp_total' => number_format(($row->product_mrp * $row->available_qty), 2),
+                'sp_total_2' => number_format(($row->product_mrp_2 * $row->available_qty), 2),
                 'available_qty' => $row->available_qty,
                 'quantity' => $row->quantity,
                 'size' => $row->size,
@@ -264,9 +266,10 @@ class Warehouse_Product_Summary extends CI_Controller
                 'selected_type2' => $type2,
             );
         }
-        //dd($data);
+        //dd($data)
+      
         $output = array("data" => $data);
-
+        //echo'<pre>';print_r($output);exit();
         echo json_encode($output);
     }
 
