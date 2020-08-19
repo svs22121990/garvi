@@ -286,6 +286,16 @@ class Warehouse_Dispatch extends CI_Controller
                     $last_id = $this->db->insert_id();
 
                     for ($i = 0; $i < count($_POST['asset_name']); $i++) {
+
+                        $this->db->select('quantity', 'barcode_number');
+                        $this->db->where('id', $_POST['asset_name'][$i]);
+                        $query = $this->db->get('warehouse_details');
+                        $product = $query->row();
+
+                        $arr = explode(".", $_POST['product_mrp'][$i], 2);
+                        $price = $arr[0];
+                        $barcode = $product->barcode_number+$price;
+
                         $data = array(
                             'dispatch_id' => $last_id,
                             'product_id' => $_POST['asset_name'][$i],
@@ -293,16 +303,14 @@ class Warehouse_Dispatch extends CI_Controller
                             'price'=>$_POST['product_mrp'][$i],
                             'gst_percent'=>$_POST['gst_percent'][$i],
                             'created_by'=>$_POST['sent_to'][$i],
+                            'barcode_number' => $barcode,
+                            'barcode_image' => $this->set_barcode($barcode),
                             'status' => 'Active',
                             'created'=>date('Y-m-d H:i:s'),
                         );
                         $this->Crud_model->SaveData("warehouse_dispatch_details",$data);
 
                         //Remaining Quantity in Warehouse Details
-                        $this->db->select('quantity');
-                        $this->db->where('id', $_POST['asset_name'][$i]);
-                        $query = $this->db->get('warehouse_details');
-                        $product = $query->row();
                         $data = array(
                             'available_qty' => ($product->quantity - $_POST['quantity'][$i])
                         );
@@ -314,7 +322,6 @@ class Warehouse_Dispatch extends CI_Controller
                     } else {
                     $this->session->set_flashdata('message', '<span class="label label-success text-center" style="margin-bottom:0px">Dispatch has been created successfully</span>');
                         redirect('Warehouse_Dispatch/index');
-                    
                     }
                 /*
                 } else {
@@ -329,6 +336,20 @@ class Warehouse_Dispatch extends CI_Controller
         } else {
             redirect('Warehouse_Dispatch/Create');
         }
+    }
+
+    private function set_barcode($code)
+    {
+    //load library
+    $this->load->library('Zend');
+    //load in folder Zend
+    $this->zend->load('Zend/Barcode');
+    $newCode = $code;
+
+    $file = Zend_Barcode::draw('code128', 'image', array('text' => $newCode,'drawText' =>true), array());
+    $code = time().$code;
+    $store_image = imagepng($file,"admin/assets/warehouse_barcode/{$code}.png");
+    return $code.'.png';
     }
 
     public function view($id)

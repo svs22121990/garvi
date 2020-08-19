@@ -351,7 +351,7 @@ class Warehouse extends CI_Controller
                         'color_id' =>$_POST['color_id'][$i],
                         'barcode' => $code,
                         'barcode_number' => $barcode,
-                        'barcode_image' => $this->set_barcode($barcode),
+                        //'barcode_image' => $this->set_barcode($barcode),
         //                    'purchase_date' => $product_purchase_date,
         //                    'created_by' => $_SESSION[SESSION_NAME]['id'],
                     );
@@ -441,7 +441,7 @@ class Warehouse extends CI_Controller
                         'color_id' =>$_POST['color_id'][0],
                         'barcode' => $code,
                         'barcode_number' => $barcode,
-                        'barcode_image' => $this->set_barcode($barcode),
+                        //'barcode_image' => $this->set_barcode($barcode),
 //                    'purchase_date' => $product_purchase_date,
 //                    'created_by' => $_SESSION[SESSION_NAME]['id'],
                 );

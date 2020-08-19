@@ -310,6 +310,8 @@ class Warehouse_Products extends CI_Controller {
                          d.quantity,
                          d.price,
                          d.gst_percent,
+                         d.barcode_number,
+                         d.barcode_image,
                          w.hsn,');
       $this->db->from("warehouse_dispatch_details d");      
       $this->db->join("warehouse_details w","w.id = d.product_id");
