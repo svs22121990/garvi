@@ -489,7 +489,7 @@ $this->load->view('common/left_panel'); ?>
         $('.sectionA').val(len+1);
 
         y.appendChild(new_row);
-        $('#'+inp1.id).daterangepicker({
+        $('#'+inp1.id).datepicker({
             singleDatePicker: true,
             showDropdowns: true,
             locale: {

@@ -165,7 +165,6 @@
 					<th style="width: 30%;">Status</th>
                 </tr>
             </thead>
-            
             <tbody> 
                 <?php $sr = 1; ?>
                 <?php foreach ($barcodes as $barcode) { ?>
