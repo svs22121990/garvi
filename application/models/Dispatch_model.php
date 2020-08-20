@@ -126,7 +126,7 @@ class Dispatch_model extends CI_Model
 
     public function warehouse_getAllDetails($id)
     {
-        $this->db->select('a.asset_name,a.purchase_date,d.dn_number,mat.type,pro.label,d.dispatch_date,e.name as employee_name,e.state_id,ast.id,a.price,a.product_mrp,a.hsn,a.markup_percent,
+        $this->db->select('a.asset_name,a.purchase_date,d.dn_number,mat.type,pro.label,d.dispatch_date,e.name as employee_name,e.state_id,ast.id,a.price,ast.price as product_mrp,a.hsn,a.markup_percent,
         ast.quantity,ast.gst_percent,cat.title,siz.title as size,col.title as color,
         fab.title as fabric,cra.title as craft,a.product_mrp,a.sp_total,a.cost_total,ast.barcode_number,ast.barcode_image');
         $this->db->where("ast.dispatch_id='".$id."'"); 

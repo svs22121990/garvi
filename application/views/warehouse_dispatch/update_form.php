@@ -135,6 +135,7 @@
 <!--                    <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" value="--><?php //echo $dispatch_details[$i]->price; ?><!--" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">-->
                     <select type="text" class="form-control product_mrp" name="product_mrp[]"  onkeypress="return only_number(event)">
                         <option value="<?php echo $dispatch_details[$i]->price; ?>"><?php echo $dispatch_details[$i]->price; ?> </option>
+                        <option value="<?php echo $dispatch_details[$i]->price_2; ?>"><?php echo $dispatch_details[$i]->price_2; ?> </option>
                     </select>
                     <span style="color: red" class="price_error"></span>
                 </td>
@@ -457,6 +458,45 @@ function addrow() {
     }
 
 
+// function getGST(val,len) {
+// 	var site_url = $('#site_url').val();
+// 	var dataString = "product_id="+val;
+//   //alert(dataString);
+// 	var url = site_url+"/Warehouse_Dispatch/getGST";
+// 	$.post(url, dataString, function(returndata){
+// 		//alert(returndata);
+// 		var obj = jQuery.parseJSON(returndata);
+//         var price = obj.price;
+//       $('table .gst_percent').slice(len, len + 1).val(obj.gst_percent);
+//       $('table .product_mrp').slice(len, len + 1).val(obj.price);
+
+//         price.forEach(function(rel){
+//             $('.product_mrp').append('<option value="'+rel+'"> '+rel+'</option>')
+//         });
+        
+//         // $.each(data.makes, function () {
+//         //                 $option = $('<option value="' + this.s_Make + '">' + this.s_Make + '</option>');
+//         //                 if (this.s_Make == make) {
+//         //                     $option.attr('selected', 'selected');
+//         //                 }
+
+//         //                 $("#make").append($option);
+//         //             });
+//         //             $("#loader").hide();
+
+//       $('table .attribute_div').slice(len, len + 1).empty();
+// //      $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty+'</br><b>Barcode Number : </b>'+obj.barcode_number);
+//         $('table .attribute_div').slice(len, len + 1).html('<b>Category : </b>'+obj.title+'</br><b>Type : </b>'+obj.type+'</br><b>Color : </b>'+obj.color+'</br><b>Size : </b>'+obj.size+'</br><b>Fabric : </b>'+obj.fabric+'</br><b>Craft : </b>'+obj.craft+'</br><b>Available Qty : </b>'+obj.available_qty);
+
+//         //$('#gst_percent1').val(obj.gst_percent);
+// 			//$('#product_mrp1').val(obj.price);
+// 			//$('#hsn'+(len+1)).val(obj.hsn);
+		
+// 	});
+//   price();
+// }
+
+
 function getGST(val,len) {
 	var site_url = $('#site_url').val();
 	var dataString = "product_id="+val;
@@ -466,11 +506,16 @@ function getGST(val,len) {
 		//alert(returndata);
 		var obj = jQuery.parseJSON(returndata);
         var price = obj.price;
+//console.log(obj);
       $('table .gst_percent').slice(len, len + 1).val(obj.gst_percent);
-      $('table .product_mrp').slice(len, len + 1).val(obj.price);
-
+      //$('table .product_mrp').slice(len, len + 1).val(obj.price);
+        /*obj.price.foreach(function(e){
+           alert(e);
+        });*/
+//for selling price drop dropdown
+        $('table .product_mrp').slice(len, len + 1).empty();
         price.forEach(function(rel){
-            $('.product_mrp').append('<option value="'+rel+'"> '+rel+'</option>')
+          $('table .product_mrp').slice(len, len + 1).append('<option value="'+rel+'"> '+rel+'</option>')
         });
 
       $('table .attribute_div').slice(len, len + 1).empty();
@@ -484,7 +529,6 @@ function getGST(val,len) {
 	});
   price();
 }
-
 
       function remove_tr(row)
       {  

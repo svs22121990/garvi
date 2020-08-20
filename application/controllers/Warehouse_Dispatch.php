@@ -487,6 +487,7 @@ class Warehouse_Dispatch extends CI_Controller
                     'product_id' => $_POST['asset_name'][$i],
                     'quantity' => $_POST['quantity'][$i],
                     'price'=>$_POST['product_mrp'][$i],
+                    'price_2'=>$_POST['product_mrp_2'][$i],
                     'gst_percent'=>$_POST['gst_percent'][$i],
                     'created_by'=>$_POST['sent_to'][$i],
                     'barcode_number' => $_POST['barcode_number'][$i],
@@ -494,6 +495,7 @@ class Warehouse_Dispatch extends CI_Controller
                     'status' => 'Active',
                     'created'=>date('Y-m-d H:i:s'),
                 );
+                // print_r(  $data);
                 $this->Crud_model->SaveData("warehouse_dispatch_details",$data);
 
                 //Remaining Quantity in Warehouse Details
