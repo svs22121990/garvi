@@ -134,8 +134,8 @@
                 <td>
 <!--                    <input type="text" class="form-control product_mrp" name="product_mrp[]" readonly="readonly" value="--><?php //echo $dispatch_details[$i]->price; ?><!--" placeholder="Enter Product Price" autocomplete="off" onkeypress="return only_number(event)">-->
                     <select type="text" class="form-control product_mrp" name="product_mrp[]"  onkeypress="return only_number(event)">
-                        <option value="<?php echo $dispatch_details[$i]->price; ?>"><?php echo $dispatch_details[$i]->price; ?> </option>
-                        <option value="<?php echo $dispatch_details[$i]->price_2; ?>"><?php echo $dispatch_details[$i]->price_2; ?> </option>
+                        <option value="<?php echo $dispatch_details[$i]->product_mrp; ?>" <?php if($dispatch_details[$i]->product_mrp == $dispatch_details[$i]->price) echo "selected"; ?> ><?php echo $dispatch_details[$i]->product_mrp; ?> </option>
+                        <option value="<?php echo $dispatch_details[$i]->product_mrp_2; ?>" <?php if($dispatch_details[$i]->product_mrp_2 == $dispatch_details[$i]->price) echo "selected"; ?>><?php echo $dispatch_details[$i]->product_mrp_2; ?> </option>
                     </select>
                     <span style="color: red" class="price_error"></span>
                 </td>
@@ -422,7 +422,9 @@ function addrow() {
   $('table .attribute_div').slice(len, len + 1).html('Attributes');
 }
 
-
+    $(document).on('change','.product_mrp',function(){
+        price();
+    });
     $(document).on('keyup','.quantity',function(){
         price();
     });

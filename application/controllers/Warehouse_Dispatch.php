@@ -409,7 +409,7 @@ class Warehouse_Dispatch extends CI_Controller
             $products = $query->result();
 
         $dispatch = $this->Crud_model->GetData('warehouse_dispatch', "", "id='" . $id . "'", '', '', '', 'row');
-            $query =  $this->db->select('a.*,w.asset_name,w.available_qty,w.barcode_number,e.state_id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,
+            $query =  $this->db->select('a.*,w.asset_name,w.available_qty,w.product_mrp,w.product_mrp_2,w.barcode_number,e.state_id,cat.title,siz.title as size,col.title as color,fab.title as fabric,cra.title as craft,
                         siz.title as size,
                         col.title as color,
                         fab.title as fabric,
