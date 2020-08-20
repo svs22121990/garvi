@@ -465,7 +465,7 @@ class Warehouse_Dispatch extends CI_Controller
             $this->db->where('dispatch_id=', $id);
             $query = $this->db->get();
             $details = $query->result();
-            foreach($details as $detail)
+            foreach($details as $key => $detail)
             {
                 $this->db->select('available_qty');
                 $this->db->where('id', $detail->product_id);
@@ -475,6 +475,8 @@ class Warehouse_Dispatch extends CI_Controller
                     'available_qty' => ($product->available_qty + $detail->quantity)
                 );
                 $this->Crud_model->SaveData("warehouse_details", $data, "id='" . $detail->product_id . "'");
+                $_POST['barcode_number'][$key] = $detail->barcode_number;
+                $_POST['barcode_image'][$key] = $detail->barcode_image;
             }
             $con = "dispatch_id='" . $id . "'";
             $delete = $this->Crud_model->DeleteData('warehouse_dispatch_details',$con);
@@ -487,6 +489,8 @@ class Warehouse_Dispatch extends CI_Controller
                     'price'=>$_POST['product_mrp'][$i],
                     'gst_percent'=>$_POST['gst_percent'][$i],
                     'created_by'=>$_POST['sent_to'][$i],
+                    'barcode_number' => $_POST['barcode_number'][$i],
+                    'barcode_image' => $_POST['barcode_image'][$i],
                     'status' => 'Active',
                     'created'=>date('Y-m-d H:i:s'),
                 );

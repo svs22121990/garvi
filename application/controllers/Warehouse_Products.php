@@ -318,7 +318,8 @@ class Warehouse_Products extends CI_Controller {
       $this->db->where('d.dispatch_id',$id);
       $query = $this->db->get();
       $detail = $query->result();
-
+      print_r($detail);
+      die;
       for ($i = 0; $i < count($detail); $i++) {
         $data = array(
           'product_id' => $last_id,
