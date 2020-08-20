@@ -65,6 +65,7 @@ $this->load->view('common/left_panel');
                     <div class="col-md-2">
                         <select name="cat" id="cat" class="form-control">
                             <option value="">Select Category</option>
+                            
                             <?php
                             if(!empty($category)) {
                                 foreach ($category as $type) {
