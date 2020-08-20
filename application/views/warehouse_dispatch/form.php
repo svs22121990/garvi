@@ -136,7 +136,7 @@
               </td>
                 <td>
                     <select type="text" class="form-control product_mrp" name="product_mrp[]"  autocomplete="off" onkeypress="return only_number(event)">
-                        <option value="">Select Selling Price </option>
+                        <option value="">Select SP </option>
                     </select>
                     <span style="color: red" class="price_error"></span>
                 </td>
@@ -471,18 +471,14 @@ function addrow() {
   var new_row = y.rows[0].cloneNode(true); 
   var len = y.rows.length; 
   
-  var inp1 = new_row.cells[0].getElementsByTagName('input')[0];
-  inp3.value = '';
+  var inp1 = new_row.cells[0].getElementsByTagName('select')[0];
+  inp1.value = '';
 
   var inp2 = new_row.cells[1].getElementsByTagName('select')[0];
   inp2.value = '';
 
-    var inp3 = new_row.cells[3].getElementsByTagName('select')[0];
-    inp2.value = '';
-
-  var inp5 = new_row.cells[2].getElementsByTagName('input')[0];
-  inp5.value = '';
-  //inp5.id = 'gst_percent'+(len+1);
+  var inp3 = new_row.cells[3].getElementsByTagName('input')[0];
+  inp3.value = '';
 
   var inp7 = new_row.cells[4].getElementsByTagName('input')[0];
   inp7.value = '';
@@ -556,13 +552,14 @@ function getGST(val,len) {
         var price = obj.price;
 //console.log(obj);
       $('table .gst_percent').slice(len, len + 1).val(obj.gst_percent);
-      $('table .product_mrp').slice(len, len + 1).val(obj.price);
+      //$('table .product_mrp').slice(len, len + 1).val(obj.price);
         /*obj.price.foreach(function(e){
            alert(e);
         });*/
 //for selling price drop dropdown
+        $('table .product_mrp').slice(len, len + 1).empty();
         price.forEach(function(rel){
-            $('.product_mrp').append('<option value="'+rel+'"> '+rel+'</option>')
+          $('table .product_mrp').slice(len, len + 1).append('<option value="'+rel+'"> '+rel+'</option>')
         });
 
       $('table .attribute_div').slice(len, len + 1).empty();
@@ -890,4 +887,3 @@ function validateinfo() {
   }
    
 </script>
-
