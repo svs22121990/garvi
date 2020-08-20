@@ -737,20 +737,25 @@ class Warehouse_Dispatch extends CI_Controller
         $this->db->select('
             b.barcode_number,
             b.barcode_image,
-   '
+            d.asset_name,
+            d.product_mrp,
+            d.sp_total,
+            d.available_qty,
+            d.asset_type_id'
         );
-        //$this->db->join("warehouse_details d","d.id = b.warehouse_detail_id","left");
+        $this->db->join("warehouse_details d","d.id = b.product_id","left");
         //$this->db->join("mast_asset_types m","m.id = d.asset_type_id","left");
         $this->db->where("b.dispatch_id='".$id."'");
         $data['barcodes'] = $this->db->get('warehouse_dispatch_details b')->result();
 
-        $html = $this->load->view('warehouse/product_pdf', $data, TRUE);
+        $html = $this->load->view('warehouse_dispatch/product_pdf_barcode', $data, TRUE);
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
         $mpdf->Output('Warehouse Product_Details', 'I');
     }
-    // b.available_qty,
+   
     // b.asset_name,
+     // b.available_qty,
     // b.product_mrp,
     // b.sp_total,
     // b.asset_type_id

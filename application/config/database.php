@@ -75,10 +75,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'garvi',
-	'password' => 'garvi',
-	'database' => 'garvi',
+	'hostname' => '127.0.0.1',
+	'username' => 'root',
+	'password' => '',
+	'database' => 'admin_gst_2',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
