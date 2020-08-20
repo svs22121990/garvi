@@ -155,7 +155,8 @@ class Product_Summary extends CI_Controller
     }
 
     $Data = $this->Product_Summary_model->get_datatables($con, $date);
-    //print_r($this->db->last_query());exit;
+   // print_r($this->db->last_query());exit;
+   //print_r( $Data);
     $edit = '';
     $delete = '';
     $actstatus = '';
@@ -248,13 +249,14 @@ class Product_Summary extends CI_Controller
           'attributes' => '<b>Color : </b>'.$row->color.'</br><b>Size : </b>'.$row->size.'</br><b>Fabric : </b>'.$row->fabric.'</br><b>Craft : </b>'.$row->craft,
           'product_purchase_date' => $row->product_purchase_date,
           'productType' => $row->product_type,
+          'barcode_number' => $row->barcode_number,
           'time' => implode(" ", $arrTime),
           'btn' =>  "<a href='javascript:void(0)' onclick='addDamage(" . $product_id . ")' title='Add Damage' class='btn btn-danger btn-circle btn-sm edit-qty'><i class='fa fa-plus'></i></a>",
         );
       }
     
     $output = array("data" => $data);
-
+//print_r($output);
     echo json_encode($output);
   }
 

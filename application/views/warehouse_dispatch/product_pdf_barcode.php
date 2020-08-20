@@ -77,7 +77,7 @@
                         Warehouse Bill Date: <strong><?php echo !empty($results) ? $results[0]->dispatch_date : ""; ?></strong>
                     </div>
                     <div class="col-md-4">
-                        Received From: <strong><?php echo !empty($results) ? $results[0]->employee_name : ""; ?></strong>
+                        Sent To: <strong><?php echo !empty($results) ? $results[0]->employee_name : ""; ?></strong>
                     </div>
                     <!--
                  <div class="col-md-4">

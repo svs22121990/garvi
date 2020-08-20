@@ -29,6 +29,7 @@ class Product_Summary_model extends CI_Model
             a.damage_qty, 
             a.id,
             a.hsn,
+            a.barcode_number,
             siz.title as size,
             col.title as color,
             fab.title as fabric,

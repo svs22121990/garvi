@@ -193,6 +193,7 @@ $this->load->view('common/left_panel');
                                 <th>GST</th>
                                 <th>Total Amount</th>
                                 <!-- <th>Purchase Date</th> -->
+                                <th>Barcode Number</th>
                                 <th>AGE</th>
                                 <th>Action</th>
                             </tr>
@@ -390,6 +391,7 @@ $this->load->view('common/left_panel');
                 }
             },
             // { "data": "purchase_date" },
+            { "data": "barcode_number" },
             { "data": "time" },
             { "data": "btn" }
         ],

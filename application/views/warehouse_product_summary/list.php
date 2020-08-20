@@ -212,7 +212,7 @@ $this->load->view('common/left_panel');
                                         <th>Selling Price 2</th>
                                         <th>Total SP Amt 1</th>
                                         <th>Total SP Amt 2</th>
-                                        <th>Barcode Number</th>
+                                        <!-- <th>Barcode Number</th> -->
                                         <th>AGE</th>
                                         <!--<th>Selling Price</th>
                                         <th>Total Selling Amt</th>-->
@@ -448,7 +448,7 @@ $this->load->view('common/left_panel');
                         return 'Rs. '+data;
                     }
                 },
-                { "data": "barcode_number" },
+                // { "data": "barcode_number" },
                 { "data": "time" },
                 // { "data": "purchase_date" },
                 //{ "data": "time" },
