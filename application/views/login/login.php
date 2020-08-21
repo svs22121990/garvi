@@ -165,7 +165,7 @@ $.ajax({
         cache:false,
         success:function(returndata)
         {
-           // alert(returndata);return false;
+            //alert(returndata);return false;
           
            if(returndata==1){
                $("#errorMsgLogin").fadeIn().html("Invalid login credential!");
@@ -173,12 +173,10 @@ $.ajax({
                $("#login_password").focus();
                return false;       
            }
-           /*else if(returndata==2){
-               $("#errorMsgLogin").fadeIn().html("Login failed, IP address doesn't match");
-               setTimeout(function(){$("#errorMsgLogin").html("&nbsp;");},5000)
-               $("#login_password").focus();
-               return false;       
-           }*/
+           else if(returndata==2){
+                var url = site_url+"/Warehouse";                    
+                window.location.href =url;     
+           }
           else{
                 var url = site_url+"/Dashboard/index";                    
                 window.location.href =url;

@@ -129,9 +129,11 @@ $count_issue=count($assets_issue_reqests);
             </li>
 
         <?php } else {  ?>
-        <li <?php if ($segment=='Dashboard')echo " class='active'"; ?>>
-            <a href="<?php echo site_url('Dashboard/index');?>"><span class="fa fa-desktop"></span> <span class="xn-text">Dashboard</span></a>                        
-        </li>  
+            <?php if($row->designation_id!=31)  { ?>
+                <li <?php if ($segment=='Dashboard')echo " class='active'"; ?>>
+                    <a href="<?php echo site_url('Dashboard/index');?>"><span class="fa fa-desktop"></span> <span class="xn-text">Dashboard</span></a>                        
+                </li>  
+            <?php } ?>
         <span class="searchbleDiv"> 
             <?php  if(!empty($_SESSION[SESSION_NAME]['action_list'])) { 
             foreach ($_SESSION[SESSION_NAME]['action_list'] as $main ) { 

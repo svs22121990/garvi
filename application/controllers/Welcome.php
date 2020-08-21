@@ -61,9 +61,9 @@ class Welcome extends CI_Controller {
             $cond="r.status='Active' and rm.module_name='".$val."' and ra.ra_designation_id='".$chk_login->designation_id."'";
             $getMenus[]=$this->Crud_model->getRolePermissionSubMenu($cond);
             //print_r($this->db->last_query());
-            echo "<br/>";
+            //echo "<br/>";
           }
-          //exit;
+
   	     $sess_array[SESSION_NAME] = array(
   	      'id' => $chk_login->id,
   	      'name' => $chk_login->name,
@@ -79,9 +79,16 @@ class Welcome extends CI_Controller {
   	       'gst_number' => $chk_login->gst_number,
            'invoice_serial_number_series' => $chk_login->invoice_serial_number_series,
            'address' => $chk_login->address,
-  	    ); 
-  	    $this->session->set_userdata($sess_array); 
-  	    echo "0"; exit; 
+        ); 
+
+        $this->session->set_userdata($sess_array); 
+        //Warehouse User
+        if($chk_login->designation_id == 31)
+        {
+          echo "2";exit;
+        } else {
+          echo "0"; exit; 
+        }
   	    }
   	    else
   	    {
