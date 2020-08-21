@@ -160,10 +160,10 @@
         <table id="barcode" border=1 style="width: 100%;">
             <thead>
                 <tr>
-                    <th>Sr. No.</th>
-                    <th>Barcode Number</th>
-                    <th>Barcode Image</th>
-					<th style="width:0%;"></th>
+                    <th style="width:20%;">Sr. No.</th>
+                    <th style="width:20%;">Barcode Number</th>
+                    <th style="width:20%;">Barcode Image</th>
+					
                 </tr>
             </thead>
 

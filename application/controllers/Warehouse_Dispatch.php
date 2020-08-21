@@ -735,7 +735,7 @@ class Warehouse_Dispatch extends CI_Controller
     public function export_pdf_barcode($id)
     {
         $data['results'] = $this->Dispatch_model->warehouse_getAllDetails($id);
-        print_r( $data['results']);
+       // print_r( $data['results']);
         //$this->db->select('barcode_number, barcode_image, status');
         //$this->db->where("warehouse_id='".$id."'");
         //$data['barcodes'] = $this->db->get('warehouse_barcodes')->result();
@@ -753,7 +753,7 @@ class Warehouse_Dispatch extends CI_Controller
         //$this->db->join("mast_asset_types m","m.id = d.asset_type_id","left");
         $this->db->where("b.dispatch_id='".$id."'");
         $data['barcodes'] = $this->db->get('warehouse_dispatch_details b')->result();
-
+        //print_r(  $data['barcodes'] );
         $html = $this->load->view('warehouse_dispatch/product_pdf_barcode', $data, TRUE);
         $mpdf = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($html);
