@@ -576,7 +576,7 @@ class Invoice extends CI_Controller
           $update['status'] ="Active";
           $this->Crud_model->SaveData('invoice',$update,"id='".$last_id."'");
 
-          $con = "status='Inactive'";      
+          $con = "status='Inactive' and created_by=". $_SESSION['ASSETSTRACKING']['id'];      
           $this->Crud_model->DeleteData('invoice',$con);
           //$con = "status='Inactive'";      
           //$this->Crud_model->DeleteData('invoice_details',$con);
